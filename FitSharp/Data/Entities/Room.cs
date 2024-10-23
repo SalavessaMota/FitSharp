@@ -1,7 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-
-namespace FitSharp.Data.Entities
+﻿namespace FitSharp.Data.Entities
 {
     public class Room : IEntity
     {
@@ -16,7 +13,5 @@ namespace FitSharp.Data.Entities
         public int GymId { get; set; }
 
         public virtual Gym Gym { get; set; }
-
-       
     }
 }

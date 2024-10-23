@@ -2,6 +2,7 @@
 using FitSharp.Entities;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using System.Net.Sockets;
 
 namespace FitSharp.Data
 {
@@ -24,16 +25,28 @@ namespace FitSharp.Data
         public DbSet<Admin> Admins { get; set; }
 
         public DbSet<Membership> Memberships { get; set; }
-        //public DbSet<Reservation> Reservations { get; set; }
-        
-
-
-
 
         public DataContext(DbContextOptions<DataContext> options) : base(options)
-        {            
+        {
         }
 
-        
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Country>()
+                .HasIndex(c => c.Name)
+                .IsUnique();
+
+            modelBuilder.Entity<City>()
+                .HasIndex(c => c.Name)
+                .IsUnique();
+
+            modelBuilder.Entity<City>()
+                .HasOne(c => c.Country)
+                .WithMany(p => p.Cities)
+                .HasForeignKey(c => c.CountryId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            base.OnModelCreating(modelBuilder);
+        }
     }
 }

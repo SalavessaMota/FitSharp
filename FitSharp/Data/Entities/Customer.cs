@@ -1,7 +1,5 @@
 ﻿using FitSharp.Entities;
-using System.Collections;
 using System.Collections.Generic;
-using System.Security.Policy;
 
 namespace FitSharp.Data.Entities
 {
@@ -11,10 +9,9 @@ namespace FitSharp.Data.Entities
 
         public User User { get; set; }
 
-
         public int? MembershipId { get; set; }
         public virtual Membership Membership { get; set; }
-        
+
         public virtual ICollection<GroupClass> GroupClasses { get; set; }
     }
 }

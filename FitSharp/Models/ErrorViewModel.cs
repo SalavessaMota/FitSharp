@@ -1,5 +1,3 @@
-using System;
-
 namespace FitSharp.Models
 {
     public class ErrorViewModel

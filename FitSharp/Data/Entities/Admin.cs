@@ -7,6 +7,5 @@ namespace FitSharp.Data.Entities
         public int Id { get; set; }
 
         public User user { get; set; }
-
     }
 }

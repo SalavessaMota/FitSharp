@@ -12,7 +12,6 @@
         public int ClassTypeId { get; set; }
         public virtual ClassTypes ClassType { get; set; }
 
-
         public int InstructorId { get; set; }
         public virtual Instructor Instructor { get; set; }
 
