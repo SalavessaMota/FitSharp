@@ -1,8 +1,6 @@
 ﻿using FitSharp.Data.Entities;
 using FitSharp.Entities;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace FitSharp.Data
@@ -23,6 +21,12 @@ namespace FitSharp.Data
             return await _userManager.CreateAsync(user, password);
         }
 
+        public async Task AddCustomerAsync(Customer customer)
+        {
+            _context.Customers.Add(customer);
+            await _context.SaveChangesAsync();
+        }
+
         public async Task<IdentityResult> DeleteUserAsync(User user)
         {
             return await _userManager.DeleteAsync(user);
@@ -32,7 +36,6 @@ namespace FitSharp.Data
         //{
         //    return _context.Users;
         //}
-                
 
         public async Task<User> GetUserByIdAsync(string userId)
         {

@@ -1,7 +1,6 @@
 ﻿using FitSharp.Data.Entities;
 using FitSharp.Entities;
 using Microsoft.AspNetCore.Identity;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace FitSharp.Data
@@ -9,6 +8,7 @@ namespace FitSharp.Data
     public interface IUserRepository
     {
         //IQueryable<User> GetAllUsers();
+        Task AddCustomerAsync(Customer customer);
 
         Task<User> GetUserByIdAsync(string userId);
 

@@ -1,5 +1,4 @@
-﻿using FitSharp.Data.Entities;
-using FitSharp.Entities;
+﻿using FitSharp.Entities;
 using FitSharp.Models;
 using Microsoft.AspNetCore.Identity;
 using System.Collections.Generic;

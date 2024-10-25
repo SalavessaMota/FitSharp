@@ -40,14 +40,15 @@ namespace FitSharp.Data
                 _context.Countries.Add(new Country
                 {
                     Cities = cities,
-                    Name = "Portugal"
+                    Name = "Portugal",
+                    Code = "PT"
                 });
 
                 await _context.SaveChangesAsync();
             }
 
             var user = await _userRepository.GetUserByEmailAsync("nunosalavessa@hotmail.com");
-            
+
             if (user == null)
             {
                 user = new User
@@ -69,8 +70,8 @@ namespace FitSharp.Data
                 }
 
                 await _userHelper.AddUserToRoleAsync(user, "Admin");
-                //var token = await _userHelper.GenerateEmailConfirmationTokenAsync(user);
-                //await _userHelper.ConfirmEmailAsync(user, token);
+                var token = await _userHelper.GenerateEmailConfirmationTokenAsync(user);
+                await _userHelper.ConfirmEmailAsync(user, token);
 
                 var admin = new Admin { User = user };
                 _context.Admins.Add(admin);
@@ -85,4 +86,3 @@ namespace FitSharp.Data
         }
     }
 }
-

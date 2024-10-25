@@ -1,6 +1,5 @@
-﻿using FitSharp.Models;
-using FitSharp.Data;
-using FitSharp.Data.Entities;
+﻿using FitSharp.Data.Entities;
+using FitSharp.Models;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;

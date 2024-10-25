@@ -123,6 +123,9 @@ namespace FitSharp.Controllers
                 }
                 await _userHelper.AddUserToRoleAsync(user, "Customer");
 
+                var customer = new Customer { User = user };
+                await _userRepository.AddCustomerAsync(customer);
+
                 string myToken = await _userHelper.GenerateEmailConfirmationTokenAsync(user);
                 string tokenLink = Url.Action("ConfirmEmail", "Account", new
                 {
@@ -130,16 +133,16 @@ namespace FitSharp.Controllers
                     token = myToken
                 }, protocol: HttpContext.Request.Scheme);
 
-                Response response = _mailHelper.SendEmail(model.Username, "AirCinel - Confirm your Email",
-                                                        $"<h1 style=\"color:#1E90FF;\">Welcome to AirCinel!</h1>" +
-                                                        $"<p>Thank you for choosing AirCinel, your trusted airline for premium travel experiences.</p>" +
-                                                        $"<p>We're excited to have you onboard. To complete your registration, please confirm your email address by clicking the link below:</p>" +
-                                                        $"<p><a href = \"{tokenLink}\" style=\"color:#FFA500; font-weight:bold;\">Confirm Email</a></p>" +
-                                                        $"<p>If you didn’t create this account, please disregard this email.</p>" +
-                                                        $"<br>" +
-                                                        $"<p>Safe travels,</p>" +
-                                                        $"<p>The AirCinel Team</p>" +
-                                                        $"<p><small>This is an automated message. Please do not reply to this email.</small></p>");
+                Response response = _mailHelper.SendEmail(model.Username, "FitSharp - Welcome to Your Fitness Journey",
+                                        $"<h1 style=\"color:#1E90FF;\">Welcome to FitSharp!</h1>" +
+                                        $"<p>Thank you for choosing FitSharp, your gateway to a healthier and empowered lifestyle.</p>" +
+                                        $"<p>We’re thrilled to have you as part of our global community. To complete your registration, please confirm your email address by clicking the link below:</p>" +
+                                        $"<p><a href = \"{tokenLink}\" style=\"color:#FFA500; font-weight:bold;\">Confirm Email</a></p>" +
+                                        $"<p>If you didn’t create this account, please disregard this email.</p>" +
+                                        $"<br>" +
+                                        $"<p>Your fitness journey awaits,</p>" +
+                                        $"<p>The FitSharp Team</p>" +
+                                        $"<p><small>This is an automated message. Please do not reply to this email.</small></p>");
 
                 if (response.IsSuccess)
                 {
@@ -355,15 +358,15 @@ namespace FitSharp.Controllers
                     "Account",
                     new { token = myToken }, protocol: HttpContext.Request.Scheme);
 
-                Response response = _mailHelper.SendEmail(model.Email, "AirCinel - Password Reset",
-                                                        $"<h1 style=\"color:#1E90FF;\">AirCinel Password Reset</h1>" +
-                                                        $"<p>We received a request to reset your password. If you made this request, please click the link below to reset your password:</p>" +
-                                                        $"<p><a href = \"{link}\" style=\"color:#FFA500; font-weight:bold;\">Reset Password</a></p>" +
-                                                        $"<p>If you did not request a password reset, please ignore this email. Your account is still secure.</p>" +
-                                                        $"<br>" +
-                                                        $"<p>Best regards,</p>" +
-                                                        $"<p>The AirCinel Team</p>" +
-                                                        $"<p><small>This is an automated message. Please do not reply to this email.</small></p>");
+                Response response = _mailHelper.SendEmail(model.Email, "FitSharp - Password Reset",
+                                        $"<h1 style=\"color:#1E90FF;\">FitSharp Password Reset</h1>" +
+                                        $"<p>We received a request to reset your password. If you made this request, please click the link below to reset your password:</p>" +
+                                        $"<p><a href = \"{link}\" style=\"color:#FFA500; font-weight:bold;\">Reset Password</a></p>" +
+                                        $"<p>If you did not request a password reset, please ignore this email. Your account is still secure.</p>" +
+                                        $"<br>" +
+                                        $"<p>Best regards,</p>" +
+                                        $"<p>The FitSharp Team</p>" +
+                                        $"<p><small>This is an automated message. Please do not reply to this email.</small></p>");
 
                 if (response.IsSuccess)
                 {
@@ -411,8 +414,14 @@ namespace FitSharp.Controllers
         [Route("Account/GetCitiesAsync")]
         public async Task<JsonResult> GetCitiesAsync(int countryId)
         {
-            var country = await _countryRepository.GetCountryWithCitiesAsync(countryId);
-            return Json(country.Cities.OrderBy(c => c.Name));
+            var cities = await _countryRepository.GetComboCitiesAsync(countryId);
+            var result = cities.Select(c => new
+            {
+                id = c.Value,
+                name = c.Text
+            });
+
+            return Json(result);
         }
     }
 }

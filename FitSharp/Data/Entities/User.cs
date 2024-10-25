@@ -23,12 +23,11 @@ namespace FitSharp.Entities
         [Display(Name = "Full Name")]
         public string FullName => $"{FirstName} {LastName}";
 
-
         [Display(Name = "Image")]
         public Guid ImageId { get; set; }
 
         public string ImageFullPath => ImageId == Guid.Empty
-            ? $"https://FitSharp.blob.core.windows.net/resources/noimage.png"
-            : $"https://FitSharp.blob.core.windows.net/users/{ImageId}";
+            ? $"https://aircinelmvc.blob.core.windows.net/resources/noimage.png"
+            : $"https://aircinelmvc.blob.core.windows.net/users/{ImageId}";
     }
 }
