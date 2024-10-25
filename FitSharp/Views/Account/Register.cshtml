@@ -131,9 +131,12 @@
                     success: function (response) {
                         console.log("Cities response: ", response);
 
+                        // Acessa o campo $values para extrair as cidades
                         var cities = response || [];
+
                         if (cities.length > 0) {
                             $.each(cities, function (i, city) {
+                                // Verifica se o objeto `city` tem `id` e `name`
                                 if (city.id && city.name) {
                                     $("#CityId").append('<option value="' + city.id + '">' + city.name + '</option>');
                                 } else {
@@ -154,6 +157,7 @@
         });
     </script>
 }
+
 
 
 

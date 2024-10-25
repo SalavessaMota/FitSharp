@@ -414,14 +414,8 @@ namespace FitSharp.Controllers
         [Route("Account/GetCitiesAsync")]
         public async Task<JsonResult> GetCitiesAsync(int countryId)
         {
-            var cities = await _countryRepository.GetComboCitiesAsync(countryId);
-            var result = cities.Select(c => new
-            {
-                id = c.Value,
-                name = c.Text
-            });
-
-            return Json(result);
+            var country = await _countryRepository.GetCountryWithCitiesAsync(countryId);
+            return Json(country.Cities.OrderBy(c => c.Name));
         }
     }
 }

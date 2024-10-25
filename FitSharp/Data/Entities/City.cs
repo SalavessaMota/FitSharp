@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace FitSharp.Data.Entities
 {
@@ -11,6 +12,7 @@ namespace FitSharp.Data.Entities
 
         public int CountryId { get; set; }
 
+        [JsonIgnore]
         public Country Country { get; set; }
 
         public ICollection<Gym> Gyms { get; set; } = new List<Gym>();
