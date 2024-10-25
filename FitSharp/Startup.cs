@@ -63,6 +63,8 @@ namespace FitSharp
             services.AddTransient<SeedDb>();
 
             services.AddScoped<IUserHelper, UserHelper>();
+            services.AddScoped<IMailHelper, MailHelper>();
+            services.AddScoped<IBlobHelper, BlobHelper>();
 
             services.AddScoped<ICountryRepository, CountryRepository>();
             services.AddScoped<IUserRepository, UserRepository>();

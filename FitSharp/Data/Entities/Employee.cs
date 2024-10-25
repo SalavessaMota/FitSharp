@@ -6,7 +6,7 @@ namespace FitSharp.Data.Entities
     {
         public int Id { get; set; }
 
-        public User user { get; set; }
+        public User User { get; set; }
 
         public int? GymId { get; set; }
 

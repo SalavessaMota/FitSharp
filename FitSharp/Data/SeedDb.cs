@@ -47,6 +47,7 @@ namespace FitSharp.Data
             }
 
             var user = await _userRepository.GetUserByEmailAsync("nunosalavessa@hotmail.com");
+            
             if (user == null)
             {
                 user = new User
@@ -56,7 +57,9 @@ namespace FitSharp.Data
                     Email = "nunosalavessa@hotmail.com",
                     UserName = "nunosalavessa@hotmail.com",
                     PhoneNumber = "212343555",
-                    Address = "Rua Jau 33"
+                    Address = "Rua Jau 33",
+                    CityId = _context.Countries.FirstOrDefault().Cities.FirstOrDefault().Id,
+                    City = _context.Countries.FirstOrDefault().Cities.FirstOrDefault()
                 };
 
                 var result = await _userRepository.AddUserAsync(user, "123123");
@@ -68,6 +71,10 @@ namespace FitSharp.Data
                 await _userHelper.AddUserToRoleAsync(user, "Admin");
                 //var token = await _userHelper.GenerateEmailConfirmationTokenAsync(user);
                 //await _userHelper.ConfirmEmailAsync(user, token);
+
+                var admin = new Admin { User = user };
+                _context.Admins.Add(admin);
+                await _context.SaveChangesAsync();
             }
 
             var isInRole = await _userHelper.IsUserInRoleAsync(user, "Admin");
