@@ -16,8 +16,12 @@ namespace FitSharp.Data.Entities
 
         public ICollection<Room> Rooms { get; set; }
 
+        public int NumberOfRooms => Rooms == null ? 0 : Rooms.Count;
+
         public ICollection<Equipment> Equipments { get; set; } = new List<Equipment>();
 
-        public int NumberOfRooms => Rooms == null ? 0 : Rooms.Count;
+        public int NumberOfEquipments => Equipments == null ? 0 : Equipments.Count;
+
+        //TODO: Image collection.
     }
 }

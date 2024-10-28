@@ -63,12 +63,15 @@ namespace FitSharp
 
             services.AddTransient<SeedDb>();
 
+            services.AddFlashMessage();
+
             services.AddScoped<IUserHelper, UserHelper>();
             services.AddScoped<IMailHelper, MailHelper>();
             services.AddScoped<IBlobHelper, BlobHelper>();
 
-            services.AddScoped<ICountryRepository, CountryRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<ICountryRepository, CountryRepository>();
+            services.AddScoped<IGymRepository, GymRepository>();
 
 
             services.ConfigureApplicationCookie(options =>
@@ -77,11 +80,7 @@ namespace FitSharp
                 options.AccessDeniedPath = "/Account/NotAuthorized";
             });
 
-
-
             services.AddControllersWithViews();
-
-            services.AddFlashMessage();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

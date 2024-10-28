@@ -12,7 +12,7 @@ namespace FitSharp.Data.Entities
 
         public int CountryId { get; set; }
 
-        [JsonIgnore]
+        [JsonIgnore] // Verify necessity.
         public Country Country { get; set; }
 
         public ICollection<Gym> Gyms { get; set; } = new List<Gym>();

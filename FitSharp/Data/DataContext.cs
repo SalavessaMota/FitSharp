@@ -39,6 +39,10 @@ namespace FitSharp.Data
                 .HasIndex(c => c.Name)
                 .IsUnique();
 
+            modelBuilder.Entity<Gym>()
+                .HasIndex(c => c.Name)
+                .IsUnique();
+
             modelBuilder.Entity<City>()
                 .HasOne(c => c.Country)
                 .WithMany(p => p.Cities)

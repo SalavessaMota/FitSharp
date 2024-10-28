@@ -20,7 +20,7 @@ namespace FitSharp.Controllers
         public CountriesController(
             ICountryRepository countryRepository,
             IFlashMessage flashMessage
-            )
+        )
         {
             _countryRepository = countryRepository;
             _flashMessage = flashMessage;
@@ -48,7 +48,7 @@ namespace FitSharp.Controllers
             {
                 if (ex.InnerException != null && ex.InnerException.Message.Contains("DELETE"))
                 {
-                    ViewBag.ErrorTitle = $"The City {city.Name} is probably being used!!";
+                    ViewBag.ErrorTitle = $"The city {city.Name} is probably being used!!";
                     ViewBag.ErrorMessage = $"{city.Name}  can't be deleted because it is being used.</br></br>";
                 }
 
@@ -192,7 +192,6 @@ namespace FitSharp.Controllers
             return View(country);
         }
 
-        // GET Countries/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)

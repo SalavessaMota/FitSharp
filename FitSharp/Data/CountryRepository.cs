@@ -63,7 +63,9 @@ namespace FitSharp.Data
         public async Task<int> UpdateCityAsync(City city)
         {
             var country = await _context.Countries
-                .Where(c => c.Cities.Any(ci => ci.Id == city.Id)).FirstOrDefaultAsync();
+                .Where(c => c.Cities.Any(ci => ci.Id == city.Id))
+                .FirstOrDefaultAsync();
+
             if (country == null)
             {
                 return 0;
@@ -92,7 +94,7 @@ namespace FitSharp.Data
             {
                 Text = c.Name,
                 Value = c.Id.ToString()
-            }).OrderBy(l => l.Text).ToList();
+            }).OrderBy(sli => sli.Text).ToList();
 
             list.Insert(0, new SelectListItem
             {
@@ -114,7 +116,7 @@ namespace FitSharp.Data
                 {
                     Text = c.Name,
                     Value = c.Id.ToString()
-                }).OrderBy(l => l.Text).ToList();
+                }).OrderBy(sli => sli.Text).ToList();
 
                 list.Insert(0, new SelectListItem
                 {

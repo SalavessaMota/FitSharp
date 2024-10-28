@@ -1,4 +1,4 @@
-﻿@model FitSharp.Data.Entities.Country
+﻿@model FitSharp.Data.Entities.Gym
 
 @{
     ViewData["Title"] = "Details";
@@ -9,7 +9,7 @@
 <br />
 
 <div class="col-md-8 offset-md-2 transparent-card">
-    <h1>Country</h1>
+    <h1>Gym</h1>
     <hr />
     <dl class="dl-horizontal">
         <dt>
@@ -19,57 +19,57 @@
             @Html.DisplayFor(model => model.Name)
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.Code)
+            @Html.DisplayNameFor(model => model.Address)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.Code)
+            @Html.DisplayFor(model => model.Address)
         </dd>
     </dl>
     <div>
         <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning"><i class="far fa-edit"></i></a>
-        <a asp-action="AddCity" asp-route-id="@Model.Id" class="btn btn-info">Add city</a>
+        <a asp-action="AddRoom" asp-route-id="@Model.Id" class="btn btn-info">Add room</a>
         <a asp-action="Index" class="btn btn-success">Back to List</a>
     </div>
 
     <br />
 
-    <h4>Cities</h4>
-    @if (Model.Cities == null || Model.Cities.Count == 0)
+    <h4>Rooms</h4>
+    @if (Model.Rooms == null || Model.Rooms.Count == 0)
     {
-        <h5>No cities added yet</h5>
+        <h5>No rooms added yet</h5>
     }
     else
     {
         <div class="row">
-        <div class="col-12">
+            <div class="col-12">
                 <div class="card shadow-lg rounded">
-                <div class="card-header">
-                    <h3 class="card-title">Cities</h3>
-                </div>
-                <div class="card-body">
-                    <table class="table table-hover table-striped" id="MyTable">
-            <thead>
-                <tr>
-                    <th>
-                        @Html.DisplayNameFor(model => model.Cities.FirstOrDefault().Name)
-                    </th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in Model.Cities.OrderBy(c => c.Name))
-                {
-                    <tr>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Name)
-                        </td>
-                        <td id="@item.Id">
-                            <a asp-action="EditCity" asp-route-id="@item.Id" class="btn btn-warning"><i class="far fa-edit"></i></a>
-                            <a asp-action="DeleteCity" asp-route-id="@item.Id" class="btn btn-danger" id="btnDelete"><i class="fas fa-trash"></i></a>
-                        </td>
-                    </tr>
-                }
-            </tbody>
+                    <div class="card-header">
+                        <h3 class="card-title">Rooms</h3>
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-hover table-striped" id="MyTable">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.Rooms.FirstOrDefault().Name)
+                                    </th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model.Rooms.OrderBy(c => c.Name))
+                                {
+                                    <tr>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.Name)
+                                        </td>
+                                        <td id="@item.Id">
+                                            <a asp-action="EditRoom" asp-route-id="@item.Id" class="btn btn-warning"><i class="far fa-edit"></i></a>
+                                            <a asp-action="DeleteRoom" asp-route-id="@item.Id" class="btn btn-danger" id="btnDelete"><i class="fas fa-trash"></i></a>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
                         </table>
                     </div>
                 </div>
@@ -86,7 +86,7 @@
                 <button type="button" class="close" data-dismiss="modal"><i class="fa fa-window-close"></i></button>
             </div>
             <div class="modal-body">
-                <p>Do you want to delete this city?</p>
+                <p>Do you want to delete this room?</p>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-danger" id="btnYesDelete">Delete</button>
@@ -115,7 +115,7 @@
                 return false;
             });
             $("#btnYesDelete").click(function () {
-                window.location.href = '/Countries/DeleteCity/' + id;
+                window.location.href = '/Gyms/DeleteRoom/' + id;
             });
         });
     </script>
