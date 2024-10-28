@@ -9,17 +9,30 @@ namespace FitSharp.Data
 {
     public interface IGymRepository : IGenericRepository<Gym>
     {
-        IQueryable GetGymsWithRooms();
+
+        IQueryable GetGymsWithRoomsAndEquipments();
 
         Task<Gym> GetGymWithRoomsAsync(int id);
 
+        Task<Gym> GetGymWithEquipmentsAsync(int id);
+
+        Task<Gym> GetGymWithRoomsAndEquipmentsAsync(int id);
+
         Task<Room> GetRoomAsync(int id);
 
-        Task AddRoomAsync(RoomViewModel model);
+        Task<Equipment> GetEquipmentAsync(int id);
+
+        Task AddRoomAsync(Room room);
+
+        Task AddEquipmentAsync(Equipment equipment);
 
         Task<int> UpdateRoomAsync(Room room);
 
+        Task<int> UpdateEquipmentAsync(Equipment equipment);
+
         Task<int> DeleteRoomAsync(Room room);
+
+        Task<int> DeleteEquipmentAsync(Equipment equipment);
 
         IEnumerable<SelectListItem> GetComboGyms();
 

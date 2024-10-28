@@ -11,8 +11,7 @@ namespace FitSharp.Data
         public DbSet<Country> Countries { get; set; }
         public DbSet<Gym> Gyms { get; set; }
         public DbSet<Room> Rooms { get; set; }
-        public DbSet<Equipment> Equipment { get; set; }
-
+        public DbSet<Equipment> Equipments { get; set; }
         public DbSet<GroupClass> GroupClasses { get; set; }
         public DbSet<PersonalClass> PersonalClasses { get; set; }
 

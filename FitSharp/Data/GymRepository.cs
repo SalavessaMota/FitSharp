@@ -2,6 +2,7 @@
 using FitSharp.Models;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -16,15 +17,15 @@ namespace FitSharp.Data
         {
             _context = context;
         }
-        public async Task AddRoomAsync(RoomViewModel model)
+        public async Task AddRoomAsync(Room room)
         {
-            var gym = await this.GetGymWithRoomsAsync(model.GymId);
+            var gym = await this.GetGymWithRoomsAsync(room.GymId);
             if (gym == null)
             {
                 return;
             }
 
-            gym.Rooms.Add(new Room { Name = model.Name });
+            gym.Rooms.Add(room);
             _context.Gyms.Update(gym);
             await _context.SaveChangesAsync();
         }
@@ -42,6 +43,34 @@ namespace FitSharp.Data
             _context.Rooms.Remove(room);
             await _context.SaveChangesAsync();
             return gym.Id;
+        }
+
+        public async Task<int> DeleteEquipmentAsync(Equipment equipment)
+        {
+            var gym = await _context.Gyms
+                .Where(c => c.Equipments.Any(e => e.Id == equipment.Id))
+                .FirstOrDefaultAsync();
+            if (gym == null)
+            {
+                return 0;
+            }
+
+            _context.Equipments.Remove(equipment);
+            await _context.SaveChangesAsync();
+            return gym.Id;
+        }
+
+        public async Task AddEquipmentAsync(Equipment equipment)
+        {
+            var gym = await this.GetGymWithEquipmentsAsync(equipment.GymId);
+            if (gym == null)
+            {
+                return;
+            }
+
+            gym.Equipments.Add(equipment);
+            _context.Gyms.Update(gym);
+            await _context.SaveChangesAsync();
         }
 
         public IEnumerable<SelectListItem> GetComboGyms()
@@ -96,10 +125,16 @@ namespace FitSharp.Data
             return await _context.Rooms.FindAsync(id);
         }
 
-        public IQueryable GetGymsWithRooms()
+        public async Task<Equipment> GetEquipmentAsync(int id)
+        {
+           return await _context.Equipments.FindAsync(id);
+        }
+
+        public IQueryable GetGymsWithRoomsAndEquipments()
         {
             return _context.Gyms
                 .Include(g => g.Rooms)
+                .Include(g => g.Equipments)
                 .OrderBy(g => g.Name);
         }
 
@@ -107,6 +142,23 @@ namespace FitSharp.Data
         {
             return await _context.Gyms
                 .Include(g => g.Rooms)
+                .Where(g => g.Id == id)
+                .FirstOrDefaultAsync();
+        }
+
+        public async Task<Gym> GetGymWithEquipmentsAsync(int id)
+        {
+            return await _context.Gyms
+                .Include(g => g.Equipments)
+                .Where(g => g.Id == id)
+                .FirstOrDefaultAsync();
+        }
+
+        public async Task<Gym> GetGymWithRoomsAndEquipmentsAsync(int id)
+        {
+            return await _context.Gyms
+                .Include(g => g.Rooms)
+                .Include(g => g.Equipments)
                 .Where(g => g.Id == id)
                 .FirstOrDefaultAsync();
         }
@@ -123,6 +175,22 @@ namespace FitSharp.Data
             }
 
             _context.Rooms.Update(room);
+            await _context.SaveChangesAsync();
+            return gym.Id;
+        }
+
+        public async Task<int> UpdateEquipmentAsync(Equipment equipment)
+        {
+            var gym = await _context.Gyms
+                .Where(g => g.Id == equipment.GymId)
+                .FirstOrDefaultAsync();
+
+            if (gym == null)
+            {
+                throw new Exception("The specified gym does not exist.");
+            }
+
+            _context.Equipments.Update(equipment);
             await _context.SaveChangesAsync();
             return gym.Id;
         }

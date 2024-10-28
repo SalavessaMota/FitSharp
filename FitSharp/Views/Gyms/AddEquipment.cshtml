@@ -1,13 +1,17 @@
-﻿@model FitSharp.Data.Entities.City
+﻿@model FitSharp.Models.EquipmentViewModel
 
-<h4>City</h4>
-<hr />
+@{
+    ViewData["Title"] = "Add Equipment";
+}
+
+<h4>Equipment</h4>
+<hr/>
+
 <div class="row">
     <div class="col-md-4 offset-md-4 transparent-card">
-        <form asp-action="EditCity">
+        <form asp-action="AddEquipment">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Id" />
-            <input type="hidden" asp-for="CountryId" />
+            <input type="hidden" asp-for="GymId" />
 
             <div class="form-group">
                 <label asp-for="Name" class="control-label"></label>
@@ -16,10 +20,16 @@
             </div>
 
             <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary roundedwithshadow" />
+                <label asp-for="Description" class="control-label"></label>
+                <input asp-for="Description" class="form-control" />
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary roundedwithshadow" />
                 <a asp-action="Index" class="btn btn-success roundedwithshadow">Back to List</a>
             </div>
-        </form>
+       </form>
     </div>
 </div>
 

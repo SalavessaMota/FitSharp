@@ -183,16 +183,17 @@ public class AdminController : Controller
                     token = myToken
                 }, protocol: HttpContext.Request.Scheme);
 
-                Response response = _mailHelper.SendEmail(model.Username, "AirCinel - Set your Password",
-                                        $"<h1 style=\"color:#1E90FF;\">Welcome to AirCinel!</h1>" +
-                                        $"<p>Your account has been created by an administrator on behalf of AirCinel, your trusted airline for premium travel experiences.</p>" +
-                                        $"<p>To complete your registration, please set your password by clicking the link below:</p>" +
-                                        $"<p><a href = \"{tokenLink}\" style=\"color:#FFA500; font-weight:bold;\">Set Password</a></p>" +
-                                        $"<p>If you didn’t expect this registration or believe it was a mistake, please contact us or disregard this email.</p>" +
-                                        $"<br>" +
-                                        $"<p>Safe travels,</p>" +
-                                        $"<p>The AirCinel Team</p>" +
-                                        $"<p><small>This is an automated message. Please do not reply to this email.</small></p>");
+                Response response = _mailHelper.SendEmail(model.Username, "FitSharp - Set Your Password",
+                        $"<h1 style=\"color:#1E90FF;\">Welcome to FitSharp!</h1>" +
+                        $"<p>Your account has been created by an administrator on behalf of FitSharp, your trusted platform for fitness and wellness.</p>" +
+                        $"<p>To complete your registration, please set your password by clicking the link below:</p>" +
+                        $"<p><a href = \"{tokenLink}\" style=\"color:#FFA500; font-weight:bold;\">Set Password</a></p>" +
+                        $"<p>If you weren’t expecting this registration or believe it was a mistake, please contact us or disregard this email.</p>" +
+                        $"<br>" +
+                        $"<p>Best regards,</p>" +
+                        $"<p>The FitSharp Team</p>" +
+                        $"<p><small>This is an automated message. Please do not reply to this email.</small></p>");
+
 
                 if (response.IsSuccess)
                 {
