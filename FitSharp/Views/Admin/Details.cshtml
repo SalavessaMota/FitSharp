@@ -1,0 +1,61 @@
+﻿@model FitSharp.Entities.User
+@{
+    ViewData["Title"] = "Details";
+}
+
+
+<div class="col-md-6 offset-md-3 transparent-card">
+
+    <h1>User Details</h1>
+    <hr/>
+
+    <dl class="row">
+        <dt class="col-sm-6">
+            @Html.DisplayNameFor(model => model.UserName)
+        </dt>
+        <dd class="col-sm-6">
+            @Html.DisplayFor(model => model.UserName)
+        </dd>
+        <dt class="col-sm-6">
+            @Html.DisplayNameFor(model => model.FullName)
+        </dt>
+        <dd class="col-sm-6">
+            @Html.DisplayFor(model => model.FullName)
+        <dt class="col-sm-6">
+                @Html.DisplayNameFor(model => model.Address)
+        </dt>
+        <dd class="col-sm-6">
+                @Html.DisplayFor(model => model.Address)
+        </dd>
+        <dt class="col-sm-6">
+            City
+        </dt>
+        <dd class="col-sm-6">
+                @Html.DisplayFor(model => model.City.Name)
+        </dd>
+        <dt class="col-sm-6">
+            Country
+        </dt>
+        <dd class="col-sm-6">
+                @Html.DisplayFor(model => model.City.Country.Name)
+        </dd>
+        <dt class="col-sm-6">
+            User Photo
+        </dt>
+        <dd>
+            <img src="@Url.Content(Model.ImageFullPath)" class="roundedwithshadow" alt="@Model.FullName" style="width: 400px; height: auto; max-width:100%; margin: 1em;" />
+        </dd>
+    </dl>
+
+
+    <div>
+        <a asp-action="EditUser" asp-route-id="@Model.Id" class="btn btn-warning roundedwithshadow">Edit</a>
+        <a asp-action="Index" class="btn btn-success roundedwithshadow">Back to List</a>
+    </div>
+
+</div>
+
+
+
+
+

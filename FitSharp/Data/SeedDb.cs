@@ -28,6 +28,7 @@ namespace FitSharp.Data
 
             await _userHelper.CheckRoleAsync("Admin");
             await _userHelper.CheckRoleAsync("Employee");
+            await _userHelper.CheckRoleAsync("Instructor");
             await _userHelper.CheckRoleAsync("Customer");
 
             if (!_context.Countries.Any())

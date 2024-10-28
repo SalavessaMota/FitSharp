@@ -1,6 +1,8 @@
 ﻿using FitSharp.Data.Entities;
 using FitSharp.Entities;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace FitSharp.Data
@@ -15,6 +17,14 @@ namespace FitSharp.Data
             _userManager = userManager;
             _context = context;
         }
+
+        public IQueryable<User> GetAllUsersWithCityAndCountry()
+        {
+               return _context.Users
+                .Include(u => u.City)
+                .ThenInclude(c => c.Country);
+        }
+
 
         public async Task<IdentityResult> AddUserAsync(User user, string password)
         {
@@ -40,6 +50,14 @@ namespace FitSharp.Data
         public async Task<User> GetUserByIdAsync(string userId)
         {
             return await _userManager.FindByIdAsync(userId);
+        }
+
+        public async Task<User> GetUserWithCountryAndCityByIdAsync(string userId)
+        {
+            return await _context.Users
+                .Include(u => u.City)
+                .ThenInclude(c => c.Country)
+                .FirstOrDefaultAsync(u => u.Id == userId);
         }
 
         public async Task<User> GetUserByEmailAsync(string email)

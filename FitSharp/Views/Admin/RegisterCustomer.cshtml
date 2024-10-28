@@ -1,0 +1,81 @@
+﻿@model FitSharp.Models.AdminRegisterNewUserViewModel
+
+@{
+    ViewData["Title"] = "RegisterCustomer";
+}
+
+<div class="row">
+    <div class="col-md-4 offset-md-4 transparent-card">
+
+        <h1>Register New Customer</h1>
+
+
+        <form method="post" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly"></div>
+
+            <partial name="_AdminRegisterUser" />
+
+            <div class="form-group">
+                <input type="submit" value="Register New Customer" class="btn btn-primary roundedwithshadow" />
+                <a asp-action="Index" class="btn btn-success roundedwithshadow"><i class="fas fa-list"></i> Back to List</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="text-success">
+    <p>
+        @ViewBag.Message
+    </p>
+</div>
+
+@section Scripts {
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var successMessage = '@ViewBag.Message';
+            if (successMessage !== "") {
+                $('#successModal').modal('show');
+            }
+
+            $('#btnOk').click(function () {
+                window.location.href = '@Url.Action("Index", "Home")';
+            });
+
+            $("#CountryId").change(function () {
+                $("#CityId").empty();
+                $("#CityId").append('<option value="0">(Select a city...)</option>');
+
+                $.ajax({
+                    url: '@Url.Action("GetCitiesAsync", "Account")',
+                    type: 'POST',
+                    dataType: 'json',
+                    data: { countryId: $("#CountryId").val() },
+                    success: function (response) {
+                        console.log("Cities response: ", response);
+
+                        var cities = response || [];
+
+                        if (cities.length > 0) {
+                            $.each(cities, function (i, city) {
+                                if (city.id && city.name) {
+                                    $("#CityId").append('<option value="' + city.id + '">' + city.name + '</option>');
+                                } else {
+                                    console.warn("City data is incomplete or undefined: ", city);
+                                }
+                            });
+                        } else {
+                            console.warn("No cities found in the response.");
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("Error in AJAX request: ", error);
+                    }
+                });
+
+                return false;
+            });
+        });
+    </script>
+}
