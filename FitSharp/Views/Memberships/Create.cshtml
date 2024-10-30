@@ -1,0 +1,31 @@
+﻿@model FitSharp.Data.Entities.Membership
+@{
+    ViewData["Title"] = "Create";
+}
+
+<flash dismissable="true" />
+<div class="row">
+    <div class="col-md-4 offset-md-4 transparent-card">
+
+        <h4>Create membership</h4>
+        <hr />
+
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <partial name="_Memberships" />
+
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary roundedwithshadow" />
+                <a asp-action="Index" class="btn btn-success roundedwithshadow">Back to List</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
+

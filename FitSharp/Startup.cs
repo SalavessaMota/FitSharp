@@ -72,6 +72,7 @@ namespace FitSharp
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<ICountryRepository, CountryRepository>();
             services.AddScoped<IGymRepository, GymRepository>();
+            services.AddScoped<IMembershipRepository, MembershipRepository>();
 
 
             services.ConfigureApplicationCookie(options =>
