@@ -1,6 +1,6 @@
 ﻿namespace FitSharp.Data.Entities
 {
-    public class ClassTypes : IEntity
+    public class ClassType : IEntity
     {
         public int Id { get; set; }
 

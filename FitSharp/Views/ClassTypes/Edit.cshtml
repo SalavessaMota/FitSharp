@@ -1,0 +1,28 @@
+﻿@model FitSharp.Data.Entities.ClassType
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<div class="row">
+    <div class="col-md-4 offset-md-4 transparent-card">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" />
+
+            <partial name="_ClassTypes" />
+
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary roundedwithshadow" />
+                <a asp-action="Index" class="btn btn-success roundedwithshadow">Back to List</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
+
+
