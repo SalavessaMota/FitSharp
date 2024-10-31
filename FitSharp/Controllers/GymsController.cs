@@ -1,11 +1,11 @@
-﻿using FitSharp.Data.Entities;
-using FitSharp.Data;
+﻿using FitSharp.Data;
+using FitSharp.Data.Entities;
 using FitSharp.Helpers;
 using FitSharp.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Threading.Tasks;
 using System;
+using System.Threading.Tasks;
 using Vereyon.Web;
 
 namespace FitSharp.Controllers
@@ -107,7 +107,7 @@ namespace FitSharp.Controllers
         [HttpPost]
         public async Task<IActionResult> EditRoom(Room room)
         {
-            if(room == null)
+            if (room == null)
             {
                 return new NotFoundViewResult("RoomNotFound");
             }
@@ -181,8 +181,6 @@ namespace FitSharp.Controllers
             return this.View(equipment);
         }
 
-
-
         public async Task<IActionResult> AddRoom(int? id)
         {
             if (id == null)
@@ -211,7 +209,6 @@ namespace FitSharp.Controllers
                     Capacity = model.Capacity,
                     IsVirtual = model.IsVirtual,
                     GymId = model.GymId
-
                 };
 
                 await _gymRepository.AddRoomAsync(room);
@@ -257,7 +254,6 @@ namespace FitSharp.Controllers
             return this.View(model);
         }
 
-
         public IActionResult Index()
         {
             return View(_gymRepository.GetGymsWithRoomsAndEquipments());
@@ -296,10 +292,10 @@ namespace FitSharp.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return View(model); 
+                return View(model);
             }
 
-            var city = await _countryRepository.GetCityAsync(model.CityId); 
+            var city = await _countryRepository.GetCityAsync(model.CityId);
 
             try
             {

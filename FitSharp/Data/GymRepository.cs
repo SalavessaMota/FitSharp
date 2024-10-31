@@ -1,5 +1,4 @@
 ﻿using FitSharp.Data.Entities;
-using FitSharp.Models;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -17,6 +16,7 @@ namespace FitSharp.Data
         {
             _context = context;
         }
+
         public async Task AddRoomAsync(Room room)
         {
             var gym = await this.GetGymWithRoomsAsync(room.GymId);
@@ -127,7 +127,7 @@ namespace FitSharp.Data
 
         public async Task<Equipment> GetEquipmentAsync(int id)
         {
-           return await _context.Equipments.FindAsync(id);
+            return await _context.Equipments.FindAsync(id);
         }
 
         public IQueryable GetGymsWithRoomsAndEquipments()

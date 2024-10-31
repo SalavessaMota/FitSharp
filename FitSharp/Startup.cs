@@ -27,6 +27,7 @@ namespace FitSharp
         public void ConfigureServices(IServiceCollection services)
         {
             //TODO: Make password required to be STRONG
+
             services.AddIdentity<User, IdentityRole>(cfg =>
             {
                 cfg.Tokens.AuthenticatorTokenProvider = TokenOptions.DefaultAuthenticatorProvider;
@@ -55,7 +56,6 @@ namespace FitSharp
                     };
                 });
 
-
             services.AddDbContext<DataContext>(cfg =>
             {
                 cfg.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
@@ -73,7 +73,6 @@ namespace FitSharp
             services.AddScoped<ICountryRepository, CountryRepository>();
             services.AddScoped<IGymRepository, GymRepository>();
             services.AddScoped<IMembershipRepository, MembershipRepository>();
-
 
             services.ConfigureApplicationCookie(options =>
             {

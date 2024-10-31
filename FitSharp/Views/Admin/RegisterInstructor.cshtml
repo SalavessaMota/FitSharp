@@ -1,13 +1,12 @@
 ﻿@model FitSharp.Models.AdminRegisterNewUserViewModel
-
 @{
-    ViewData["Title"] = "RegisterCustomer";
+    ViewData["Title"] = "RegisterInstructor";
 }
 
 <div class="row">
     <div class="col-md-4 offset-md-4 transparent-card">
 
-        <h1>Register New Customer</h1>
+        <h2>Register New Instructor</h2>
 
 
         <form method="post" enctype="multipart/form-data">
@@ -16,12 +15,13 @@
             <partial name="_AdminRegisterUser" />
 
             <div class="form-group">
-                <input type="submit" value="Register New Customer" class="btn btn-primary roundedwithshadow" />
+                <input type="submit" value="Register New Instructor" class="btn btn-primary roundedwithshadow" />
                 <a asp-action="Index" class="btn btn-success roundedwithshadow"><i class="fas fa-list"></i> Back to List</a>
             </div>
         </form>
     </div>
 </div>
+
 
 <div class="text-success text-center mt-3">
     <h6>

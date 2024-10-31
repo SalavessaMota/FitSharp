@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace FitSharp.Data.Entities
@@ -13,7 +12,7 @@ namespace FitSharp.Data.Entities
         public decimal Price { get; set; }
 
         [Display(Name = "Max Classes Per Month")]
-        public int NumberOfClasses{ get; set; }
+        public int NumberOfClasses { get; set; }
 
         public ICollection<Customer> Customers { get; set; }
     }

@@ -18,7 +18,5 @@ namespace FitSharp.Data.Entities
         public DateTime EndDate { get; set; }
 
         public bool IsActive { get; set; }
-
-
     }
 }

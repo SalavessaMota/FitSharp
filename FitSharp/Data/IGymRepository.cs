@@ -1,5 +1,4 @@
 ﻿using FitSharp.Data.Entities;
-using FitSharp.Models;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +8,6 @@ namespace FitSharp.Data
 {
     public interface IGymRepository : IGenericRepository<Gym>
     {
-
         IQueryable GetGymsWithRoomsAndEquipments();
 
         Task<Gym> GetGymWithRoomsAsync(int id);

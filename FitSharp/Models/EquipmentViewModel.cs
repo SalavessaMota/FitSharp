@@ -1,5 +1,4 @@
-﻿using FitSharp.Data.Entities;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace FitSharp.Models
 {
@@ -14,6 +13,5 @@ namespace FitSharp.Models
         public string Name { get; set; }
 
         public string Description { get; set; }
-
     }
 }

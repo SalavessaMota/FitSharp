@@ -12,72 +12,46 @@
     <div class="col-12">
         <div class="card transparent-card">
             <div class="card-header">
-                <h3 class="card-title">Users</h3>
+                <h3 class="card-title">
+                    Users <button type="button" class="btn btn-primary btn-lg ml-3 roundedwithshadow" data-toggle="modal" data-target="#registerUserModal">
+                        <i class="fa fa-user-plus"></i>
+                    </button>
+                </h3>
             </div>
             <div class="card-body">
                 <table class="table table-hover table-striped" id="MyTable">
                     <thead>
                         <tr>
-                            <th>
-                                @Html.DisplayNameFor(model => model.FirstOrDefault().Username)
-                            </th>
-                            <th>
-                                Avatar
-                            </th>
-                            <th>
-                                Address
-                            </th>
-                            <th>
-                                City
-                            </th>
-                            <th>
-                                Country
-                            </th>
-                            <th>
-                                Role
-                            </th>
-                            <th>
-                            </th>
+                            <th>@Html.DisplayNameFor(model => model.FirstOrDefault().Username)</th>
+                            <th>Avatar</th>
+                            <th>Address</th>
+                            <th>City</th>
+                            <th>Country</th>
+                            <th>Role</th>
+                            <th></th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach (var item in Model)
                         {
                             <tr>
-                                <td>
-                                    @item.Username
-                                </td>
-
+                                <td>@item.Username</td>
                                 <td>
                                     @if (!string.IsNullOrEmpty(item.ImageFullPath))
                                     {
                                         <img src="@Url.Content(item.ImageFullPath)" alt="@item.Username" style="width: 50px; height: auto; max-width:100%;" />
                                     }
                                 </td>
-
-                                <td>
-                                    @item.Address
-                                </td>
-
-                                <td>
-                                    @item.CityName
-                                </td>
-
-                                <td>
-                                    @item.CountryName
-                                </td>
-
-                                <td>
-                                    @string.Join(", ", item.Roles.Select(r => r.RoleName))
-                                </td>
-
+                                <td>@item.Address</td>
+                                <td>@item.CityName</td>
+                                <td>@item.CountryName</td>
+                                <td>@string.Join(", ", item.Roles.Select(r => r.RoleName))</td>
                                 <td>
                                     <a asp-action="EditUser" asp-route-id="@item.UserId" class="btn btn-warning"><i class="far fa-edit"></i></a>
                                     <a asp-action="Details" asp-route-id="@item.UserId" class="btn btn-info"><i class="fas fa-list"></i></a>
                                     @if (!item.Roles.Any(r => r.RoleName == "Admin"))
                                     {
                                         <a asp-action="DeleteUser" data-id="@item.UserId" class="btn btn-danger btnDelete"><i class="fas fa-trash"></i></a>
-                                        <a asp-action="EditUserRoles" asp-route-id="@item.UserId" class="btn btn-primary">Change Role</a>
                                     }
                                 </td>
                             </tr>
@@ -90,9 +64,40 @@
 </div>
 
 <div class="text-center">
-    <a href="~/Admin/RegisterEmployee" class="btn btn-primary btn-lg mt-3 roundedwithshadow"><i class="fa fa-save"></i> Register New Employee</a>
-    <a href="~/Admin/RegisterCustomer" class="btn btn-primary btn-lg mt-3 roundedwithshadow"><i class="fa fa-save"></i> Register New Customer</a>
+    @* <button type="button" class="btn btn-primary btn-lg mt-3 roundedwithshadow" data-toggle="modal" data-target="#registerUserModal">
+        <i class="fa fa-user-plus"></i> Register New User
+    </button> *@
     <a href="~/Home/index" class="btn btn-primary btn-lg mt-3 roundedwithshadow"><i class="fas fa-home"></i> Return Home</a>
+</div>
+
+<div id="registerUserModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="registerUserModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content roundedwithshadow">
+            <div class="modal-header">
+                <h5 class="modal-title" id="registerUserModalLabel">Select User Type</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>Please select the type of user you wish to register:</p>
+                <div class="list-group">
+                    <button type="button" class="list-group-item list-group-item-action" onclick="redirectTo('Admin/RegisterAdmin')">
+                        <i class="fas fa-user-shield"></i> Admin
+                    </button>
+                    <button type="button" class="list-group-item list-group-item-action" onclick="redirectTo('Admin/RegisterEmployee')">
+                        <i class="fas fa-briefcase"></i> Employee
+                    </button>
+                    <button type="button" class="list-group-item list-group-item-action" onclick="redirectTo('Admin/RegisterInstructor')">
+                        <i class="fas fa-chalkboard-teacher"></i> Instructor
+                    </button>
+                    <button type="button" class="list-group-item list-group-item-action" onclick="redirectTo('Admin/RegisterCustomer')">
+                        <i class="fas fa-user"></i> Customer
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 <div id="deleteDialog" class="modal fade roundedwithshadow">
@@ -115,6 +120,7 @@
 
 @section Scripts {
     @await Html.PartialAsync("_ValidationScriptsPartial")
+
     <script type="text/javascript">
         $(document).ready(function () {
             var id = 0;
@@ -133,6 +139,10 @@
                 window.location.href = '/Admin/DeleteUser/' + id;
             });
         });
+
+        function redirectTo(actionUrl) {
+            window.location.href = '/' + actionUrl;
+        }
     </script>
 
     <script src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
