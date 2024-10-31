@@ -155,6 +155,8 @@ public class AdminController : Controller
     [HttpPost]
     public async Task<IActionResult> RegisterEmployee(AdminRegisterNewEmployeeViewModel model)
     {
+        //TODO: Add email already used message.
+
         if (ModelState.IsValid)
         {
             var user = await _userRepository.GetUserByEmailAsync(model.Username);
@@ -294,6 +296,8 @@ public class AdminController : Controller
                 if (response.IsSuccess)
                 {
                     ViewBag.Message = "The account has been created, and the user has been sent an email to set their password.";
+                    model.Countries = _countryRepository.GetComboCountries();
+                    model.Cities = await _countryRepository.GetComboCitiesAsync(1);
                     return View(model);
                 }
 

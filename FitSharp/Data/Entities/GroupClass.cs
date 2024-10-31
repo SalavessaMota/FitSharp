@@ -12,7 +12,7 @@ namespace FitSharp.Data.Entities
         public virtual Room Room { get; set; }
 
         public int ClassTypeId { get; set; }
-        public virtual ClassTypes ClassType { get; set; }
+        public virtual ClassType ClassType { get; set; }
 
         public int InstructorId { get; set; }
         public virtual Instructor Instructor { get; set; }
