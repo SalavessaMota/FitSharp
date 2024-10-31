@@ -31,6 +31,12 @@ namespace FitSharp.Data
             await _userHelper.CheckRoleAsync("Instructor");
             await _userHelper.CheckRoleAsync("Customer");
 
+            if(!_context.ClassTypes.Any())
+            {
+                _context.ClassTypes.Add(new ClassType { Name = "Personal Training" });
+                await _context.SaveChangesAsync();
+            }
+
             if (!_context.Countries.Any())
             {
                 var cities = new List<City>();

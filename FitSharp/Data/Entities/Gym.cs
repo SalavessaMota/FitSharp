@@ -23,5 +23,9 @@ namespace FitSharp.Data.Entities
         public int NumberOfEquipments => Equipments == null ? 0 : Equipments.Count;
 
         //TODO: Image collection.
+
+        public ICollection<Employee> Employees { get; set; } = new List<Employee>();
+
+        //public ICollection<Instructor> Instructors { get; set; } = new List<Instructor>();
     }
 }

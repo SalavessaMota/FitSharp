@@ -1,11 +1,14 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace FitSharp.Models
 {
     public class EditUserRolesViewModel
     {
         public string UserId { get; set; }
-        public string Username { get; set; }
+
+        [Display(Name = "Full Name")]
+        public string Fullname { get; set; }
         public string Email { get; set; }
         public List<UserRoleViewModel> Roles { get; set; }
         public string SelectedRole { get; set; }

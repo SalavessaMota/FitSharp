@@ -25,6 +25,12 @@ namespace FitSharp.Data
              .ThenInclude(c => c.Country);
         }
 
+        public IQueryable<Customer> GetAllCustomersWithUser()
+        {
+            return _context.Customers
+                .Include(c => c.User);
+        }
+
         public async Task<Customer> GetCustomerByUserIdAsync(string id)
         {
             return await _context.Customers

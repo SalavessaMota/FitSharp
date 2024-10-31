@@ -56,7 +56,7 @@ public class AdminController : Controller
             model.Add(new EditUserRolesViewModel
             {
                 UserId = user.Id,
-                Username = user.FullName,
+                Fullname = user.FullName,
                 Email = user.Email,
                 Roles = roles.Select(r => new UserRoleViewModel { RoleName = r }).ToList(),
                 SelectedRole = roles.FirstOrDefault(),

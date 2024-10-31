@@ -194,5 +194,30 @@ namespace FitSharp.Data
             await _context.SaveChangesAsync();
             return gym.Id;
         }
+
+        public IEnumerable<SelectListItem> GetComboRoomsByInstructorName(string instructorName)
+        {
+            var rooms = _context.Rooms
+                .Include(r => r.Gym)
+                .ThenInclude(g => g.Employees)
+                .Where(r => r.Gym.Employees.Any(e => e.User.UserName == instructorName))
+                .Select(r => new SelectListItem
+                {
+                    Text = r.Name,
+                    Value = r.Id.ToString()
+                })
+                .OrderBy(r => r.Text)
+                .ToList();
+
+            rooms.Insert(0, new SelectListItem
+            {
+                Text = "(Select a room...)",
+                Value = string.Empty
+            });
+
+            return rooms;
+        }
+
+
     }
 }

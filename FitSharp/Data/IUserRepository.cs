@@ -31,6 +31,8 @@ namespace FitSharp.Data
 
         Task AddAdminAsync(Admin admin);
 
+        IQueryable<Customer> GetAllCustomersWithUser();
+
         Task<User> GetUserByIdAsync(string userId);
 
         Task<User> GetUserWithCountryAndCityByIdAsync(string userId);

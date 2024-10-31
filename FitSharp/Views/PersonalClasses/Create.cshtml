@@ -1,7 +1,6 @@
-﻿@model IEnumerable<FitSharp.Models.EditUserRolesViewModel>
-
+﻿@model IEnumerable<FitSharp.Data.Entities.Customer>
 @{
-    ViewData["Title"] = "Users";
+    ViewData["Title"] = "Create";
 }
 
 <link rel="stylesheet" href="https://cdn.datatables.net/1.10.25/css/dataTables.bootstrap4.min.css" />
@@ -13,22 +12,16 @@
         <div class="card transparent-card">
             <div class="card-header">
                 <h3 class="card-title">
-                    Users <button type="button" class="btn btn-primary btn-lg ml-3 roundedwithshadow" data-toggle="modal" data-target="#registerUserModal">
-                        <i class="fa fa-user-plus"></i>
-                    </button>
+                    Select Customer
                 </h3>
             </div>
             <div class="card-body">
                 <table class="table table-hover table-striped" id="MyTable">
                     <thead>
                         <tr>
-                            <th>@Html.DisplayNameFor(model => model.Fullname)</th>
-                            <th>@Html.DisplayNameFor(model => model.Email)</th>
-                            <th>Avatar</th>
-                            <th>Address</th>
-                            <th>City</th>
-                            <th>Country</th>
-                            <th>Role</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Photo</th>
                             <th></th>
                         </tr>
                     </thead>
@@ -36,25 +29,16 @@
                         @foreach (var item in Model)
                         {
                             <tr>
-                                <td>@item.Fullname</td>
-                                <td>@item.Email</td>
+                                <td>@item.User.FullName</td>
+                                <td>@item.User.Email</td>
                                 <td>
-                                    @if (!string.IsNullOrEmpty(item.ImageFullPath))
+                                    @if (!string.IsNullOrEmpty(item.User.ImageFullPath))
                                     {
-                                        <img src="@Url.Content(item.ImageFullPath)" alt="@item.Fullname" style="width: 50px; height: auto; max-width:100%;" />
+                                        <img src="@Url.Content(item.User.ImageFullPath)" alt="@item.User.FullName" style="width: 50px; height: auto; max-width:100%;" />
                                     }
                                 </td>
-                                <td>@item.Address</td>
-                                <td>@item.CityName</td>
-                                <td>@item.CountryName</td>
-                                <td>@string.Join(", ", item.Roles.Select(r => r.RoleName))</td>
                                 <td>
-                                    <a asp-action="EditUser" asp-route-id="@item.UserId" class="btn btn-warning"><i class="far fa-edit"></i></a>
-                                    <a asp-action="Details" asp-route-id="@item.UserId" class="btn btn-info"><i class="fas fa-list"></i></a>
-                                    @if (!item.Roles.Any(r => r.RoleName == "Admin"))
-                                    {
-                                        <a asp-action="DeleteUser" data-id="@item.UserId" class="btn btn-danger btnDelete"><i class="fas fa-trash"></i></a>
-                                    }
+                                    <a asp-action="CreatePersonalClass" asp-route-id="@item.User.Id" class="btn btn-warning"><i class="fas fa-people-arrows fa-lg"></i></a>
                                 </td>
                             </tr>
                         }
@@ -67,7 +51,7 @@
 
 <div class="text-center">
     @* <button type="button" class="btn btn-primary btn-lg mt-3 roundedwithshadow" data-toggle="modal" data-target="#registerUserModal">
-        <i class="fa fa-user-plus"></i> Register New User
+    <i class="fa fa-user-plus"></i> Register New User
     </button> *@
     <a href="~/Home/index" class="btn btn-primary btn-lg mt-3 roundedwithshadow"><i class="fas fa-home"></i> Return Home</a>
 </div>

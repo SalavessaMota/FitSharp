@@ -2,6 +2,7 @@
 using FitSharp.Data.Entities;
 using FitSharp.Helpers;
 using FitSharp.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -10,7 +11,7 @@ using Vereyon.Web;
 
 namespace FitSharp.Controllers
 {
-    //[Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin")]
     public class GymsController : Controller
     {
         private readonly IGymRepository _gymRepository;
