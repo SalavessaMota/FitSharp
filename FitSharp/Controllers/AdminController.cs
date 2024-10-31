@@ -221,16 +221,17 @@ public class AdminController : Controller
 
     public async Task<IActionResult> RegisterInstructor()
     {
-        var model = new AdminRegisterNewUserViewModel
+        var model = new AdminRegisterNewInstructorViewModel
         {
             Countries = _countryRepository.GetComboCountries(),
-            Cities = await _countryRepository.GetComboCitiesAsync(1)
+            Cities = await _countryRepository.GetComboCitiesAsync(1),
+            Gyms = _gymRepository.GetComboGyms()
         };
         return View(model);
     }
 
     [HttpPost]
-    public async Task<IActionResult> RegisterInstructor(AdminRegisterNewUserViewModel model)
+    public async Task<IActionResult> RegisterInstructor(AdminRegisterNewInstructorViewModel model)
     {
         if (ModelState.IsValid)
         {
@@ -248,6 +249,7 @@ public class AdminController : Controller
                     Address = model.Address,
                     PhoneNumber = model.PhoneNumber,
                     CityId = model.CityId
+
                 };
 
                 if (model.ImageFile != null && model.ImageFile.Length > 0)
@@ -262,7 +264,13 @@ public class AdminController : Controller
                 var token = await _userHelper.GenerateEmailConfirmationTokenAsync(user);
                 await _userHelper.ConfirmEmailAsync(user, token);
 
-                var instructor = new Instructor { User = user };
+                var instructor = new Instructor 
+                { 
+                    User = user, 
+                    GymId = model.GymId,
+                    Speciality = model.Speciality,
+                    Description = model.Description
+                };
                 await _userRepository.AddEmployeeAsync(instructor);
 
                 var myToken = await _userHelper.GeneratePasswordResetTokenAsync(user);
