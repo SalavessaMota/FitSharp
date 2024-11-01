@@ -11,6 +11,18 @@
 </p>
 
 <div class="row">
+    <div class="col-md-4 mb-3">
+        <label for="classFilter">Filter Classes:</label>
+        <select id="classFilter" class="form-control">
+            @foreach (var item in (List<SelectListItem>)ViewBag.CurrentFilter)
+            {
+                <option value="@item.Value" selected="@(item.Selected ? "selected" : null)">@item.Text</option>
+            }
+        </select>
+    </div>
+</div>
+
+<div class="row">
     <div class="col-12">
         <div class="card transparent-card">
             <div class="card-header">
@@ -20,24 +32,12 @@
                 <table class="table table-hover table-striped" id="MyTable">
                     <thead>
                         <tr>
-                            <th>
-                                Class
-                            </th>
-                            <th>
-                                Gym
-                            </th>
-                            <th>
-                                Room
-                            </th>
-                            <th>
-                                Class Type
-                            </th>
-                            <th>
-                                Instructor
-                            </th>
-                            <th>
-                                Customer
-                            </th>
+                            <th>Class</th>
+                            <th>Room</th>
+                            <th>Class Type</th>
+                            <th>Customer</th>
+                            <th>Start Time</th>
+                            <th>End Time</th>
                             <th></th>
                         </tr>
                     </thead>
@@ -45,24 +45,12 @@
                         @foreach (var item in Model)
                         {
                             <tr>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.Name)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.Room.Gym.Name)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.Room.Name)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.ClassType.Name)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.Instructor.User.FullName)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.Customer.User.FullName)
-                                </td>
+                                <td>@Html.DisplayFor(modelItem => item.Name)</td>
+                                <td>@Html.DisplayFor(modelItem => item.Room.Name)</td>
+                                <td>@Html.DisplayFor(modelItem => item.ClassType.Name)</td>
+                                <td>@Html.DisplayFor(modelItem => item.Customer.User.FullName)</td>
+                                <td>@Html.DisplayFor(modelItem => item.StartTime)</td>
+                                <td>@Html.DisplayFor(modelItem => item.EndTime)</td>
                                 <td>
                                     <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning"><i class="far fa-edit"></i></a>
                                     <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info"><i class="fas fa-list"></i></a>
@@ -99,13 +87,17 @@
     </div>
 </div>
 
-
-
 @section Scripts {
     @await Html.PartialAsync("_ValidationScriptsPartial")
 
     <script type="text/javascript">
         $(document).ready(function () {
+            // Aplica o filtro imediatamente ao mudar a seleção no dropdown
+            $('#classFilter').change(function () {
+                var selectedFilter = $(this).val();
+                window.location.href = '@Url.Action("Index")' + '?filter=' + selectedFilter;
+            });
+
             var id = 0;
             $('a[id*=btnDelete]').click(function () {
                 id = $(this).data('id');
@@ -117,7 +109,7 @@
                 return false;
             });
             $("#btnYesDelete").click(function () {
-                window.location.href = '/Gyms/Delete/' + id;
+                window.location.href = '/PersonalClasses/Delete/' + id;
             });
         });
     </script>

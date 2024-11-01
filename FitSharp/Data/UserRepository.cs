@@ -1,6 +1,7 @@
 ﻿using FitSharp.Data.Entities;
 using FitSharp.Entities;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading.Tasks;
@@ -17,6 +18,18 @@ namespace FitSharp.Data
             _userManager = userManager;
             _context = context;
         }
+
+        
+        //public async Task<IActionResult> SearchCustomers(string searchTerm)
+        //{
+        //    var customers = await _context.Customers
+        //        .Where(c => c.User.FullName.Contains(searchTerm))
+        //        .Select(c => new { c.Id, c.User.FullName })
+        //        .Take(10)
+        //        .ToListAsync();
+
+        //    return Json(customers);
+        //}
 
         public IQueryable<User> GetAllUsersWithCityAndCountry()
         {
@@ -153,5 +166,22 @@ namespace FitSharp.Data
         {
             return await _userManager.UpdateAsync(user);
         }
+
+        public async Task<Customer> GetCustomerByIdAsync(int customerId)
+        {
+            return await _context.Customers
+                .Include(c => c.User)
+                .FirstAsync(c => c.Id == customerId);
+                //.FirstOrDefault(c => c.Id == customerId);
+        }
+
+        public Instructor GetInstructorByUserName(string instructorName)
+        {
+            return _context.Instructors
+                .Include(i => i.User)
+                .FirstOrDefault(i => i.User.UserName == instructorName);
+        }
+
+
     }
 }

@@ -38,7 +38,9 @@
                                     }
                                 </td>
                                 <td>
-                                    <a asp-action="CreatePersonalClass" asp-route-id="@item.User.Id" class="btn btn-warning"><i class="fas fa-people-arrows fa-lg"></i></a>
+                                    <a asp-action="CreatePersonalClass" asp-route-customerId="@item.Id" class="btn btn-warning">
+                                        <i class="fas fa-people-arrows fa-lg"></i>
+                                    </a>
                                 </td>
                             </tr>
                         }

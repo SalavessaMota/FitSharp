@@ -15,24 +15,43 @@ namespace FitSharp.Data
             _context = context;
         }
 
-        public IQueryable<PersonalClass> GetAllPersonalClassesWithRelatedData()
+        public async Task<PersonalClass> GetPersonalClassWithAllRelatedData(int id)
         {
-            return _context.PersonalClasses
+            return await _context.PersonalClasses
                 .Include(p => p.Room)
-                .Include(p => p.ClassType)
-                .Include(p => p.Instructor)
-                .Include(p => p.Customer);
-        }
-
-        public IQueryable<PersonalClass> GetAllPersonalClassesWithRelatedDataByInstructorName(string instructorName)
-        {
-            return _context.PersonalClasses
-                .Include(p => p.Room)
+                .ThenInclude(r => r.Gym)
                 .Include(p => p.ClassType)
                 .Include(p => p.Instructor)
                 .ThenInclude(i => i.User)
                 .Include(p => p.Customer)
-                .Where(p => p.Instructor.User.UserName == instructorName);
+                .ThenInclude(c => c.User)
+                .FirstOrDefaultAsync(p => p.Id == id);
+        }
+
+
+        public IQueryable<PersonalClass> GetAllPersonalClassesWithRelatedData()
+        {
+            return _context.PersonalClasses
+                .Include(p => p.Room)
+                .ThenInclude(r => r.Gym)
+                .Include(p => p.ClassType)
+                .Include(p => p.Instructor)
+                .ThenInclude(i => i.User)
+                .Include(p => p.Customer)
+                .ThenInclude(c => c.User);
+        }
+
+        public IQueryable<PersonalClass> GetAllPersonalClassesWithRelatedDataByUserName(string name)
+        {
+            return _context.PersonalClasses
+                .Include(p => p.Room)
+                .ThenInclude(r => r.Gym)
+                .Include(p => p.ClassType)
+                .Include(p => p.Instructor)
+                .ThenInclude(i => i.User)
+                .Include(p => p.Customer)
+                .ThenInclude(c => c.User)
+                .Where(p => p.Instructor.User.UserName == name || p.Customer.User.UserName == name);
         }
 
     }

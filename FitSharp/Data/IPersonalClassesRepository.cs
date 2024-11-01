@@ -7,8 +7,10 @@ namespace FitSharp.Data
 {
     public interface IPersonalClassesRepository : IGenericRepository<PersonalClass>
     {
+        Task<PersonalClass> GetPersonalClassWithAllRelatedData(int id);
+
         IQueryable<PersonalClass> GetAllPersonalClassesWithRelatedData();
 
-        IQueryable<PersonalClass> GetAllPersonalClassesWithRelatedDataByInstructorName(string instructorName);
+        IQueryable<PersonalClass> GetAllPersonalClassesWithRelatedDataByUserName(string instructorName);
     }
 }

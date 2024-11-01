@@ -1,6 +1,6 @@
-﻿@model FitSharp.Models.CreatePersonalClassViewModel
+﻿@model FitSharp.Models.EditPersonalClassViewModel
 @{
-    ViewData["Title"] = "CreatePersonalClass";
+    ViewData["Title"] = "Edit";
 }
 
 <div class="row">
@@ -9,11 +9,11 @@
         <h4>Choose class details</h4>
         <hr />
 
-        <form asp-action="CreatePersonalClass">
+        <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Id"/>
-            <input type="hidden" asp-for="InstructorId"/>
-            <input type="hidden" asp-for="CustomerId"/>
+            <input type="hidden" asp-for="Id" />
+            <input type="hidden" asp-for="InstructorId" />
+            <input type="hidden" asp-for="CustomerId" />
 
             <div class="form-group">
                 <label asp-for="Name" class="control-label"></label>
@@ -66,5 +66,6 @@
 </div>
 
 @section Scripts {
-    @await Html.PartialAsync("_ValidationScriptsPartial")    
+    @await Html.PartialAsync("_ValidationScriptsPartial")
 }
+

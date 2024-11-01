@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace FitSharp.Data.Entities
 {
@@ -16,20 +17,25 @@ namespace FitSharp.Data.Entities
         public virtual Room Room { get; set; }
 
         [Required]
+        [Display(Name = "Class Type")]
         public int ClassTypeId { get; set; }
         public virtual ClassType ClassType { get; set; }
 
         [Required]
+        [Display(Name = "Instructor")]
         public int InstructorId { get; set; }
         public virtual Instructor Instructor { get; set; }
 
-        [Required]
+        [Required]        
         [Display(Name = "Start Time")]
-        public string StartTime { get; set; }
+        public DateTime StartTime { get; set; }
 
-        [Required]
+        [Required]        
         [Display(Name = "End Time")]
-        public string EndTime { get; set; }
+        public DateTime EndTime { get; set; }
 
+
+        [Display(Name = "Informations")]
+        public string Informations { get; set; }
     }
 }

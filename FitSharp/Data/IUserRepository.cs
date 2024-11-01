@@ -52,5 +52,9 @@ namespace FitSharp.Data
         Task DeleteInstructorAsync(Instructor instructor);
 
         Task DeleteAdminAsync(Admin admin);
+
+        Task<Customer> GetCustomerByIdAsync(int customerId);
+
+        Instructor GetInstructorByUserName(string instructorName);
     }
 }
