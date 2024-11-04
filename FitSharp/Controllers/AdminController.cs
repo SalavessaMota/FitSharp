@@ -251,7 +251,6 @@ public class AdminController : Controller
                     Address = model.Address,
                     PhoneNumber = model.PhoneNumber,
                     CityId = model.CityId
-
                 };
 
                 if (model.ImageFile != null && model.ImageFile.Length > 0)
@@ -266,9 +265,9 @@ public class AdminController : Controller
                 var token = await _userHelper.GenerateEmailConfirmationTokenAsync(user);
                 await _userHelper.ConfirmEmailAsync(user, token);
 
-                var instructor = new Instructor 
-                { 
-                    User = user, 
+                var instructor = new Instructor
+                {
+                    User = user,
                     GymId = model.GymId,
                     Speciality = model.Speciality,
                     Description = model.Description

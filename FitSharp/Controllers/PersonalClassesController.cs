@@ -31,7 +31,6 @@ namespace FitSharp.Controllers
             _classTypeRepository = classTypeRepository;
         }
 
-
         public IActionResult Index(string filter)
         {
             var name = User.Identity.Name;
@@ -43,9 +42,11 @@ namespace FitSharp.Controllers
                 case "past":
                     classes = classes.Where(c => c.EndTime < DateTime.Now);
                     break;
+
                 case "future":
                     classes = classes.Where(c => c.EndTime > DateTime.Now);
                     break;
+
                 default:
                     filter = "all";
                     break;
@@ -60,10 +61,6 @@ namespace FitSharp.Controllers
 
             return View(classes);
         }
-
-
-
-
 
         public IActionResult Create()
         {
@@ -91,8 +88,6 @@ namespace FitSharp.Controllers
             if (ModelState.IsValid)
             {
                 var instructor = _userRepository.GetInstructorByUserName(this.User.Identity.Name);
-
-                
 
                 var personalClass = new PersonalClass
                 {
@@ -132,7 +127,6 @@ namespace FitSharp.Controllers
 
             return View(personalClass);
         }
-
 
         public async Task<IActionResult> Edit(int id)
         {
@@ -202,7 +196,7 @@ namespace FitSharp.Controllers
                 return new NotFoundViewResult("PersonalClassNotFound");
             }
 
-            var personalClass= await _personalClassesRepository.GetByIdAsync(id.Value);
+            var personalClass = await _personalClassesRepository.GetByIdAsync(id.Value);
             if (personalClass == null)
             {
                 return new NotFoundViewResult("PersonalClassNotFound");

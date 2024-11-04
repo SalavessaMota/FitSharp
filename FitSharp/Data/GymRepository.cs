@@ -217,7 +217,5 @@ namespace FitSharp.Data
 
             return rooms;
         }
-
-
     }
 }

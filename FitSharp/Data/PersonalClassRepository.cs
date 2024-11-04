@@ -1,6 +1,5 @@
 ﻿using FitSharp.Data.Entities;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -28,7 +27,6 @@ namespace FitSharp.Data
                 .FirstOrDefaultAsync(p => p.Id == id);
         }
 
-
         public IQueryable<PersonalClass> GetAllPersonalClassesWithRelatedData()
         {
             return _context.PersonalClasses
@@ -53,6 +51,5 @@ namespace FitSharp.Data
                 .ThenInclude(c => c.User)
                 .Where(p => p.Instructor.User.UserName == name || p.Customer.User.UserName == name);
         }
-
     }
 }

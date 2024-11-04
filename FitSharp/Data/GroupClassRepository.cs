@@ -1,6 +1,5 @@
 ﻿using FitSharp.Data.Entities;
 using Microsoft.EntityFrameworkCore;
-using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -40,6 +39,5 @@ namespace FitSharp.Data
                 .ThenInclude(c => c.User)
                 .ToListAsync();
         }
-
     }
 }

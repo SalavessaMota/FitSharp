@@ -14,6 +14,8 @@ namespace FitSharp.Data.Entities
         [Display(Name = "Max Classes Per Month")]
         public int NumberOfClasses { get; set; }
 
+        public string Description { get; set; }
+
         public ICollection<Customer> Customers { get; set; }
     }
 }

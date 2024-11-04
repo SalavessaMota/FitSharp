@@ -1,10 +1,8 @@
 ﻿using FitSharp.Data.Entities;
 using FitSharp.Entities;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -22,7 +20,6 @@ namespace FitSharp.Data
             _context = context;
         }
 
-        
         //public async Task<IActionResult> SearchCustomers(string searchTerm)
         //{
         //    var customers = await _context.Customers
@@ -175,7 +172,7 @@ namespace FitSharp.Data
             return await _context.Customers
                 .Include(c => c.User)
                 .FirstAsync(c => c.Id == customerId);
-                //.FirstOrDefault(c => c.Id == customerId);
+            //.FirstOrDefault(c => c.Id == customerId);
         }
 
         public Instructor GetInstructorByUserName(string instructorName)

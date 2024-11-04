@@ -1,7 +1,6 @@
 ﻿using FitSharp.Data.Entities;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 
 namespace FitSharp.Models
 {
@@ -10,6 +9,5 @@ namespace FitSharp.Models
         public IEnumerable<SelectListItem> Rooms { get; set; }
 
         public IEnumerable<SelectListItem> ClassTypes { get; set; }
-
     }
 }

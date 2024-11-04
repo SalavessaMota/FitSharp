@@ -14,7 +14,6 @@ namespace FitSharp.Data
             _context = context;
         }
 
-
         public IEnumerable<SelectListItem> GetComboClassTypes()
         {
             var classTypes = _context.ClassTypes.Select(ct => new SelectListItem

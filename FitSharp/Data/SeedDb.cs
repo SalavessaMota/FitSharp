@@ -31,12 +31,8 @@ namespace FitSharp.Data
             await _userHelper.CheckRoleAsync("Instructor");
             await _userHelper.CheckRoleAsync("Customer");
 
-            if(!_context.ClassTypes.Any())
-            {
-                _context.ClassTypes.Add(new ClassType { Name = "Personal Training" });
-                await _context.SaveChangesAsync();
-            }
 
+            // COUNTRIES AND CITIES SEEDING
             if (!_context.Countries.Any())
             {
                 var cities = new List<City>();
@@ -54,11 +50,39 @@ namespace FitSharp.Data
                 await _context.SaveChangesAsync();
             }
 
-            var user = await _userRepository.GetUserByEmailAsync("nunosalavessa@hotmail.com");
 
-            if (user == null)
+            // GYM SEEDING
+            var lisboa = _context.Cities.FirstOrDefault(c => c.Name == "Lisboa" && c.Country.Code == "PT");
+            if (lisboa != null && !_context.Gyms.Any(g => g.CityId == lisboa.Id && g.Name == "Saldanha FitSharp"))
             {
-                user = new User
+                var gym = new Gym
+                {
+                    Name = "Saldanha FitSharp",
+                    Address = "Avenida da República, Saldanha",
+                    CityId = lisboa.Id,
+
+                    Rooms = new List<Room>
+                    {
+                        new Room { Name = "Main Hall", Capacity = 50 }
+                    },
+
+                    Equipments = new List<Equipment>
+                    {
+                        new Equipment { Name = "Treadmill", Description = "Treadmill for running", RequiresRepair = false }
+                    }
+                };
+
+                _context.Gyms.Add(gym);
+                await _context.SaveChangesAsync();
+            }
+
+
+            // ADMIN SEEDING
+            var adminUser = await _userRepository.GetUserByEmailAsync("nunosalavessa@hotmail.com");
+
+            if (adminUser == null)
+            {
+                adminUser = new User
                 {
                     FirstName = "Nuno",
                     LastName = "Salavessa",
@@ -66,29 +90,188 @@ namespace FitSharp.Data
                     UserName = "nunosalavessa@hotmail.com",
                     PhoneNumber = "212343555",
                     Address = "Rua Jau 33",
-                    CityId = _context.Countries.FirstOrDefault().Cities.FirstOrDefault().Id,
-                    City = _context.Countries.FirstOrDefault().Cities.FirstOrDefault()
+                    CityId = lisboa.Id,
+                    City = lisboa
                 };
 
-                var result = await _userRepository.AddUserAsync(user, "123123");
+                var result = await _userRepository.AddUserAsync(adminUser, "123123");
                 if (result != IdentityResult.Success)
                 {
-                    throw new InvalidOperationException("Could not create the user in seeder");
+                    throw new InvalidOperationException("Could not create the admin user in seeder");
                 }
 
-                await _userHelper.AddUserToRoleAsync(user, "Admin");
-                var token = await _userHelper.GenerateEmailConfirmationTokenAsync(user);
-                await _userHelper.ConfirmEmailAsync(user, token);
+                await _userHelper.AddUserToRoleAsync(adminUser, "Admin");
+                var token = await _userHelper.GenerateEmailConfirmationTokenAsync(adminUser);
+                await _userHelper.ConfirmEmailAsync(adminUser, token);
 
-                var admin = new Admin { User = user };
+                var admin = new Admin { User = adminUser };
                 _context.Admins.Add(admin);
                 await _context.SaveChangesAsync();
             }
 
-            var isInRole = await _userHelper.IsUserInRoleAsync(user, "Admin");
+            var isInRole = await _userHelper.IsUserInRoleAsync(adminUser, "Admin");
             if (!isInRole)
             {
-                await _userHelper.AddUserToRoleAsync(user, "Admin");
+                await _userHelper.AddUserToRoleAsync(adminUser, "Admin");
+            }
+
+
+            // INSTRUCTOR SEEDING
+            var ptUser = await _userRepository.GetUserByEmailAsync("tiagomonteirinho@yopmail.com");
+
+            if (ptUser == null)
+            {
+                ptUser = new User
+                {
+                    FirstName = "Tiago",
+                    LastName = "Monteirinho",
+                    Email = "tiagomonteirinho@yopmail.com",
+                    UserName = "tiagomonteirinho@yopmail.com",
+                    PhoneNumber = "212343555",
+                    Address = "Rua Jau 33",
+                    CityId = lisboa.Id,
+                    City = lisboa
+                };
+
+                var result = await _userRepository.AddUserAsync(ptUser, "123123");
+                if (result != IdentityResult.Success)
+                {
+                    throw new InvalidOperationException("Could not create the Instructor user in seeder");
+                }
+
+                await _userHelper.AddUserToRoleAsync(ptUser, "Instructor");
+                var token = await _userHelper.GenerateEmailConfirmationTokenAsync(ptUser);
+                await _userHelper.ConfirmEmailAsync(ptUser, token);
+
+                var instructor = new Instructor
+                {
+                    User = ptUser,
+                    GymId = _context.Gyms.FirstOrDefault().Id,
+                    Speciality = "Body Building",
+                    Description = "I'm a body building instructor with 10 years of experience"
+                };
+
+                _context.Instructors.Add(instructor);
+                await _context.SaveChangesAsync();
+            }
+
+            var isPtInRole = await _userHelper.IsUserInRoleAsync(ptUser, "Instructor");
+            if (!isPtInRole)
+            {
+                await _userHelper.AddUserToRoleAsync(ptUser, "Instructor");
+            }
+
+
+            // EMPLOYEE SEEDING
+            var employeeUser = await _userRepository.GetUserByEmailAsync("ritamiguens@yopmail.com");
+
+            if (employeeUser == null)
+            {
+                employeeUser = new User
+                {
+                    FirstName = "Rita",
+                    LastName = "Miguens",
+                    Email = "ritamiguens@yopmail.com",
+                    UserName = "ritamiguens@yopmail.com",
+                    PhoneNumber = "212343555",
+                    Address = "Rua Jau 33",
+                    CityId = lisboa.Id,
+                    City = lisboa
+                };
+
+                var result = await _userRepository.AddUserAsync(employeeUser, "123123");
+                if (result != IdentityResult.Success)
+                {
+                    throw new InvalidOperationException("Could not create the Employee user in seeder");
+                }
+
+                await _userHelper.AddUserToRoleAsync(employeeUser, "Employee");
+                var token = await _userHelper.GenerateEmailConfirmationTokenAsync(employeeUser);
+                await _userHelper.ConfirmEmailAsync(employeeUser, token);
+
+                var employee = new Employee
+                {
+                    User = employeeUser,
+                    GymId = _context.Gyms.FirstOrDefault().Id
+                };
+
+                _context.Employees.Add(employee);
+                await _context.SaveChangesAsync();
+            }
+
+            var isEmployeeInRole = await _userHelper.IsUserInRoleAsync(employeeUser, "Employee");
+            if (!isEmployeeInRole)
+            {
+                await _userHelper.AddUserToRoleAsync(employeeUser, "Employee");
+            }
+
+
+            // CUSTOMER SEEDING
+            var customerUser = await _userRepository.GetUserByEmailAsync("customerfitsharp@yopmail.com");
+
+            if (customerUser == null)
+            {
+                customerUser = new User
+                {
+                    FirstName = "Customer",
+                    LastName = "Inicial",
+                    Email = "customerfitsharp@yopmail.com",
+                    UserName = "customerfitsharp@yopmail.com",
+                    PhoneNumber = "212343555",
+                    Address = "Rua Jau 33",
+                    CityId = lisboa.Id,
+                    City = lisboa
+                };
+
+                var result = await _userRepository.AddUserAsync(customerUser, "123123");
+                if (result != IdentityResult.Success)
+                {
+                    throw new InvalidOperationException("Could not create the Customer user in seeder");
+                }
+
+                await _userHelper.AddUserToRoleAsync(customerUser, "Customer");
+                var token = await _userHelper.GenerateEmailConfirmationTokenAsync(customerUser);
+                await _userHelper.ConfirmEmailAsync(customerUser, token);
+
+                var customer = new Customer
+                {
+                    User = customerUser
+                };
+
+                _context.Customers.Add(customer);
+                await _context.SaveChangesAsync();
+            }
+
+            var isCustomerInRole = await _userHelper.IsUserInRoleAsync(customerUser, "Customer");
+            if (!isCustomerInRole)
+            {
+                await _userHelper.AddUserToRoleAsync(customerUser, "Customer");
+            }
+
+
+            // CLASSTYPES SEEDING
+            if (!_context.ClassTypes.Any())
+            {
+                _context.ClassTypes.Add(new ClassType
+                {
+                    Name = "Personal Training",
+                    Description = "One to one training with a personal trainer"
+                });
+                await _context.SaveChangesAsync();
+            }
+
+
+            // MEMBERSHIPS SEEDING
+            if (!_context.Memberships.Any())
+            {
+                _context.Memberships.Add(new Membership
+                {
+                    Name = "Monthly",
+                    Price = 30,
+                    NumberOfClasses = 8,
+                    Description = "Monthly membership with 8 classes"
+                });
+                await _context.SaveChangesAsync();
             }
         }
     }

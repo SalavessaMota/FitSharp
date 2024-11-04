@@ -9,6 +9,7 @@ namespace FitSharp.Models
 
         [Display(Name = "Full Name")]
         public string Fullname { get; set; }
+
         public string Email { get; set; }
         public List<UserRoleViewModel> Roles { get; set; }
         public string SelectedRole { get; set; }

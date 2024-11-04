@@ -1,5 +1,4 @@
 ﻿using FitSharp.Entities;
-using System.Collections.Generic;
 
 namespace FitSharp.Data.Entities
 {

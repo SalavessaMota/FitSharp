@@ -1,12 +1,12 @@
 ﻿using FitSharp.Data;
 using FitSharp.Data.Entities;
-using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
-using System;
-using Vereyon.Web;
 using FitSharp.Helpers;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System;
+using System.Threading.Tasks;
+using Vereyon.Web;
 
 namespace FitSharp.Controllers
 {

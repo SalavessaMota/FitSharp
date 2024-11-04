@@ -5,6 +5,5 @@
         public string Speciality { get; set; }
 
         public string Description { get; set; }
-
     }
 }

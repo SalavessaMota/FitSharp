@@ -19,14 +19,11 @@ namespace FitSharp.Data
         public DbSet<GroupClass> GroupClasses { get; set; }
         public DbSet<PersonalClass> PersonalClasses { get; set; }
 
-
         public DbSet<ClassType> ClassTypes { get; set; }
-
 
         public DbSet<Customer> Customers { get; set; }
         public DbSet<Employee> Employees { get; set; }
         public DbSet<Instructor> Instructors { get; set; }
-
 
         public DbSet<Admin> Admins { get; set; }
 

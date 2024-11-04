@@ -1,0 +1,24 @@
+{
+  "dependencies": {
+    "mssql1": {
+      "serviceConnectorResourceId": "/subscriptions/[parameters('subscriptionId')]/resourcegroups/[parameters('resourceGroupName')]/providers/Microsoft.Web/sites/FitSharp/providers/Microsoft.ServiceLinker/linkers/ConnectionStringsDefaultConnection_BE5ACF818B",
+      "secretStore": "AzureAppSettings",
+      "resourceId": "/subscriptions/[parameters('subscriptionId')]/resourcegroups/[parameters('resourceGroupName')]/providers/Microsoft.Sql/servers/aircinelmvcdbserver/databases/FitSharp_db",
+      "type": "mssql.azure",
+      "connectionId": "ConnectionStrings:DefaultConnection",
+      "dynamicId": null
+    },
+    "identityapp1": {
+      "ignored": "true",
+      "type": "identityapp"
+    },
+    "storage1": {
+      "serviceConnectorResourceId": "/subscriptions/[parameters('subscriptionId')]/resourcegroups/[parameters('resourceGroupName')]/providers/Microsoft.Web/sites/FitSharp/providers/Microsoft.ServiceLinker/linkers/BlobConnectionString_C893E034A1, /subscriptions/36fb81a2-07a7-4d9e-ac26-d0ccc93e5d9f/resourcegroups/AirCinelMVC20240909140404ResourceGroup/providers/Microsoft.Web/sites/FitSharp/providers/Microsoft.ServiceLinker/linkers/BlobConnectionString_ECD00029FD",
+      "secretStore": "AzureAppSettings",
+      "resourceId": "/subscriptions/[parameters('subscriptionId')]/resourceGroups/[parameters('resourceGroupName')]/providers/Microsoft.Storage/storageAccounts/aircinelmvc",
+      "type": "storage.azure",
+      "connectionId": "Blob:ConnectionString",
+      "dynamicId": null
+    }
+  }
+}

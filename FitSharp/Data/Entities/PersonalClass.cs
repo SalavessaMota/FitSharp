@@ -6,6 +6,7 @@ namespace FitSharp.Data.Entities
     {
         [Display(Name = "Customer")]
         public int CustomerId { get; set; }
+
         public virtual Customer Customer { get; set; }
     }
 }

@@ -8,7 +8,6 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Policy;
 using System.Threading.Tasks;
 using Vereyon.Web;
 
@@ -45,9 +44,11 @@ namespace FitSharp.Controllers
                 case "past":
                     classes = classes.Where(c => c.EndTime < DateTime.Now);
                     break;
+
                 case "future":
                     classes = classes.Where(c => c.EndTime > DateTime.Now);
                     break;
+
                 default:
                     filter = "all";
                     break;
@@ -63,10 +64,8 @@ namespace FitSharp.Controllers
             return View(classes);
         }
 
-
         public IActionResult Create()
         {
-
             var model = new CreateGroupClassViewModel
             {
                 Rooms = _gymRepository.GetComboRoomsByInstructorName(User.Identity.Name),
@@ -85,7 +84,6 @@ namespace FitSharp.Controllers
             if (ModelState.IsValid)
             {
                 var instructor = _userRepository.GetInstructorByUserName(User.Identity.Name);
-
 
                 var groupClass = new GroupClass
                 {
@@ -115,14 +113,13 @@ namespace FitSharp.Controllers
         {
             var groupClass = _groupClassRepository.GetGroupClassWithAllRelatedDataAsync(id).Result;
 
-            if(groupClass == null)
+            if (groupClass == null)
             {
                 return new NotFoundViewResult("GroupClassNotFound");
             }
 
             return View(groupClass);
         }
-
 
         public async Task<IActionResult> Edit(int id)
         {
@@ -133,12 +130,11 @@ namespace FitSharp.Controllers
                 return new NotFoundViewResult("GroupClassNotFound");
             }
 
-
             var model = new EditGroupClassViewModel
             {
                 Id = groupClass.Id,
                 Name = groupClass.Name,
-                InstructorId = groupClass.InstructorId,       
+                InstructorId = groupClass.InstructorId,
                 Instructors = _userRepository.GetComboInstructors(),
                 RoomId = groupClass.RoomId,
                 Rooms = _gymRepository.GetComboRoomsByInstructorName(User.Identity.Name),
@@ -184,27 +180,24 @@ namespace FitSharp.Controllers
             return View(model);
         }
 
-
-
-
-
-        public async Task<IActionResult> Delete (int? id)
+        public async Task<IActionResult> Delete(int? id)
         {
-            if(id == null)
+            if (id == null)
             {
                 return new NotFoundViewResult("GroupClassNotFound");
             }
 
             var groupClass = await _groupClassRepository.GetByIdAsync(id.Value);
 
-            if(groupClass == null)
+            if (groupClass == null)
             {
                 return new NotFoundViewResult("GroupClassNotFound");
             }
 
-            if(groupClass.EndTime < DateTime.Now)
+            if (groupClass.EndTime < DateTime.Now)
             {
                 _flashMessage.Danger("You can't delete a class that has already happened.");
+                return RedirectToAction(nameof(Index));
             }
 
             try
@@ -221,10 +214,7 @@ namespace FitSharp.Controllers
                 }
             }
 
-
-
             return View("Error");
         }
-
     }
 }

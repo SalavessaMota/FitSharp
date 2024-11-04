@@ -2,13 +2,13 @@
 
 namespace FitSharp.Migrations
 {
-    public partial class FixSessionEntityAddInformationsColumn : Migration
+    public partial class FixMembershipEntity : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AddColumn<string>(
-                name: "Informations",
-                table: "Sessions",
+                name: "Description",
+                table: "Memberships",
                 type: "nvarchar(max)",
                 nullable: true);
         }
@@ -16,8 +16,8 @@ namespace FitSharp.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(
-                name: "Informations",
-                table: "Sessions");
+                name: "Description",
+                table: "Memberships");
         }
     }
 }
