@@ -1,0 +1,57 @@
+﻿
+@{
+    ViewData["Title"] = "PersonalClassNotFound";
+}
+
+<link rel="stylesheet" href="~/css/error404entity.css" />
+
+
+<div class="background-layer"></div>
+
+<div class="bodyEntityError text-center">
+    <div class="supper-man">
+        <img src="http://pngimg.com/uploads/superman/superman_PNG9.png" alt="">
+    </div>
+    <div style="margin-bottom: 50%;">
+        <div class="title">404!</div>
+        <h1 style="color: white;">Personal class not found!</h1>
+        <p>Not even Superman can find that personal class!</p>
+    </div>
+
+    <div class="text-center">
+        <a href="~/Home/index" class="btn btn-primary btn-lg mt-3 roundedwithshadow"><i class="fas fa-home shadow-lg"></i> Return Home</a>
+    </div>
+</div>
+
+@section Scripts {
+    <script type="text/javascript">
+        document.addEventListener("DOMContentLoaded", function () {
+            var arrayColor = ["#FF6600", "#FF0000", "#880000", "#FF9933", "#FF3300", "#FF3366"];
+            var body = document.body;
+
+            setInterval(createStar, 50);
+
+            function createStar() {
+                var right = Math.floor(Math.random() * 500);
+                var top = Math.floor(Math.random() * screen.height);
+                var star = document.createElement("div");
+                star.classList.add("star");
+                body.appendChild(star);
+
+                setInterval(runStar, 10);
+                star.style.top = top + "px";
+                star.style.background = arrayColor[Math.floor(Math.random() * 6)];
+                function runStar() {
+                    if (right >= screen.width)
+                        star.remove();
+                    right += 3;
+                    star.style.right = right + "px";
+                }
+                setTimeout(function () {
+                    star.remove();
+                }, 10000)
+            }
+        });
+    </script>
+}
+

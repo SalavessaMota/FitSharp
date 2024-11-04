@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace FitSharp.Data
 {
-    public interface IPersonalClassesRepository : IGenericRepository<PersonalClass>
+    public interface IPersonalClassRepository : IGenericRepository<PersonalClass>
     {
         Task<PersonalClass> GetPersonalClassWithAllRelatedData(int id);
 

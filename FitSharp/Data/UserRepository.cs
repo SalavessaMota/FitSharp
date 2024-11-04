@@ -2,7 +2,10 @@
 using FitSharp.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -182,6 +185,24 @@ namespace FitSharp.Data
                 .FirstOrDefault(i => i.User.UserName == instructorName);
         }
 
+        public IEnumerable<SelectListItem> GetComboInstructors()
+        {
+            var instructors = _context.Instructors
+                .Include(i => i.User)
+                .Select(i => new SelectListItem
+                {
+                    Text = i.User.FullName,
+                    Value = i.Id.ToString()
+                })
+                .ToList();
 
+            instructors.Insert(0, new SelectListItem
+            {
+                Text = "(Select an instructor...)",
+                Value = "0"
+            });
+
+            return instructors;
+        }
     }
 }

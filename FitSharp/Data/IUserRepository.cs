@@ -1,6 +1,8 @@
 ﻿using FitSharp.Data.Entities;
 using FitSharp.Entities;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -56,5 +58,7 @@ namespace FitSharp.Data
         Task<Customer> GetCustomerByIdAsync(int customerId);
 
         Instructor GetInstructorByUserName(string instructorName);
+
+        IEnumerable<SelectListItem> GetComboInstructors();
     }
 }

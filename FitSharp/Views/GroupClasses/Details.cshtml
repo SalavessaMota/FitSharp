@@ -1,0 +1,76 @@
+﻿@model FitSharp.Data.Entities.GroupClass
+@{
+    ViewData["Title"] = "Details";
+}
+
+<div class="transparent-card">
+
+    <h1>Group Class Details</h1>
+    <hr />
+
+    <dl class="row">
+        <dt class="col-sm-6">
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+        <dd class="col-sm-6">
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+
+        <dt class="col-sm-6">
+            Gym
+        </dt>
+        <dd class="col-sm-6">
+            @Html.DisplayFor(model => model.Room.Gym.Name)
+        </dd>
+
+        <dt class="col-sm-6">
+            @Html.DisplayNameFor(model => model.RoomId)
+        </dt>
+        <dd class="col-sm-6">
+            @Html.DisplayFor(model => model.Room.Name)
+        </dd>
+
+        <dt class="col-sm-6">
+            @Html.DisplayNameFor(model => model.ClassTypeId)
+        </dt>
+        <dd class="col-sm-6">
+            @Html.DisplayFor(model => model.ClassType.Name)
+        </dd>
+
+        <dt class="col-sm-6">
+            @Html.DisplayNameFor(model => model.InstructorId)
+        </dt>
+        <dd class="col-sm-6">
+            @Html.DisplayFor(model => model.Instructor.User.FullName) ( @Html.DisplayFor(model => model.Instructor.User.Email) )
+        </dd>
+
+        <dt class="col-sm-6">
+            @Html.DisplayNameFor(model => model.StartTime)
+        </dt>
+        <dd class="col-sm-6">
+            @Html.DisplayFor(model => model.StartTime)
+        </dd>
+
+        <dt class="col-sm-6">
+            @Html.DisplayNameFor(model => model.EndTime)
+        </dt>
+        <dd class="col-sm-6">
+            @Html.DisplayFor(model => model.EndTime)
+        </dd>
+
+        <dt class="col-sm-6">
+            @Html.DisplayNameFor(model => model.Informations)
+        </dt>
+        <dd class="col-sm-6">
+            @Html.DisplayFor(model => model.Informations)
+        </dd>
+    </dl>
+
+
+    <div>
+        @* <a asp-action="EditUser" asp-route-id="@Model.Id" class="btn btn-warning roundedwithshadow">Edit</a> *@
+        <a asp-action="Index" class="btn btn-success roundedwithshadow">Back to List</a>
+    </div>
+
+</div>
+

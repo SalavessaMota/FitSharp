@@ -14,13 +14,13 @@ namespace FitSharp.Controllers
 {
     public class PersonalClassesController : Controller
     {
-        private readonly IPersonalClassesRepository _personalClassesRepository;
+        private readonly IPersonalClassRepository _personalClassesRepository;
         private readonly IGymRepository _gymRepository;
         private readonly IUserRepository _userRepository;
         private readonly IClassTypeRepository _classTypeRepository;
 
         public PersonalClassesController(
-            IPersonalClassesRepository personalClassesRepository,
+            IPersonalClassRepository personalClassesRepository,
             IGymRepository gymRepository,
             IUserRepository userRepository,
             IClassTypeRepository classTypeRepository)
@@ -102,6 +102,7 @@ namespace FitSharp.Controllers
                     CustomerId = model.CustomerId,
                     Customer = await _userRepository.GetCustomerByIdAsync(model.CustomerId),
                     ClassTypeId = model.ClassTypeId,
+                    ClassType = model.ClassType,
                     RoomId = model.RoomId,
                     Room = await _gymRepository.GetRoomAsync(model.RoomId),
                     StartTime = model.StartTime,
@@ -126,7 +127,7 @@ namespace FitSharp.Controllers
 
             if (personalClass == null)
             {
-                return NotFound();
+                return new NotFoundViewResult("PersonalClassNotFound");
             }
 
             return View(personalClass);
@@ -139,7 +140,7 @@ namespace FitSharp.Controllers
 
             if (personalClass == null)
             {
-                return NotFound();
+                return new NotFoundViewResult("PersonalClassNotFound");
             }
 
             var gym = await _gymRepository.GetGymAsync(personalClass.Room);
@@ -172,7 +173,7 @@ namespace FitSharp.Controllers
 
                 if (personalClass == null)
                 {
-                    return NotFound();
+                    return new NotFoundViewResult("PersonalClassNotFound");
                 }
 
                 personalClass.Name = model.Name;
@@ -204,7 +205,7 @@ namespace FitSharp.Controllers
             var personalClass= await _personalClassesRepository.GetByIdAsync(id.Value);
             if (personalClass == null)
             {
-                return new NotFoundViewResult("PersonalClassNotFoundNotFound");
+                return new NotFoundViewResult("PersonalClassNotFound");
             }
 
             try

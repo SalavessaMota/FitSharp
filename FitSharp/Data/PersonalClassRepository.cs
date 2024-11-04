@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace FitSharp.Data
 {
-    public class PersonalClassesRepository : GenericRepository<PersonalClass>, IPersonalClassesRepository
+    public class PersonalClassRepository : GenericRepository<PersonalClass>, IPersonalClassRepository
     {
         private readonly DataContext _context;
 
-        public PersonalClassesRepository(DataContext context) : base(context)
+        public PersonalClassRepository(DataContext context) : base(context)
         {
             _context = context;
         }

@@ -2,9 +2,11 @@
 using FitSharp.Entities;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 namespace FitSharp.Data
 {
+    //TODO: Change entity cascade delete at DataContext
     public class DataContext : IdentityDbContext<User>
     {
         public DbSet<City> Cities { get; set; }
@@ -53,8 +55,12 @@ namespace FitSharp.Data
             modelBuilder.Entity<City>()
                 .HasOne(c => c.Country)
                 .WithMany(p => p.Cities)
-                .HasForeignKey(c => c.CountryId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .HasForeignKey(c => c.CountryId);
+
+            foreach (var relationship in modelBuilder.Model.GetEntityTypes().SelectMany(e => e.GetForeignKeys()))
+            {
+                relationship.DeleteBehavior = DeleteBehavior.Restrict;
+            }
 
             base.OnModelCreating(modelBuilder);
         }
