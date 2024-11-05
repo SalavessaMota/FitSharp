@@ -2,6 +2,7 @@
 using FitSharp.Entities;
 using FitSharp.Helpers;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,7 +25,7 @@ namespace FitSharp.Data
 
         public async Task SeedAsync()
         {
-            await _context.Database.EnsureCreatedAsync();
+            await _context.Database.MigrateAsync();
 
             await _userHelper.CheckRoleAsync("Admin");
             await _userHelper.CheckRoleAsync("Employee");
@@ -88,7 +89,8 @@ namespace FitSharp.Data
                     PhoneNumber = "212343555",
                     Address = "Rua Jau 33",
                     CityId = lisboa.Id,
-                    City = lisboa
+                    City = lisboa,
+                    IsActive = true
                 };
 
                 var result = await _userRepository.AddUserAsync(adminUser, "123123");
@@ -126,7 +128,8 @@ namespace FitSharp.Data
                     PhoneNumber = "212343555",
                     Address = "Rua Jau 33",
                     CityId = lisboa.Id,
-                    City = lisboa
+                    City = lisboa,
+                    IsActive = true
                 };
 
                 var result = await _userRepository.AddUserAsync(ptUser, "123123");
@@ -171,7 +174,8 @@ namespace FitSharp.Data
                     PhoneNumber = "212343555",
                     Address = "Rua Jau 33",
                     CityId = lisboa.Id,
-                    City = lisboa
+                    City = lisboa,
+                    IsActive = true
                 };
 
                 var result = await _userRepository.AddUserAsync(employeeUser, "123123");
@@ -214,7 +218,8 @@ namespace FitSharp.Data
                     PhoneNumber = "212343555",
                     Address = "Rua Jau 33",
                     CityId = lisboa.Id,
-                    City = lisboa
+                    City = lisboa,
+                    IsActive = true
                 };
 
                 var result = await _userRepository.AddUserAsync(customerUser, "123123");

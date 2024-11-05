@@ -20,6 +20,8 @@ namespace FitSharp.Models
 
         public string CountryName { get; set; }
 
+        public bool IsActive { get; set; }
+
         public string ImageFullPath { get; set; }
     }
 }

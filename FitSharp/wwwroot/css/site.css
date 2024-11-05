@@ -1,6 +1,7 @@
 ﻿/* Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
 for details on configuring this project to bundle and minify static web assets. */
 
+
 .navbar {
     z-index: 100;
 }
@@ -142,14 +143,19 @@ video#bgVideo {
     z-index: -100;
 }
 
+
+.wider-container {
+    max-width: 2000px; /* ou outro valor que prefiras */
+}
+
 /*Datatables*/
-table.dataTable {
+/*table.dataTable {
     table-layout: fixed;
     width: 100%;
 }
 
     table.dataTable th,
     table.dataTable td {
-        word-break: break-word; /* Permite quebra entre palavras */
-        white-space: normal; /* Permite que o texto quebre para uma nova linha */
-    }
+        word-break: break-word;  Permite quebra entre palavras 
+        white-space: normal;  Permite que o texto quebre para uma nova linha 
+    }*/

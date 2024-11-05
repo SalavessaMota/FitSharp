@@ -117,7 +117,8 @@ namespace FitSharp.Controllers
                     UserName = model.Username,
                     Address = model.Address,
                     PhoneNumber = model.PhoneNumber,
-                    CityId = model.CityId
+                    CityId = model.CityId,
+                    IsActive = true
                 };
 
                 if (model.ImageFile != null && model.ImageFile.Length > 0)

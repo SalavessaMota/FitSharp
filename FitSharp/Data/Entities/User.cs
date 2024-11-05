@@ -23,6 +23,9 @@ namespace FitSharp.Entities
         [Display(Name = "Full Name")]
         public string FullName => $"{FirstName} {LastName}";
 
+        [Display(Name = "Active")]
+        public bool IsActive { get; set; }
+
         [Display(Name = "Image")]
         public Guid ImageId { get; set; }
 

@@ -28,6 +28,7 @@
                             <th>City</th>
                             <th>Country</th>
                             <th>Role</th>
+                            <th>Is Active</th>
                             <th></th>
                         </tr>
                         <tr>
@@ -37,6 +38,7 @@
                             <th><input type="text" placeholder="Search City" class="form-control" /></th>
                             <th><input type="text" placeholder="Search Country" class="form-control" /></th>
                             <th><input type="text" placeholder="Search Role" class="form-control" /></th>
+                            <th></th>
                             <th></th>
                         </tr>
                     </thead>
@@ -50,12 +52,29 @@
                                 <td>@item.CityName</td>
                                 <td>@item.CountryName</td>
                                 <td>@item.Role</td>
+                                
+                                <td>
+                                    @if (item.IsActive)
+                                    {
+                                        <div class="text-center">
+                                            <i class="far fa-check-square fa-lg"></i>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div class="text-center">
+                                            <i class="far fa-square fa-lg"></i>
+                                        </div>
+                                        
+                                    }
+                                </td>
+
                                 <td>
                                     <a asp-action="EditUser" asp-route-id="@item.UserId" class="btn btn-warning"><i class="far fa-edit"></i></a>
                                     <a asp-action="Details" asp-route-id="@item.UserId" class="btn btn-info"><i class="fas fa-list"></i></a>
                                     @if (item.Role != "Admin")
                                     {
-                                        <a asp-action="DeleteUser" data-id="@item.UserId" class="btn btn-danger btnDelete"><i class="fas fa-trash"></i></a>
+                                        <a asp-action="DisableUser" data-id="@item.UserId" class="btn btn-danger btnDisable"><i class="fas fa-user-alt-slash"></i></a>
                                     }
                                 </td>
                             </tr>
@@ -101,19 +120,19 @@
     </div>
 </div>
 
-<div id="deleteDialog" class="modal fade roundedwithshadow">
+<div id="disableDialog" class="modal fade roundedwithshadow">
     <div class="modal-dialog modal-sm">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title">Delete</h4>
+                <h4 class="modal-title">Disable</h4>
                 <button type="button" class="close" data-dismiss="modal"><i class="fa fa-window-close"></i></button>
             </div>
             <div class="modal-body">
-                <p>Do you want to delete this user?</p>
+                <p>Do you want to disable this user?</p>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-danger" id="btnYesDelete">Delete</button>
-                <button type="button" class="btn btn-success" id="btnNoDelete">No</button>
+                <button type="button" class="btn btn-danger" id="btnYesDisable">Disable</button>
+                <button type="button" class="btn btn-success" id="btnNoDisable">No</button>
             </div>
         </div>
     </div>
@@ -127,30 +146,27 @@
 
     <script type="text/javascript">
         $(document).ready(function () {
-            // Configuração do diálogo de delete
             var id = 0;
-            $('a.btnDelete').click(function () {
+            $('a.btnDisable').click(function () {
                 id = $(this).data('id');
-                $("#deleteDialog").modal('show');
+                $("#disableDialog").modal('show');
                 return false;
             });
 
-            $("#btnNoDelete").click(function () {
-                $("#deleteDialog").modal('hide');
+            $("#btnNoDisable").click(function () {
+                $("#disableDialog").modal('hide');
                 return false;
             });
 
-            $("#btnYesDelete").click(function () {
-                window.location.href = '/Admin/DeleteUser/' + id;
+            $("#btnYesDisable").click(function () {
+                window.location.href = '/Admin/DisableUser/' + id;
             });
 
-            // Inicializar DataTable com pesquisa individual por coluna
             var table = $('#MyTable').DataTable({
                 orderCellsTop: true,
                 initComplete: function () {
                     var api = this.api();
 
-                    // Aplicar o filtro para cada coluna com base na segunda linha do thead
                     api.columns().every(function () {
                         var column = this;
                         $('input', $(column.header()).closest('thead').find('tr:eq(1) th').eq(column.index())).on('keyup change clear', function () {

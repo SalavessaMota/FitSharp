@@ -20,17 +20,6 @@ namespace FitSharp.Data
             _context = context;
         }
 
-        //public async Task<IActionResult> SearchCustomers(string searchTerm)
-        //{
-        //    var customers = await _context.Customers
-        //        .Where(c => c.User.FullName.Contains(searchTerm))
-        //        .Select(c => new { c.Id, c.User.FullName })
-        //        .Take(10)
-        //        .ToListAsync();
-
-        //    return Json(customers);
-        //}
-
         public IQueryable<User> GetAllUsersWithCityAndCountry()
         {
             return _context.Users

@@ -61,7 +61,8 @@ public class AdminController : Controller
                 Address = user.Address,
                 CityName = user.City?.Name,
                 CountryName = user.City?.Country.Name,
-                ImageFullPath = user.ImageFullPath
+                ImageFullPath = user.ImageFullPath,
+                IsActive = user.IsActive
             });
         }
 
@@ -171,7 +172,8 @@ public class AdminController : Controller
                     UserName = model.Username,
                     Address = model.Address,
                     PhoneNumber = model.PhoneNumber,
-                    CityId = model.CityId
+                    CityId = model.CityId,
+                    IsActive = true
                 };
 
                 if (model.ImageFile != null && model.ImageFile.Length > 0)
@@ -250,7 +252,8 @@ public class AdminController : Controller
                     UserName = model.Username,
                     Address = model.Address,
                     PhoneNumber = model.PhoneNumber,
-                    CityId = model.CityId
+                    CityId = model.CityId,
+                    IsActive = true
                 };
 
                 if (model.ImageFile != null && model.ImageFile.Length > 0)
@@ -336,7 +339,8 @@ public class AdminController : Controller
                     UserName = model.Username,
                     Address = model.Address,
                     PhoneNumber = model.PhoneNumber,
-                    CityId = model.CityId
+                    CityId = model.CityId,
+                    IsActive = true
                 };
 
                 if (model.ImageFile != null && model.ImageFile.Length > 0)
@@ -361,15 +365,15 @@ public class AdminController : Controller
                     email = user.Email
                 }, protocol: HttpContext.Request.Scheme);
 
-                Response response = _mailHelper.SendEmail(model.Username, "AirCinel - Set your Password",
-                                        $"<h1 style=\"color:#1E90FF;\">Welcome to AirCinel!</h1>" +
-                                        $"<p>Your account has been created by an administrator on behalf of AirCinel, your trusted airline for premium travel experiences.</p>" +
+                Response response = _mailHelper.SendEmail(model.Username, "FitSharp - Set your Password",
+                                        $"<h1 style=\"color:#1E90FF;\">Welcome to FitSharp!</h1>" +
+                                        $"<p>Your admin account has been created by an authorized personnel.</p>" +
                                         $"<p>To complete your registration, please set your password by clicking the link below:</p>" +
                                         $"<p><a href = \"{tokenLink}\" style=\"color:#FFA500; font-weight:bold;\">Set Password</a></p>" +
-                                        $"<p>If you didn’t expect this registration or believe it was a mistake, please contact us or disregard this email.</p>" +
+                                        $"<p>If you didn’t expect this registration or believe it was a mistake, please contact us or disregard this        email.</p>" +
                                         $"<br>" +
-                                        $"<p>Safe travels,</p>" +
-                                        $"<p>The AirCinel Team</p>" +
+                                        $"<p>Best regards,</p>" +
+                                        $"<p>The FitSharp Team</p>" +
                                         $"<p><small>This is an automated message. Please do not reply to this email.</small></p>");
 
                 if (response.IsSuccess)
@@ -422,7 +426,8 @@ public class AdminController : Controller
                     UserName = model.Username,
                     Address = model.Address,
                     PhoneNumber = model.PhoneNumber,
-                    CityId = model.CityId
+                    CityId = model.CityId,
+                    IsActive = true
                 };
 
                 if (model.ImageFile != null && model.ImageFile.Length > 0)
@@ -577,7 +582,7 @@ public class AdminController : Controller
         return View(user);
     }
 
-    public async Task<IActionResult> DeleteUser(string id)
+    public async Task<IActionResult> DisableUser(string id)
     {
         if (string.IsNullOrEmpty(id))
         {
@@ -592,38 +597,15 @@ public class AdminController : Controller
 
         try
         {
-            if (await _userRepository.IsCustomerAsync(user))
-            {
-                var customer = await _userRepository.GetCustomerByUserIdAsync(id);
-                await _userRepository.DeleteCustomerAsync(customer);
-            }
-            else if (await _userRepository.IsEmployeeAsync(user))
-            {
-                var employee = await _userRepository.GetEmployeeByUserIdAsync(id);
-
-                if (employee is Instructor instructor)
-                {
-                    await _userRepository.DeleteInstructorAsync(instructor);
-                }
-                else
-                {
-                    await _userRepository.DeleteEmployeeAsync(employee);
-                }
-            }
-            else if (await _userRepository.IsAdminAsync(user))
-            {
-                var admin = await _userRepository.GetAdminByUserIdAsync(id);
-                await _userRepository.DeleteAdminAsync(admin);
-            }
-
-            await _userRepository.DeleteUserAsync(user);
+            user.IsActive = false;
+            await _userRepository.UpdateUserAsync(user);
 
             await _userHelper.RemoveRolesAsync(user, await _userHelper.GetRolesAsync(user));
 
-            if (user.ImageId != Guid.Empty)
-            {
-                await _blobHelper.DeleteBlobAsync("users", user.ImageId.ToString());
-            }
+            //if (user.ImageId != Guid.Empty)
+            //{
+            //    await _blobHelper.DeleteBlobAsync("users", user.ImageId.ToString());
+            //}
 
             return RedirectToAction(nameof(Index));
         }
@@ -631,13 +613,14 @@ public class AdminController : Controller
         {
             if (ex.InnerException != null && ex.InnerException.Message.Contains("DELETE"))
             {
-                ViewBag.ErrorTitle = $"This User is probably being used!";
-                ViewBag.ErrorMessage = $"";
+                ViewBag.ErrorTitle = "An error occurred while trying to disable the user.";
+                ViewBag.ErrorMessage = "The user may still be referenced in the system.";
             }
 
             return View("Error");
         }
     }
+
 
     public IActionResult UserNotFound()
     {
