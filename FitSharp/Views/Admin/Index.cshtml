@@ -1,4 +1,4 @@
-﻿@model IEnumerable<FitSharp.Models.EditUserRolesViewModel>
+﻿@model IEnumerable<FitSharp.Models.AdminEditUserViewModel>
 
 @{
     ViewData["Title"] = "Users";
@@ -49,11 +49,11 @@
                                 <td>@item.Address</td>
                                 <td>@item.CityName</td>
                                 <td>@item.CountryName</td>
-                                <td>@string.Join(", ", item.Roles.Select(r => r.RoleName))</td>
+                                <td>@item.Role</td>
                                 <td>
                                     <a asp-action="EditUser" asp-route-id="@item.UserId" class="btn btn-warning"><i class="far fa-edit"></i></a>
                                     <a asp-action="Details" asp-route-id="@item.UserId" class="btn btn-info"><i class="fas fa-list"></i></a>
-                                    @if (!item.Roles.Any(r => r.RoleName == "Admin"))
+                                    @if (item.Role != "Admin")
                                     {
                                         <a asp-action="DeleteUser" data-id="@item.UserId" class="btn btn-danger btnDelete"><i class="fas fa-trash"></i></a>
                                     }

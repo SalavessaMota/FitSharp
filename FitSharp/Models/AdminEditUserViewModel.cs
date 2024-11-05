@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace FitSharp.Models
 {
-    public class EditUserRolesViewModel
+    public class AdminEditUserViewModel
     {
         public string UserId { get; set; }
 
@@ -12,9 +12,7 @@ namespace FitSharp.Models
 
         public string Email { get; set; }
 
-        public List<UserRoleViewModel> Roles { get; set; }
-
-        public string SelectedRole { get; set; }
+        public string Role { get; set; }
 
         public string Address { get; set; }
 

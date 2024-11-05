@@ -44,22 +44,20 @@ public class AdminController : Controller
     public async Task<IActionResult> Index()
     {
         var users = await _userRepository.GetAllUsersWithCityAndCountry().ToListAsync();
-
         var loggedUser = await _userRepository.GetUserByEmailAsync(User.Identity.Name);
-
-        var model = new List<EditUserRolesViewModel>();
+        var model = new List<AdminEditUserViewModel>();
 
         foreach (var user in users)
         {
             var roles = await _userHelper.GetRolesAsync(user);
+            var userRole = roles.FirstOrDefault();
 
-            model.Add(new EditUserRolesViewModel
+            model.Add(new AdminEditUserViewModel
             {
                 UserId = user.Id,
                 Fullname = user.FullName,
                 Email = user.Email,
-                Roles = roles.Select(r => new UserRoleViewModel { RoleName = r }).ToList(),
-                SelectedRole = roles.FirstOrDefault(),
+                Role = userRole,
                 Address = user.Address,
                 CityName = user.City?.Name,
                 CountryName = user.City?.Country.Name,
@@ -69,6 +67,7 @@ public class AdminController : Controller
 
         return View(model);
     }
+
 
     //public async Task<IActionResult> EditUserRoles(string id)
     //{
