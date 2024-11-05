@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace FitSharp.Data.Entities
 {
@@ -16,10 +17,13 @@ namespace FitSharp.Data.Entities
 
         public ICollection<Room> Rooms { get; set; }
 
+        [Display(Name = "Number of Rooms")]
         public int NumberOfRooms => Rooms == null ? 0 : Rooms.Count;
 
+        
         public ICollection<Equipment> Equipments { get; set; } = new List<Equipment>();
 
+        [Display(Name = "Number of Equipments")]
         public int NumberOfEquipments => Equipments == null ? 0 : Equipments.Count;
 
         //TODO: Image collection.

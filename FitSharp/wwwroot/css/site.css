@@ -109,6 +109,7 @@ body {
     width: 100%;
     white-space: nowrap;
     line-height: 60px; /* Vertically center the text there */
+    background-color: white;
 }
 
 .transparent-card {
@@ -140,3 +141,15 @@ video#bgVideo {
     object-position: center;
     z-index: -100;
 }
+
+/*Datatables*/
+table.dataTable {
+    table-layout: fixed;
+    width: 100%;
+}
+
+    table.dataTable th,
+    table.dataTable td {
+        word-break: break-word; /* Permite quebra entre palavras */
+        white-space: normal; /* Permite que o texto quebre para uma nova linha */
+    }

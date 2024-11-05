@@ -121,7 +121,7 @@ namespace FitSharp.Helpers
             return await _userManager.GeneratePasswordResetTokenAsync(user);
         }
 
-        public async Task<IdentityResult> ResetPasswordAsync(User user, string token, string password)
+        public async Task<IdentityResult> SetPasswordAsync(User user, string token, string password)
         {
             return await _userManager.ResetPasswordAsync(user, token, password);
         }

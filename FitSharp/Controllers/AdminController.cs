@@ -192,9 +192,10 @@ public class AdminController : Controller
 
                 var myToken = await _userHelper.GeneratePasswordResetTokenAsync(user);
 
-                string tokenLink = Url.Action("ResetPassword", "Account", new
+                string tokenLink = Url.Action("SetPassword", "Account", new
                 {
-                    token = myToken
+                    token = myToken,
+                    email = user.Email
                 }, protocol: HttpContext.Request.Scheme);
 
                 Response response = _mailHelper.SendEmail(model.Username, "FitSharp - Set Your Password",
@@ -276,9 +277,10 @@ public class AdminController : Controller
 
                 var myToken = await _userHelper.GeneratePasswordResetTokenAsync(user);
 
-                string tokenLink = Url.Action("ResetPassword", "Account", new
+                string tokenLink = Url.Action("SetPassword", "Account", new
                 {
-                    token = myToken
+                    token = myToken,
+                    email = user.Email
                 }, protocol: HttpContext.Request.Scheme);
 
                 Response response = _mailHelper.SendEmail(model.Username, "FitSharp - Set Your Password",
@@ -354,9 +356,10 @@ public class AdminController : Controller
                 await _userHelper.ConfirmEmailAsync(user, token);
 
                 var myToken = await _userHelper.GeneratePasswordResetTokenAsync(user);
-                string tokenLink = Url.Action("ResetPassword", "Account", new
+                string tokenLink = Url.Action("SetPassword", "Account", new
                 {
-                    token = myToken
+                    token = myToken,
+                    email = user.Email
                 }, protocol: HttpContext.Request.Scheme);
 
                 Response response = _mailHelper.SendEmail(model.Username, "AirCinel - Set your Password",
@@ -439,7 +442,7 @@ public class AdminController : Controller
                 await _userHelper.ConfirmEmailAsync(user, token);
 
                 var myToken = await _userHelper.GeneratePasswordResetTokenAsync(user);
-                string tokenLink = Url.Action("ResetPassword", "Account", new
+                string tokenLink = Url.Action("SetPassword", "Account", new
                 {
                     token = myToken
                 }, protocol: HttpContext.Request.Scheme);

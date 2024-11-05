@@ -3,6 +3,7 @@ using FitSharp.Data.Entities;
 using FitSharp.Entities;
 using FitSharp.Helpers;
 using FitSharp.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -43,6 +44,11 @@ namespace FitSharp.Controllers
 
         public IActionResult Login()
         {
+            if (this.User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
             return View();
         }
 
@@ -75,6 +81,11 @@ namespace FitSharp.Controllers
 
         public async Task<IActionResult> Register()
         {
+            if (this.User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("Index", "Home");
+            }                
+
             var model = new RegisterNewUserViewModel
             {
                 Countries = _countryRepository.GetComboCountries(),
@@ -159,6 +170,11 @@ namespace FitSharp.Controllers
         // GET
         public async Task<IActionResult> ChangeUser()
         {
+            if (!this.User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("Login");
+            }
+
             var user = await _userRepository.GetUserByEmailAsync(this.User.Identity.Name);
             var model = new UserViewModel();
             if (user != null)
@@ -234,6 +250,11 @@ namespace FitSharp.Controllers
 
         public IActionResult ChangePassword()
         {
+            if(!this.User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("Login");
+            }
+
             return View();
         }
 
@@ -334,8 +355,14 @@ namespace FitSharp.Controllers
             return View();
         }
 
+        
         public IActionResult RecoverPassword()
         {
+            if(this.User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
             return View();
         }
 
@@ -354,9 +381,13 @@ namespace FitSharp.Controllers
                 var myToken = await _userHelper.GeneratePasswordResetTokenAsync(user);
 
                 var link = this.Url.Action(
-                    "ResetPassword",
+                    "SetPassword",
                     "Account",
-                    new { token = myToken }, protocol: HttpContext.Request.Scheme);
+                    new 
+                    { 
+                        token = myToken, 
+                        email = user.Email 
+                    }, protocol: HttpContext.Request.Scheme);
 
                 Response response = _mailHelper.SendEmail(model.Email, "FitSharp - Password Reset",
                                         $"<h1 style=\"color:#1E90FF;\">FitSharp Password Reset</h1>" +
@@ -379,18 +410,19 @@ namespace FitSharp.Controllers
             return this.View(model);
         }
 
-        public IActionResult ResetPassword(string token)
+        public IActionResult SetPassword(string token, string email)
         {
             return View();
         }
 
         [HttpPost]
-        public async Task<IActionResult> ResetPassword(ResetPasswordViewModel model)
+        public async Task<IActionResult> SetPassword(SetPasswordViewModel model)
         {
-            var user = await _userRepository.GetUserByEmailAsync(model.UserName);
+            var user = await _userRepository.GetUserByEmailAsync(model.Email);
+
             if (user != null)
             {
-                var result = await _userHelper.ResetPasswordAsync(user, model.Token, model.Password);
+                var result = await _userHelper.SetPasswordAsync(user, model.Token, model.Password);
                 if (result.Succeeded)
                 {
                     this.ViewBag.Message = "Password set successfully, you can now login.";
