@@ -255,9 +255,10 @@ namespace FitSharp.Controllers
             return this.View(model);
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View(_gymRepository.GetGymsWithRoomsAndEquipments());
+            var gyms = await _gymRepository.GetGymsWithRoomsAndEquipmentsAsync();
+            return View(gyms);
         }
 
         public async Task<IActionResult> Details(int? id)

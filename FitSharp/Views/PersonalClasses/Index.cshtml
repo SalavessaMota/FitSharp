@@ -1,4 +1,5 @@
 ﻿@model IEnumerable<FitSharp.Data.Entities.PersonalClass>
+
 @{
     ViewData["Title"] = "Index";
 }
@@ -31,6 +32,7 @@
             <div class="card-body">
                 <table class="table table-hover table-striped" id="MyTable">
                     <thead>
+                        <!-- Primeira linha: Títulos das colunas com ordenação -->
                         <tr>
                             <th>Class</th>
                             <th>Room</th>
@@ -38,6 +40,16 @@
                             <th>Customer</th>
                             <th>Start Time</th>
                             <th>End Time</th>
+                            <th></th>
+                        </tr>
+                        <!-- Segunda linha: Campos de pesquisa por coluna -->
+                        <tr>
+                            <th><input type="text" placeholder="Search Class" class="form-control" /></th>
+                            <th><input type="text" placeholder="Search Room" class="form-control" /></th>
+                            <th><input type="text" placeholder="Search Class Type" class="form-control" /></th>
+                            <th><input type="text" placeholder="Search Customer" class="form-control" /></th>
+                            <th><input type="text" placeholder="Search Start Time" class="form-control" /></th>
+                            <th><input type="text" placeholder="Search End Time" class="form-control" /></th>
                             <th></th>
                         </tr>
                     </thead>
@@ -54,7 +66,7 @@
                                 <td>
                                     <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning"><i class="far fa-edit"></i></a>
                                     <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info"><i class="fas fa-list"></i></a>
-                                    <a asp-action="Delete" data-id="@item.Id" class="btn btn-danger" id="btnDelete"><i class="fas fa-trash"></i></a>
+                                    <a href="#" data-id="@item.Id" class="btn btn-danger btnDelete"><i class="fas fa-trash"></i></a>
                                 </td>
                             </tr>
                         }
@@ -90,6 +102,9 @@
 @section Scripts {
     @await Html.PartialAsync("_ValidationScriptsPartial")
 
+    <script src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.25/js/dataTables.bootstrap4.min.js"></script>
+
     <script type="text/javascript">
         $(document).ready(function () {
             // Aplica o filtro imediatamente ao mudar a seleção no dropdown
@@ -98,27 +113,40 @@
                 window.location.href = '@Url.Action("Index")' + '?filter=' + selectedFilter;
             });
 
+            // Configuração do diálogo de delete
             var id = 0;
-            $('a[id*=btnDelete]').click(function () {
+            $('a.btnDelete').click(function () {
                 id = $(this).data('id');
                 $("#deleteDialog").modal('show');
                 return false;
             });
+
             $("#btnNoDelete").click(function () {
                 $("#deleteDialog").modal('hide');
                 return false;
             });
+
             $("#btnYesDelete").click(function () {
                 window.location.href = '/PersonalClasses/Delete/' + id;
             });
-        });
-    </script>
 
-    <script src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdn.datatables.net/1.10.25/js/dataTables.bootstrap4.min.js"></script>
-    <script type="text/javascript">
-        $(document).ready(function () {
-            $('#MyTable').DataTable();
+            // Inicializar DataTable com pesquisa individual por coluna
+            var table = $('#MyTable').DataTable({
+                orderCellsTop: true,
+                initComplete: function () {
+                    var api = this.api();
+
+                    // Aplicar o filtro para cada coluna com base na segunda linha do thead
+                    api.columns().every(function () {
+                        var column = this;
+                        $('input', $(column.header()).closest('thead').find('tr:eq(1) th').eq(column.index())).on('keyup change clear', function () {
+                            if (column.search() !== this.value) {
+                                column.search(this.value).draw();
+                            }
+                        });
+                    });
+                }
+            });
         });
     </script>
 }

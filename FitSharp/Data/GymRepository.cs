@@ -113,7 +113,7 @@ namespace FitSharp.Data
             return list;
         }
 
-        public async Task<Gym> GetGymAsync(Room room)
+        public async Task<Gym> GetGymByRoomAsync(Room room)
         {
             return await _context.Gyms
                 .Where(g => g.Rooms.Any(r => r.Id == room.Id))
@@ -130,12 +130,13 @@ namespace FitSharp.Data
             return await _context.Equipments.FindAsync(id);
         }
 
-        public IQueryable GetGymsWithRoomsAndEquipments()
+        public async Task<IEnumerable<Gym>> GetGymsWithRoomsAndEquipmentsAsync()
         {
-            return _context.Gyms
-                .Include(g => g.Rooms)
-                .Include(g => g.Equipments)
-                .OrderBy(g => g.Name);
+            return await _context.Gyms
+                .Include(g => g.Rooms) // Inclui as salas para contar o número de salas
+                .Include(g => g.Equipments) // Inclui os equipamentos para contar o número de equipamentos
+                .AsNoTracking()
+                .ToListAsync();
         }
 
         public async Task<Gym> GetGymWithRoomsAsync(int id)
@@ -216,6 +217,13 @@ namespace FitSharp.Data
             });
 
             return rooms;
+        }
+
+        public async Task<IEnumerable<Gym>> GetAllGymsAsync()
+        {
+            return await _context.Gyms
+                .AsNoTracking()
+                .ToListAsync();
         }
     }
 }

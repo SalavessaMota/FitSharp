@@ -1,14 +1,13 @@
 ﻿using FitSharp.Data.Entities;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace FitSharp.Data
 {
     public interface IGymRepository : IGenericRepository<Gym>
     {
-        IQueryable GetGymsWithRoomsAndEquipments();
+        Task<IEnumerable<Gym>> GetGymsWithRoomsAndEquipmentsAsync();
 
         Task<Gym> GetGymWithRoomsAsync(int id);
 
@@ -36,8 +35,10 @@ namespace FitSharp.Data
 
         Task<IEnumerable<SelectListItem>> GetComboRoomsAsync(int gymId);
 
-        Task<Gym> GetGymAsync(Room room);
+        Task<Gym> GetGymByRoomAsync(Room room);
 
         IEnumerable<SelectListItem> GetComboRoomsByInstructorName(string instructorName);
+
+        Task<IEnumerable<Gym>> GetAllGymsAsync();
     }
 }

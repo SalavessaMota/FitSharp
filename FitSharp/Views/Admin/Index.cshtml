@@ -24,11 +24,19 @@
                         <tr>
                             <th>@Html.DisplayNameFor(model => model.Fullname)</th>
                             <th>@Html.DisplayNameFor(model => model.Email)</th>
-                            <th>Avatar</th>
                             <th>Address</th>
                             <th>City</th>
                             <th>Country</th>
                             <th>Role</th>
+                            <th></th>
+                        </tr>
+                        <tr>
+                            <th><input type="text" placeholder="Search Name" class="form-control" /></th>
+                            <th><input type="text" placeholder="Search Email" class="form-control" /></th>
+                            <th><input type="text" placeholder="Search Address" class="form-control" /></th>
+                            <th><input type="text" placeholder="Search City" class="form-control" /></th>
+                            <th><input type="text" placeholder="Search Country" class="form-control" /></th>
+                            <th><input type="text" placeholder="Search Role" class="form-control" /></th>
                             <th></th>
                         </tr>
                     </thead>
@@ -38,12 +46,6 @@
                             <tr>
                                 <td>@item.Fullname</td>
                                 <td>@item.Email</td>
-                                <td>
-                                    @if (!string.IsNullOrEmpty(item.ImageFullPath))
-                                    {
-                                        <img src="@Url.Content(item.ImageFullPath)" alt="@item.Fullname" style="width: 50px; height: auto; max-width:100%;" />
-                                    }
-                                </td>
                                 <td>@item.Address</td>
                                 <td>@item.CityName</td>
                                 <td>@item.CountryName</td>
@@ -66,9 +68,6 @@
 </div>
 
 <div class="text-center">
-    @* <button type="button" class="btn btn-primary btn-lg mt-3 roundedwithshadow" data-toggle="modal" data-target="#registerUserModal">
-        <i class="fa fa-user-plus"></i> Register New User
-    </button> *@
     <a href="~/Home/index" class="btn btn-primary btn-lg mt-3 roundedwithshadow"><i class="fas fa-home"></i> Return Home</a>
 </div>
 
@@ -123,8 +122,12 @@
 @section Scripts {
     @await Html.PartialAsync("_ValidationScriptsPartial")
 
+    <script src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.25/js/dataTables.bootstrap4.min.js"></script>
+
     <script type="text/javascript">
         $(document).ready(function () {
+            // Configuração do diálogo de delete
             var id = 0;
             $('a.btnDelete').click(function () {
                 id = $(this).data('id');
@@ -140,18 +143,28 @@
             $("#btnYesDelete").click(function () {
                 window.location.href = '/Admin/DeleteUser/' + id;
             });
+
+            // Inicializar DataTable com pesquisa individual por coluna
+            var table = $('#MyTable').DataTable({
+                orderCellsTop: true,
+                initComplete: function () {
+                    var api = this.api();
+
+                    // Aplicar o filtro para cada coluna com base na segunda linha do thead
+                    api.columns().every(function () {
+                        var column = this;
+                        $('input', $(column.header()).closest('thead').find('tr:eq(1) th').eq(column.index())).on('keyup change clear', function () {
+                            if (column.search() !== this.value) {
+                                column.search(this.value).draw();
+                            }
+                        });
+                    });
+                }
+            });
         });
 
         function redirectTo(actionUrl) {
             window.location.href = '/' + actionUrl;
         }
-    </script>
-
-    <script src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdn.datatables.net/1.10.25/js/dataTables.bootstrap4.min.js"></script>
-    <script type="text/javascript">
-        $(document).ready(function () {
-            $('#MyTable').DataTable();
-        });
     </script>
 }

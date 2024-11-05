@@ -31,7 +31,6 @@ namespace FitSharp.Data
             await _userHelper.CheckRoleAsync("Instructor");
             await _userHelper.CheckRoleAsync("Customer");
 
-
             // COUNTRIES AND CITIES SEEDING
             if (!_context.Countries.Any())
             {
@@ -49,7 +48,6 @@ namespace FitSharp.Data
 
                 await _context.SaveChangesAsync();
             }
-
 
             // GYM SEEDING
             var lisboa = _context.Cities.FirstOrDefault(c => c.Name == "Lisboa" && c.Country.Code == "PT");
@@ -75,7 +73,6 @@ namespace FitSharp.Data
                 _context.Gyms.Add(gym);
                 await _context.SaveChangesAsync();
             }
-
 
             // ADMIN SEEDING
             var adminUser = await _userRepository.GetUserByEmailAsync("nunosalavessa@hotmail.com");
@@ -114,7 +111,6 @@ namespace FitSharp.Data
             {
                 await _userHelper.AddUserToRoleAsync(adminUser, "Admin");
             }
-
 
             // INSTRUCTOR SEEDING
             var ptUser = await _userRepository.GetUserByEmailAsync("tiagomonteirinho@yopmail.com");
@@ -161,7 +157,6 @@ namespace FitSharp.Data
                 await _userHelper.AddUserToRoleAsync(ptUser, "Instructor");
             }
 
-
             // EMPLOYEE SEEDING
             var employeeUser = await _userRepository.GetUserByEmailAsync("ritamiguens@yopmail.com");
 
@@ -205,7 +200,6 @@ namespace FitSharp.Data
                 await _userHelper.AddUserToRoleAsync(employeeUser, "Employee");
             }
 
-
             // CUSTOMER SEEDING
             var customerUser = await _userRepository.GetUserByEmailAsync("customerfitsharp@yopmail.com");
 
@@ -248,7 +242,6 @@ namespace FitSharp.Data
                 await _userHelper.AddUserToRoleAsync(customerUser, "Customer");
             }
 
-
             // CLASSTYPES SEEDING
             if (!_context.ClassTypes.Any())
             {
@@ -259,7 +252,6 @@ namespace FitSharp.Data
                 });
                 await _context.SaveChangesAsync();
             }
-
 
             // MEMBERSHIPS SEEDING
             if (!_context.Memberships.Any())

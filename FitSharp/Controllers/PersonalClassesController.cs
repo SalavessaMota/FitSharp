@@ -137,7 +137,7 @@ namespace FitSharp.Controllers
                 return new NotFoundViewResult("PersonalClassNotFound");
             }
 
-            var gym = await _gymRepository.GetGymAsync(personalClass.Room);
+            var gym = await _gymRepository.GetGymByRoomAsync(personalClass.Room);
 
             var model = new EditPersonalClassViewModel
             {
