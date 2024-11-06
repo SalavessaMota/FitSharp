@@ -11,13 +11,6 @@
             <div asp-validation-summary="ModelOnly"></div>
             <input type="hidden" asp-for="UserType" />
 
-            <!-- Campos comuns para todos os usuários -->
-            <div class="form-group">
-                <label asp-for="ImageFile" class="control-label"></label>
-                <input asp-for="ImageFile" type="file" class="form-control" />
-                <span asp-validation-for="ImageFile" class="text-danger"></span>
-            </div>
-
             <div class="form-group">
                 <label asp-for="FirstName">First Name</label>
                 <input asp-for="FirstName" class="form-control" />

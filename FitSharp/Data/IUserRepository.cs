@@ -10,6 +10,8 @@ namespace FitSharp.Data
 {
     public interface IUserRepository
     {
+        Task<object> GetEntityByUserIdAsync(string id);
+
         IQueryable<User> GetAllUsersWithCityAndCountry();
 
         Task<Customer> GetCustomerByUserIdAsync(string id);

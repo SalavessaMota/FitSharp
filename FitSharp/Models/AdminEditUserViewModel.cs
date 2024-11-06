@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using FitSharp.Data.Entities;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -12,10 +14,13 @@ namespace FitSharp.Models
         // Propriedades específicas para Customer
         public int? MembershipId { get; set; }
         public IEnumerable<SelectListItem> Memberships { get; set; }
+        public Membership Membership { get; set; }
 
         // Propriedades específicas para Employee
         public int? GymId { get; set; }
         public IEnumerable<SelectListItem> Gyms { get; set; }
+
+        public string GymName { get; set; }
 
         // Propriedades específicas para Instructor (herda GymId de Employee)
         public string Speciality { get; set; }

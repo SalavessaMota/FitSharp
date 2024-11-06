@@ -174,6 +174,66 @@ namespace FitSharp.Data
             //.FirstOrDefault(c => c.Id == customerId);
         }
 
+        public async Task<object> GetEntityByUserIdAsync(string id)
+        {
+            var user = await GetUserByIdAsync(id);
+
+            if(await _context.Customers.AnyAsync(c => c.User.Id == user.Id))
+            {                
+                return await _context.Customers
+                    .Include(c => c.User)
+                    .Include(c => c.User.City)
+                    .ThenInclude(c => c.Country)
+                    .FirstOrDefaultAsync(c => c.User.Id == id);
+            }
+            else if (await _context.Employees.AnyAsync(c => c.User.Id == user.Id))
+            {
+                return await _context.Employees
+                    .Include(c => c.User)
+                    .Include(c => c.User.City)
+                    .ThenInclude(c => c.Country)
+                    .Include(c => c.Gym)
+                    .FirstOrDefaultAsync(c => c.User.Id == id);
+            }
+            else if (await _context.Instructors.AnyAsync(c => c.User.Id == user.Id))
+            {
+                return await _context.Instructors
+                    .Include(c => c.User)
+                    .Include(c => c.User.City)
+                    .ThenInclude(c => c.Country)
+                    .Include(c => c.Gym)
+                    .FirstOrDefaultAsync(c => c.User.Id == id);
+            }
+            else if (await _context.Admins.AnyAsync(c => c.User.Id == user.Id))
+            {
+                return await _context.Admins
+                    .Include(c => c.User)
+                    .Include(c => c.User.City)
+                    .ThenInclude(c => c.Country)
+                    .FirstOrDefaultAsync(c => c.User.Id == id);
+            }
+
+            return null;
+            //if (await IsCustomerAsync(await GetUserByIdAsync(id)))
+            //{
+            //    return await _context.Customers.AnyAsync(c => c.User.Id == user.Id);
+            //}
+            //else if (await IsEmployeeAsync(await GetUserByIdAsync(id)))
+            //{
+            //    return await _context.Employees.AnyAsync(c => c.User.Id == user.Id);
+            //}
+            //else if (await IsAdminAsync(await GetUserByIdAsync(id)))
+            //{
+            //    return await GetAdminByUserIdAsync(id);
+            //}
+            //else
+            //{
+            //    return await GetInstructorByUserIdAsync(id);
+            //}
+        }
+
+
+
         public Instructor GetInstructorByUserName(string instructorName)
         {
             return _context.Instructors

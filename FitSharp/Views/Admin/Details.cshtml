@@ -1,61 +1,98 @@
-﻿@model FitSharp.Entities.User
+﻿@model FitSharp.Models.AdminEditUserViewModel
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "User Details";
 }
 
-
 <div class="transparent-card">
-
     <h1>User Details</h1>
-    <hr/>
+    <hr />
 
     <dl class="row">
-        <dt class="col-sm-6">
-            @Html.DisplayNameFor(model => model.UserName)
-        </dt>
-        <dd class="col-sm-6">
-            @Html.DisplayFor(model => model.UserName)
-        </dd>
         <dt class="col-sm-6">
             @Html.DisplayNameFor(model => model.FullName)
         </dt>
         <dd class="col-sm-6">
             @Html.DisplayFor(model => model.FullName)
-        <dt class="col-sm-6">
-                @Html.DisplayNameFor(model => model.Address)
-        </dt>
-        <dd class="col-sm-6">
-                @Html.DisplayFor(model => model.Address)
         </dd>
-        <dt class="col-sm-6">
-            City
-        </dt>
+
+
+        <dt class="col-sm-6">Country</dt>
         <dd class="col-sm-6">
-                @Html.DisplayFor(model => model.City.Name)
-        </dd>
-        <dt class="col-sm-6">
-            Country
-        </dt>
-        <dd class="col-sm-6">
+            @if (Model.City?.Country != null)
+            {
                 @Html.DisplayFor(model => model.City.Country.Name)
+            }
+            else
+            {
+                <span>N/A</span>
+            }
         </dd>
+
+        <dt class="col-sm-6">City</dt>
+        <dd class="col-sm-6">
+            @if (Model.City != null)
+            {
+                @Html.DisplayFor(model => model.City.Name)
+            }
+            else
+            {
+                <span>N/A</span>
+            }
+        </dd>
+
         <dt class="col-sm-6">
-            User Photo
+            @Html.DisplayNameFor(model => model.Address)
         </dt>
-        <dd>
-            <img src="@Url.Content(Model.ImageFullPath)" class="roundedwithshadow" alt="@Model.FullName" style="width: 400px; height: auto; max-width:100%; margin: 1em;" />
+        <dd class="col-sm-6">
+            @Html.DisplayFor(model => model.Address)
+        </dd>
+
+
+        @* Exibição Condicional com Base no Tipo de Usuário *@
+        @if (Model.UserType == "Customer" && Model.Membership != null)
+        {
+            <dt class="col-sm-6">Membership</dt>
+            <dd class="col-sm-6">
+                @Html.DisplayFor(model => model.Membership.Name)
+            </dd>
+        }
+        else if (Model.UserType == "Employee" && !string.IsNullOrEmpty(Model.GymName))
+        {
+            <dt class="col-sm-6">Gym</dt>
+            <dd class="col-sm-6">
+                @Html.DisplayFor(model => model.GymName)
+            </dd>
+        }
+        else if (Model.UserType == "Instructor")
+        {
+            <dt class="col-sm-6">Gym</dt>
+            <dd class="col-sm-6">
+                @Html.DisplayFor(model => model.GymName)
+            </dd>
+            <dt class="col-sm-6">Speciality</dt>
+            <dd class="col-sm-6">
+                @Html.DisplayFor(model => model.Speciality)
+            </dd>
+            <dt class="col-sm-6">Description</dt>
+            <dd class="col-sm-6">
+                @Html.DisplayFor(model => model.Description)
+            </dd>
+        }
+
+        <dt class="col-sm-6">User Photo</dt>
+        <dd class="col-sm-6">
+            @if (Model.ImageFullPath != null)
+            {
+                <img src="@Url.Content(Model.ImageFullPath)" class="roundedwithshadow" alt="@Model.FullName" style="width: 400px; height: auto; max-width:100%; margin: 1em;" />
+            }
+            else
+            {
+                <span>No photo available</span>
+            }
         </dd>
     </dl>
 
-
     <div>
-        <a asp-action="EditUser" asp-route-id="@Model.Id" class="btn btn-warning roundedwithshadow">Edit</a>
         <a asp-action="Index" class="btn btn-success roundedwithshadow">Back to List</a>
     </div>
-
 </div>
-
-
-
-
-

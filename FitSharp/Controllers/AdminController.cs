@@ -108,12 +108,6 @@ public class AdminController : Controller
                     IsActive = true
                 };
 
-                if (model.ImageFile != null && model.ImageFile.Length > 0)
-                {
-                    var imageId = await _blobHelper.UploadBlobAsync(model.ImageFile, "users");
-                    user.ImageId = imageId;
-                }
-
                 var result = await _userRepository.AddUserAsync(user, "Fitsharp1!");
                 await _userHelper.AddUserToRoleAsync(user, "Employee");
 
@@ -145,12 +139,24 @@ public class AdminController : Controller
                 if (response.IsSuccess)
                 {
                     ViewBag.Message = "The account has been created, and the user has been sent an email to set their password.";
-                    return View(model);
+
+                    ModelState.Clear();
+
+                    return View(model = new AdminRegisterNewEmployeeViewModel
+                    {
+                        Countries = _countryRepository.GetComboCountries(),
+                        Cities = await _countryRepository.GetComboCitiesAsync(1),
+                        Gyms = _gymRepository.GetComboGyms()
+                    });
                 }
 
                 return RedirectToAction("Index", "Admin");
             }
         }
+
+        model.Countries = _countryRepository.GetComboCountries();
+        model.Cities = await _countryRepository.GetComboCitiesAsync(1);
+        model.Gyms = _gymRepository.GetComboGyms();
 
         return View(model);
     }
@@ -187,12 +193,6 @@ public class AdminController : Controller
                     CityId = model.CityId,
                     IsActive = true
                 };
-
-                if (model.ImageFile != null && model.ImageFile.Length > 0)
-                {
-                    var imageId = await _blobHelper.UploadBlobAsync(model.ImageFile, "users");
-                    user.ImageId = imageId;
-                }
 
                 var result = await _userRepository.AddUserAsync(user, "Fitsharp1!");
                 await _userHelper.AddUserToRoleAsync(user, "Instructor");
@@ -231,10 +231,20 @@ public class AdminController : Controller
                 if (response.IsSuccess)
                 {
                     ViewBag.Message = "The account has been created, and the user has been sent an email to set their password.";
-                    model.Countries = _countryRepository.GetComboCountries();
-                    model.Cities = await _countryRepository.GetComboCitiesAsync(1);
-                    return View(model);
+
+                    ModelState.Clear();
+
+                    return View(model = new AdminRegisterNewInstructorViewModel
+                    {
+                        Countries = _countryRepository.GetComboCountries(),
+                        Cities = await _countryRepository.GetComboCitiesAsync(1),
+                        Gyms = _gymRepository.GetComboGyms()
+                    });
                 }
+
+                model.Countries = _countryRepository.GetComboCountries();
+                model.Cities = await _countryRepository.GetComboCitiesAsync(1);
+                model.Gyms = _gymRepository.GetComboGyms();
 
                 return RedirectToAction("Index", "Admin");
             }
@@ -275,12 +285,6 @@ public class AdminController : Controller
                     IsActive = true
                 };
 
-                if (model.ImageFile != null && model.ImageFile.Length > 0)
-                {
-                    var imageId = await _blobHelper.UploadBlobAsync(model.ImageFile, "users");
-                    user.ImageId = imageId;
-                }
-
                 var result = await _userRepository.AddUserAsync(user, "Fitsharp1!");
                 await _userHelper.AddUserToRoleAsync(user, "Customer");
 
@@ -311,12 +315,21 @@ public class AdminController : Controller
                 if (response.IsSuccess)
                 {
                     ViewBag.Message = "The account has been created, and the user has been sent an email to set their password.";
-                    return View(model);
-                }
 
+                    ModelState.Clear();
+
+                    return View( model = new AdminRegisterNewUserViewModel
+                    {
+                        Countries = _countryRepository.GetComboCountries(),
+                        Cities = await _countryRepository.GetComboCitiesAsync(1)
+                    });
+                }
                 return RedirectToAction("Index", "Admin");
             }
         }
+
+        model.Countries = _countryRepository.GetComboCountries();
+        model.Cities = await _countryRepository.GetComboCitiesAsync(1);
 
         return View(model);
     }
@@ -362,12 +375,6 @@ public class AdminController : Controller
                     IsActive = true
                 };
 
-                if (model.ImageFile != null && model.ImageFile.Length > 0)
-                {
-                    var imageId = await _blobHelper.UploadBlobAsync(model.ImageFile, "users");
-                    user.ImageId = imageId;
-                }
-
                 var result = await _userRepository.AddUserAsync(user, "Fitsharp1!");
                 await _userHelper.AddUserToRoleAsync(user, "Admin");
 
@@ -397,8 +404,15 @@ public class AdminController : Controller
                 if (response.IsSuccess)
                 {
                     ViewBag.Message = "The admin account has been created, and the user has been sent an email to set their password.";
-                    return View(model);
-                }
+
+                    ModelState.Clear();
+
+                    return View(new AdminRegisterNewAdminViewModel
+                    {
+                        Countries = _countryRepository.GetComboCountries(),
+                        Cities = await _countryRepository.GetComboCitiesAsync(1)
+                    });
+                }                               
 
                 return RedirectToAction("Index", "Admin");
             }
@@ -406,6 +420,7 @@ public class AdminController : Controller
 
         model.Countries = _countryRepository.GetComboCountries();
         model.Cities = await _countryRepository.GetComboCitiesAsync(model.CountryId);
+
         return View(model);
     }
 
@@ -543,8 +558,48 @@ public class AdminController : Controller
         }
         user.City = city;
 
-        return View(user);
+        // Inicializa o modelo com os dados básicos do usuário
+        var adminUserViewModel = new AdminEditUserViewModel
+        {
+            FirstName = user.FirstName,
+            LastName = user.LastName,
+            Address = user.Address,
+            PhoneNumber = user.PhoneNumber,
+            CityId = user.CityId,
+            City = city,
+            Country = city.Country,
+            CountryId = city.CountryId,
+            UserType = _userRepository.DetermineUserType(user),
+            ImageId = user.ImageId
+        };
+
+        // Obter a entidade associada ao usuário (Customer, Employee, Instructor, Admin)
+        var entity = await _userRepository.GetEntityByUserIdAsync(user.Id);
+        adminUserViewModel.Entity = entity;
+
+        // Preenchendo propriedades específicas com base no tipo de usuário
+        if (entity is Customer customer)
+        {
+            adminUserViewModel.MembershipId = customer.MembershipId;
+            adminUserViewModel.Membership = customer.Membership;
+        }
+        else if (entity is Employee employee)
+        {
+            adminUserViewModel.GymId = employee.GymId;
+            adminUserViewModel.GymName = employee.Gym?.Name;
+
+            if (entity is Instructor instructor)
+            {
+                adminUserViewModel.Speciality = instructor.Speciality;
+                adminUserViewModel.Description = instructor.Description;
+            }
+        }
+        
+        // Caso para Admin - se houver propriedades específicas, adiciona-as aqui
+
+        return View(adminUserViewModel);
     }
+
 
     [HttpPost]
     public async Task<IActionResult> DisableUser(string id, string adminPassword)
