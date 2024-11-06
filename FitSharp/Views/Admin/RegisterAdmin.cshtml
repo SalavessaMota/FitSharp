@@ -9,6 +9,24 @@
         <h2>Register New Admin</h2>
 
 
+        <div class="text-success text-center mt-3">
+            <h6>
+                @if (ViewBag.SuccessMessage != null)
+                {
+                    <div class="alert alert-success" id="successMessage">
+                        @ViewBag.SuccessMessage
+                    </div>
+                }
+                @if (ViewBag.ErrorMessage != null)
+                {
+                    <div class="alert alert-danger" id="errorMessage">
+                        @ViewBag.ErrorMessage
+                    </div>
+                }
+            </h6>
+        </div>
+
+
         <form method="post" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly"></div>
 
@@ -70,26 +88,26 @@
 </div>
 
 
-<div class="text-success text-center mt-3">
-    <h6>
-        @ViewBag.Message
-    </h6>
-</div>
-
 @section Scripts {
     @await Html.PartialAsync("_ValidationScriptsPartial")
 
     <script type="text/javascript">
         $(document).ready(function () {
-            var successMessage = '@ViewBag.Message';
-            if (successMessage !== "") {
-                $('#successModal').modal('show');
+            // Verificar se há mensagens de sucesso ou erro
+            var successMessage = '@ViewBag.SuccessMessage';
+            var errorMessage = '@ViewBag.ErrorMessage';
+
+            // Se houver uma mensagem de sucesso, exibi-la e definir um tempo para desaparecer
+            if (successMessage) {
+                $('#successMessage').fadeIn().delay(5000).fadeOut();
             }
 
-            $('#btnOk').click(function () {
-                window.location.href = '@Url.Action("Index", "Home")';
-            });
+            // Se houver uma mensagem de erro, exibi-la e definir um tempo para desaparecer
+            if (errorMessage) {
+                $('#errorMessage').fadeIn().delay(5000).fadeOut();
+            }
 
+            // Evento de mudança de país para carregar as cidades
             $("#CountryId").change(function () {
                 $("#CityId").empty();
                 $("#CityId").append('<option value="0">(Select a city...)</option>');
@@ -126,4 +144,5 @@
         });
     </script>
 }
+
 

@@ -352,7 +352,8 @@ public class AdminController : Controller
             var adminPassword = _configuration["AdminPassword"];
             if (model.AdminPassword != adminPassword)
             {
-                ModelState.AddModelError("", "Invalid admin registration password.");
+                //ModelState.AddModelError("","");
+                ViewBag.ErrorMessage = "Invalid admin registration password.";
                 model.Countries = _countryRepository.GetComboCountries();
                 model.Cities = await _countryRepository.GetComboCitiesAsync(model.CountryId);
                 return View(model);
@@ -403,7 +404,7 @@ public class AdminController : Controller
 
                 if (response.IsSuccess)
                 {
-                    ViewBag.Message = "The admin account has been created, and the user has been sent an email to set their password.";
+                    ViewBag.SuccessMessage = "The admin account has been created, and the user has been sent an email to set their password.";
 
                     ModelState.Clear();
 
@@ -412,7 +413,9 @@ public class AdminController : Controller
                         Countries = _countryRepository.GetComboCountries(),
                         Cities = await _countryRepository.GetComboCitiesAsync(1)
                     });
-                }                               
+                }
+
+                ViewBag.ErrorMessage = "An error occurred while registering the user.";
 
                 return RedirectToAction("Index", "Admin");
             }
