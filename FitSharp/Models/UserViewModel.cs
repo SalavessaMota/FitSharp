@@ -24,6 +24,9 @@ namespace FitSharp.Models
         [MaxLength(20, ErrorMessage = "The field {0} only can contain {1} characters length.")]
         public string PhoneNumber { get; set; }
 
+        public int GymId { get; set; }
+
+
         [Display(Name = "City")]
         [Range(1, int.MaxValue, ErrorMessage = "You must select a city.")]
         public int CityId { get; set; }

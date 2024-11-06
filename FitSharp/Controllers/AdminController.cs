@@ -20,6 +20,7 @@ public class AdminController : Controller
     private readonly IMailHelper _mailHelper;
     private readonly ICountryRepository _countryRepository;
     private readonly IGymRepository _gymRepository;
+    private readonly IMembershipRepository _membershipRepository;
     private readonly IUserRepository _userRepository;
     private readonly IConfiguration _configuration;
 
@@ -29,6 +30,7 @@ public class AdminController : Controller
         IMailHelper mailHelper,
         ICountryRepository countryRepository,
         IGymRepository gymRepository,
+        IMembershipRepository membershipRepository,
         IUserRepository userRepository,
         IConfiguration configuration)
     {
@@ -37,6 +39,7 @@ public class AdminController : Controller
         _mailHelper = mailHelper;
         _countryRepository = countryRepository;
         _gymRepository = gymRepository;
+        _membershipRepository = membershipRepository;
         _userRepository = userRepository;
         _configuration = configuration;
     }
@@ -45,14 +48,14 @@ public class AdminController : Controller
     {
         var users = await _userRepository.GetAllUsersWithCityAndCountry().ToListAsync();
         var loggedUser = await _userRepository.GetUserByEmailAsync(User.Identity.Name);
-        var model = new List<AdminEditUserViewModel>();
+        var model = new List<AdminUserViewModel>();
 
         foreach (var user in users)
         {
             var roles = await _userHelper.GetRolesAsync(user);
             var userRole = roles.FirstOrDefault();
 
-            model.Add(new AdminEditUserViewModel
+            model.Add(new AdminUserViewModel
             {
                 UserId = user.Id,
                 Fullname = user.FullName,
@@ -69,77 +72,6 @@ public class AdminController : Controller
         return View(model);
     }
 
-
-    //public async Task<IActionResult> EditUserRoles(string id)
-    //{
-    //    var user = await _userRepository.GetUserByIdAsync(id);
-    //    if (user == null)
-    //    {
-    //        return new NotFoundViewResult("UserNotFound");
-    //    }
-
-    //    var userRoles = await _userHelper.GetRolesAsync(user);
-    //    var userRole = userRoles.FirstOrDefault();
-
-    //    var model = new EditUserRolesViewModel
-    //    {
-    //        UserId = user.Id,
-    //        Username = user.UserName,
-    //        Email = user.Email,
-    //        Roles = _userHelper.GetAllRoles().Select(u => new UserRoleViewModel
-    //        {
-    //            RoleName = u.Name
-    //        }).ToList(),
-    //        SelectedRole = userRole
-    //    };
-
-    //    return View(model);
-    //}
-
-    //[HttpPost]
-    //public async Task<IActionResult> EditUserRoles(EditUserRolesViewModel model)
-    //{
-    //    var user = await _userRepository.GetUserByIdAsync(model.UserId);
-    //    if (user == null)
-    //    {
-    //        return new NotFoundViewResult("UserNotFound");
-    //    }
-
-    //    if (string.IsNullOrEmpty(model.SelectedRole))
-    //    {
-    //        ModelState.AddModelError("", "Please select a role.");
-    //        model.Roles = _userHelper.GetAllRoles().Select(u => new UserRoleViewModel
-    //        {
-    //            RoleName = u.Name
-    //        }).ToList();
-    //        return View(model);
-    //    }
-
-    //    var roles = await _userHelper.GetRolesAsync(user);
-    //    var result = await _userHelper.RemoveRolesAsync(user, roles);
-    //    if (!result.Succeeded)
-    //    {
-    //        ModelState.AddModelError("", "Failed to remove existing roles.");
-    //        model.Roles = _userHelper.GetAllRoles().Select(u => new UserRoleViewModel
-    //        {
-    //            RoleName = u.Name
-    //        }).ToList();
-    //        return View(model);
-    //    }
-
-    //    var addResult = await _userHelper.AddUserToRoleAsync(user, model.SelectedRole);
-    //    if (!addResult.Succeeded)
-    //    {
-    //        ModelState.AddModelError("", "Failed to add the selected role.");
-    //        model.Roles = _userHelper.GetAllRoles().Select(u => new UserRoleViewModel
-    //        {
-    //            RoleName = u.Name
-    //        }).ToList();
-    //        return View(model);
-    //    }
-
-    //    return RedirectToAction("Index");
-    //}
 
     public async Task<IActionResult> RegisterEmployee()
     {
@@ -404,7 +336,7 @@ public class AdminController : Controller
     {
         if (ModelState.IsValid)
         {
-            var adminPassword = _configuration["AdminRegisterPassword"];
+            var adminPassword = _configuration["AdminPassword"];
             if (model.AdminPassword != adminPassword)
             {
                 ModelState.AddModelError("", "Invalid admin registration password.");
@@ -479,84 +411,116 @@ public class AdminController : Controller
 
     public async Task<IActionResult> EditUser(string id)
     {
-        var user = await _userRepository.GetUserByIdAsync(id);
+        var user = await _userRepository.GetUserWithCountryAndCityByIdAsync(id);
+        if (user == null) return new NotFoundViewResult("UserNotFound");
 
-        if (user == null)
+        var model = new AdminEditUserViewModel
         {
-            return new NotFoundViewResult("UserNotFound");
-        }
+            FirstName = user.FirstName,
+            LastName = user.LastName,
+            Address = user.Address,
+            PhoneNumber = user.PhoneNumber,
+            UserType = _userRepository.DetermineUserType(user),
+            CityId = user.CityId,
+            CountryId = user.City.Country.Id
+        };
 
-        var model = new UserViewModel();
-        if (user != null)
+        switch (model.UserType)
         {
-            model.FirstName = user.FirstName;
-            model.LastName = user.LastName;
-            model.Address = user.Address;
-            model.PhoneNumber = user.PhoneNumber;
+            case "Customer":
+                var customer = await _userRepository.GetCustomerByUserIdAsync(user.Id);
+                if (customer != null)model.MembershipId = customer.MembershipId;
+                break;
 
-            var city = await _countryRepository.GetCityAsync(user.CityId);
-            if (city != null)
-            {
-                var country = await _countryRepository.GetCountryAsync(city);
-                if (country != null)
+            case "Employee":
+                var employee = await _userRepository.GetEmployeeByUserIdAsync(user.Id);
+                if (employee != null)
                 {
-                    model.CountryId = country.Id;
-                    model.CityId = city.Id;
-
-                    model.Countries = _countryRepository.GetComboCountries();
-                    model.Cities = await _countryRepository.GetComboCitiesAsync(country.Id);
+                    model.GymId = employee.GymId;
                 }
-            }
+                break;
+
+            case "Instructor":
+                var instructor = await _userRepository.GetInstructorByUserIdAsync(user.Id);
+                if (instructor != null)
+                {
+                    model.GymId = instructor.GymId;
+                    model.Speciality = instructor.Speciality;
+                    model.Description = instructor.Description;
+                }
+                break;
+
+            case "Admin":
+                break;
         }
+
+        // Carregar países e cidades
+        model.Countries = _countryRepository.GetComboCountries();
+        model.Cities = model.CountryId > 0 ? await _countryRepository.GetComboCitiesAsync(model.CountryId) : null;
+        model.Gyms = _gymRepository.GetComboGyms();
+        model.Memberships = _membershipRepository.GetComboMemberships();
 
         return View(model);
     }
 
+
     [HttpPost]
-    public async Task<IActionResult> EditUser(UserViewModel model, string id)
+    public async Task<IActionResult> EditUser(AdminEditUserViewModel model, string id)
     {
-        if (ModelState.IsValid)
+        if (!ModelState.IsValid) return View(model);
+
+        var user = await _userRepository.GetUserByIdAsync(id);
+        if (user == null) return new NotFoundViewResult("UserNotFound");
+
+        // Atualizar campos comuns
+        user.FirstName = model.FirstName;
+        user.LastName = model.LastName;
+        user.Address = model.Address;
+        user.CityId = model.CityId;        
+        user.PhoneNumber = model.PhoneNumber;
+
+        if(model.UserType == "Customer") 
         {
-            var user = await _userRepository.GetUserByIdAsync(id);
-            if (user != null)
+            var customer = await _userRepository.GetCustomerByUserIdAsync(user.Id);
+            if (customer != null)
             {
-                var city = await _countryRepository.GetCityAsync(model.CityId);
-
-                // Atualiza os dados do usuário
-                user.FirstName = model.FirstName;
-                user.LastName = model.LastName;
-                user.Address = model.Address;
-                user.PhoneNumber = model.PhoneNumber;
-                user.CityId = model.CityId;
-                user.City = city;
-
-                // Verifica se há uma nova imagem para upload
-                if (model.ImageFile != null && model.ImageFile.Length > 0)
-                {
-                    var imageId = await _blobHelper.UploadBlobAsync(model.ImageFile, "users");
-                    user.ImageId = imageId;
-                }
-
-                var response = await _userRepository.UpdateUserAsync(user);
-                if (response.Succeeded)
-                {
-                    ViewBag.UserMessage = "User updated!";
-                }
-                else
-                {
-                    ModelState.AddModelError(string.Empty, response.Errors.FirstOrDefault()?.Description);
-                }
+                customer.MembershipId = model.MembershipId;
+                await _userRepository.UpdateCustomerAsync(customer);
             }
         }
 
-        // Recarrega as listas de países e cidades
-        model.Countries = _countryRepository.GetComboCountries();
-        if (model.CountryId != 0)
+
+        // Atualizar campos específicos por tipo
+        switch (model.UserType)
         {
-            model.Cities = await _countryRepository.GetComboCitiesAsync(model.CountryId);
+            case "Customer":
+                var customer = await _userRepository.GetCustomerByUserIdAsync(user.Id);
+                if (customer != null)
+                {
+                    customer.MembershipId = model.MembershipId;
+                    await _userRepository.UpdateCustomerAsync(customer);
+                }
+                break;
+
+            case "Employee":
+                var employee = await _userRepository.GetEmployeeByUserIdAsync(user.Id);
+                if (employee != null) employee.GymId = model.GymId;
+                break;
+
+            case "Instructor":
+                var instructor = await _userRepository.GetInstructorByUserIdAsync(user.Id);
+                if (instructor != null)
+                {
+                    instructor.GymId = model.GymId;
+                    instructor.Speciality = model.Speciality;
+                    instructor.Description = model.Description;
+                }
+                break;
         }
 
-        return View(model);
+        await _userRepository.UpdateUserAsync(user);
+        TempData["Success"] = "User profile updated successfully.";
+        return RedirectToAction("Index");
     }
 
     public async Task<IActionResult> Details(string id)
@@ -582,7 +546,8 @@ public class AdminController : Controller
         return View(user);
     }
 
-    public async Task<IActionResult> DisableUser(string id)
+    [HttpPost]
+    public async Task<IActionResult> DisableUser(string id, string adminPassword)
     {
         if (string.IsNullOrEmpty(id))
         {
@@ -595,18 +560,27 @@ public class AdminController : Controller
             return new NotFoundViewResult("UserNotFound");
         }
 
+        var storedAdminPassword = _configuration["AdminPassword"];
+
+        if (adminPassword != storedAdminPassword)
+        {
+            TempData["Error"] = "Incorrect password. Unable to deactivate the user.";
+            return RedirectToAction(nameof(Index));
+        }
+
         try
         {
             user.IsActive = false;
             await _userRepository.UpdateUserAsync(user);
 
+            // Remover roles e da tabela específica
             await _userHelper.RemoveRolesAsync(user, await _userHelper.GetRolesAsync(user));
 
-            //if (user.ImageId != Guid.Empty)
-            //{
-            //    await _blobHelper.DeleteBlobAsync("users", user.ImageId.ToString());
-            //}
+            // Verificar e remover o usuário da tabela específica
+            await _userRepository.RemoveFromSpecificTableAsync(user);
 
+
+            TempData["Success"] = "User has been successfully deactivated.";
             return RedirectToAction(nameof(Index));
         }
         catch (DbUpdateException ex)
@@ -620,6 +594,50 @@ public class AdminController : Controller
             return View("Error");
         }
     }
+
+    [HttpPost]
+    public async Task<IActionResult> ActivateUser(string id, string adminPassword, string role)
+    {
+        if (string.IsNullOrEmpty(id) || string.IsNullOrEmpty(role))
+        {
+            TempData["Error"] = "User ID or Role is missing.";
+            return RedirectToAction(nameof(Index));
+        }
+
+        var user = await _userRepository.GetUserByIdAsync(id);
+        if (user == null)
+        {
+            TempData["Error"] = "User not found.";
+            return RedirectToAction(nameof(Index));
+        }
+
+        var storedAdminPassword = _configuration["AdminPassword"];
+        if (adminPassword != storedAdminPassword)
+        {
+            TempData["Error"] = "Incorrect administrator password.";
+            return RedirectToAction(nameof(Index));
+        }
+
+        try
+        {
+            user.IsActive = true;
+            await _userRepository.UpdateUserAsync(user);
+
+            // Adicionar role e incluir o usuário na tabela específica
+            await _userHelper.RemoveRolesAsync(user, await _userHelper.GetRolesAsync(user));
+            await _userHelper.AddUserToRoleAsync(user, role);
+            await _userRepository.AddToSpecificTableAsync(user, role);
+
+            TempData["Success"] = $"User successfully activated with role: {role}";
+            return RedirectToAction(nameof(Index));
+        }
+        catch (Exception ex)
+        {
+            TempData["Error"] = $"An error occurred while activating the user: {ex.Message}";
+            return RedirectToAction(nameof(Index));
+        }
+    }
+
 
 
     public IActionResult UserNotFound()

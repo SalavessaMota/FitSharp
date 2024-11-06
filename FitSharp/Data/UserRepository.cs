@@ -51,6 +51,16 @@ namespace FitSharp.Data
                 .FirstOrDefaultAsync(e => e.User.Id == id);
         }
 
+        public async Task<Instructor> GetInstructorByUserIdAsync(string id)
+        {
+            return await _context.Instructors
+                .Include(i => i.User)
+                .Include(i => i.User.City)
+                .ThenInclude(c => c.Country)
+                .Include(i => i.Gym)
+                .FirstOrDefaultAsync(i => i.User.Id == id);
+        }
+
         public async Task<Admin> GetAdminByUserIdAsync(string id)
         {
             return await _context.Admins
@@ -189,6 +199,70 @@ namespace FitSharp.Data
             });
 
             return instructors;
+        }
+
+        public async Task AddToSpecificTableAsync(User user, string role)
+        {
+            switch (role)
+            {
+                case "Admin":
+                    // Adicionar à tabela Admins
+                    await _context.Admins.AddAsync(new Admin { User = user });
+                    break;
+                case "Employee":
+                    await _context.Employees.AddAsync(new Employee { User = user });
+                    break;
+                case "Instructor":
+                    await _context.Instructors.AddAsync(new Instructor { User = user });
+                    break;
+                case "Customer":
+                    await _context.Customers.AddAsync(new Customer { User = user });
+                    break;
+            }
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task RemoveFromSpecificTableAsync(User user)
+        {
+            var admin = await _context.Admins.FirstOrDefaultAsync(a => a.User.Id == user.Id);
+            var employee = await _context.Employees.FirstOrDefaultAsync(a => a.User.Id == user.Id);
+            var instructor = await _context.Instructors.FirstOrDefaultAsync(a => a.User.Id == user.Id);
+            var customer = await _context.Customers.FirstOrDefaultAsync(a => a.User.Id == user.Id);
+
+            if (admin != null) _context.Admins.Remove(admin);
+            if (employee != null) _context.Employees.Remove(employee);
+            if (instructor != null) _context.Instructors.Remove(instructor);
+            if (customer != null) _context.Customers.Remove(customer);
+
+            await _context.SaveChangesAsync();
+        }
+
+        public string DetermineUserType(User user)
+        {
+            if (_context.Customers.Any(c => c.User.Id == user.Id))
+            {
+                return "Customer";
+            }
+            else if (_context.Instructors.Any(i => i.User.Id == user.Id))
+            {
+                return "Instructor";
+            }
+            else if (_context.Employees.Any(e => e.User.Id == user.Id))
+            {
+                return "Employee";
+            }
+            else if (_context.Admins.Any(a => a.User.Id == user.Id))
+            {
+                return "Admin";
+            }
+
+            return "Unknown"; // Caso o usuário não seja encontrado em nenhuma tabela específica
+        }
+
+        public async Task UpdateCustomerAsync(Customer customer)
+        {
+            _context.Customers.Update(customer);
+            await _context.SaveChangesAsync();
         }
     }
 }

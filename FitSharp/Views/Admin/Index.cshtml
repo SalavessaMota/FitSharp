@@ -1,4 +1,4 @@
-﻿@model IEnumerable<FitSharp.Models.AdminEditUserViewModel>
+﻿@model IEnumerable<FitSharp.Models.AdminUserViewModel>
 
 @{
     ViewData["Title"] = "Users";
@@ -7,6 +7,26 @@
 <link rel="stylesheet" href="https://cdn.datatables.net/1.10.25/css/dataTables.bootstrap4.min.css" />
 
 <br />
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        @TempData["Success"]
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+}
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        @TempData["Error"]
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+}
 
 <div class="row mt-1">
     <div class="col-12">
@@ -72,9 +92,14 @@
                                 <td>
                                     <a asp-action="EditUser" asp-route-id="@item.UserId" class="btn btn-warning"><i class="far fa-edit"></i></a>
                                     <a asp-action="Details" asp-route-id="@item.UserId" class="btn btn-info"><i class="fas fa-list"></i></a>
-                                    @if (item.Role != "Admin")
+                                    @if (item.IsActive)
                                     {
-                                        <a asp-action="DisableUser" data-id="@item.UserId" class="btn btn-danger btnDisable"><i class="fas fa-user-alt-slash"></i></a>
+                                        @* <a asp-action="DisableUser" data-id="@item.UserId" class="btn btn-danger btnDisable"><i class="fas fa-user-alt-slash"></i></a> *@
+                                        <a href="#" data-id="@item.UserId" class="btn btn-danger btnDisable"><i class="fas fa-user-alt-slash"></i></a>
+                                    }
+                                    else
+                                    {
+                                        <a href="#" data-id="@item.UserId" class="btn btn-success btnActivate"><i class="fas fa-user-check"></i></a>
                                     }
                                 </td>
                             </tr>
@@ -102,16 +127,16 @@
             <div class="modal-body">
                 <p>Please select the type of user you wish to register:</p>
                 <div class="list-group">
-                    <button type="button" class="list-group-item list-group-item-action" onclick="redirectTo('Admin/RegisterAdmin')">
+                    <button type="button" class="list-group-item list-group-item-action" onclick="window.location.href='@Url.Action("RegisterAdmin", "Admin")'">
                         <i class="fas fa-user-shield"></i> Admin
                     </button>
-                    <button type="button" class="list-group-item list-group-item-action" onclick="redirectTo('Admin/RegisterEmployee')">
+                    <button type="button" class="list-group-item list-group-item-action" onclick="window.location.href='@Url.Action("RegisterEmployee", "Admin")'">
                         <i class="fas fa-briefcase"></i> Employee
                     </button>
-                    <button type="button" class="list-group-item list-group-item-action" onclick="redirectTo('Admin/RegisterInstructor')">
+                    <button type="button" class="list-group-item list-group-item-action" onclick="window.location.href='@Url.Action("RegisterInstructor", "Admin")'">
                         <i class="fas fa-chalkboard-teacher"></i> Instructor
                     </button>
-                    <button type="button" class="list-group-item list-group-item-action" onclick="redirectTo('Admin/RegisterCustomer')">
+                    <button type="button" class="list-group-item list-group-item-action" onclick="window.location.href='@Url.Action("RegisterCustomer", "Admin")'">
                         <i class="fas fa-user"></i> Customer
                     </button>
                 </div>
@@ -120,20 +145,65 @@
     </div>
 </div>
 
-<div id="disableDialog" class="modal fade roundedwithshadow">
+<div id="disableDialog" class="modal fade roundedwithshadow" tabindex="-1" role="dialog" aria-labelledby="disableDialogLabel" aria-hidden="true">
     <div class="modal-dialog modal-sm">
         <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title">Disable</h4>
-                <button type="button" class="close" data-dismiss="modal"><i class="fa fa-window-close"></i></button>
-            </div>
-            <div class="modal-body">
-                <p>Do you want to disable this user?</p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-danger" id="btnYesDisable">Disable</button>
-                <button type="button" class="btn btn-success" id="btnNoDisable">No</button>
-            </div>
+            <form method="post" asp-action="DisableUser" asp-controller="Admin">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="disableDialogLabel">Deactivate User</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Are you sure you want to deactivate this user?</p>
+                    <div class="form-group">
+                        <label for="adminPassword">Administrator Password</label>
+                        <input type="password" class="form-control" id="adminPassword" name="adminPassword" placeholder="Enter your password" required />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <input type="hidden" id="disableUserId" name="id" value="" />
+                    <button type="submit" class="btn btn-danger">Deactivate</button>
+                    <button type="button" class="btn btn-success" data-dismiss="modal">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div id="activateDialog" class="modal fade roundedwithshadow" tabindex="-1" role="dialog" aria-labelledby="activateDialogLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <form method="post" asp-action="ActivateUser" asp-controller="Admin">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="activateDialogLabel">Activate User</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Enter administrator password and select a role to activate this user.</p>
+                    <div class="form-group">
+                        <label for="adminPassword">Administrator Password</label>
+                        <input type="password" class="form-control" id="adminPassword" name="adminPassword" placeholder="Enter your password" required />
+                    </div>
+                    <div class="form-group">
+                        <label for="role">Select Role</label>
+                        <select id="role" name="role" class="form-control">
+                            <option value="Customer">Customer</option>
+                            <option value="Employee">Employee</option>
+                            <option value="Instructor">Instructor</option>
+                            <option value="Admin">Admin</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <input type="hidden" id="activateUserId" name="id" value="" />
+                    <button type="submit" class="btn btn-success">Activate</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
@@ -146,27 +216,27 @@
 
     <script type="text/javascript">
         $(document).ready(function () {
-            var id = 0;
+            var userIdToActivate = 0;
+
+            $('a.btnActivate').click(function () {
+                var userId = $(this).data('id');
+                $("#activateUserId").val(userId);
+                $("#activateDialog").modal('show');
+                return false;
+            });
+
+            // Abrir modal de desativação
             $('a.btnDisable').click(function () {
-                id = $(this).data('id');
+                var userId = $(this).data('id');
+                $("#disableUserId").val(userId);
                 $("#disableDialog").modal('show');
                 return false;
-            });
-
-            $("#btnNoDisable").click(function () {
-                $("#disableDialog").modal('hide');
-                return false;
-            });
-
-            $("#btnYesDisable").click(function () {
-                window.location.href = '/Admin/DisableUser/' + id;
             });
 
             var table = $('#MyTable').DataTable({
                 orderCellsTop: true,
                 initComplete: function () {
                     var api = this.api();
-
                     api.columns().every(function () {
                         var column = this;
                         $('input', $(column.header()).closest('thead').find('tr:eq(1) th').eq(column.index())).on('keyup change clear', function () {
@@ -178,9 +248,6 @@
                 }
             });
         });
-
-        function redirectTo(actionUrl) {
-            window.location.href = '/' + actionUrl;
-        }
     </script>
 }
+

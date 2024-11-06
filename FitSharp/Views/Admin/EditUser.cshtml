@@ -1,17 +1,17 @@
-﻿@model FitSharp.Models.UserViewModel
+﻿@model FitSharp.Models.AdminEditUserViewModel
 @{
     ViewData["Title"] = "EditUser";
 }
 
-
 <div class="row">
     <div class="col-md-4 offset-md-4 transparent-card">
-
         <h2>Edit User Information</h2>
 
         <form method="post" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly"></div>
+            <input type="hidden" asp-for="UserType" />
 
+            <!-- Campos comuns para todos os usuários -->
             <div class="form-group">
                 <label asp-for="ImageFile" class="control-label"></label>
                 <input asp-for="ImageFile" type="file" class="form-control" />
@@ -54,9 +54,48 @@
                 <span asp-validation-for="PhoneNumber" class="text-warning"></span>
             </div>
 
+            <!-- Campos específicos para Customer -->
+            @if (Model.UserType == "Customer")
+            {
+                <div class="form-group">
+                    <label asp-for="MembershipId" class="control-label">Membership</label>
+                    <select asp-for="MembershipId" asp-items="Model.Memberships" class="form-control"></select>
+                    <span asp-validation-for="MembershipId" class="text-danger"></span>
+                </div>
+            }
+
+            <!-- Campos específicos para Employee -->
+            @if (Model.UserType == "Employee")
+            {
+                <div class="form-group">
+                    <label asp-for="GymId" class="control-label">Gym</label>
+                    <select asp-for="GymId" asp-items="Model.Gyms" class="form-control"></select>
+                    <span asp-validation-for="GymId" class="text-danger"></span>
+                </div>
+            }
+
+            <!-- Campos específicos para Instructor -->
+            @if (Model.UserType == "Instructor")
+            {
+                <div class="form-group">
+                    <label asp-for="GymId" class="control-label">Gym</label>
+                    <select asp-for="GymId" asp-items="Model.Gyms" class="form-control"></select>
+                    <span asp-validation-for="GymId" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Speciality">Speciality</label>
+                    <input asp-for="Speciality" class="form-control" />
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Description">Description</label>
+                    <textarea asp-for="Description" class="form-control"></textarea>
+                </div>
+            }
+
             <div class="form-group">
                 <input type="submit" value="Update" class="btn btn-primary shadow" />
-                @* <a asp-action="ChangePassword" class="btn btn-success">Change Password</a> *@
                 <a href="~/Admin/index" class="btn btn-primary roundedwithshadow"><i class="fas fa-list"></i> Return to users list</a>
             </div>
 
@@ -74,7 +113,9 @@
         $(document).ready(function () {
             var selectedCountry = '@Model.CountryId';
             var selectedCity = '@Model.CityId';
+            var selectedMembership = '@Model.MembershipId';
 
+            // Função para carregar as cidades com base no countryId e pré-selecionar a cidade
             function loadCities(countryId, selectedCity) {
                 $("#CityId").empty();
                 $.ajax({
@@ -103,45 +144,26 @@
                 });
             }
 
-            function showCountryError() {
-                if ($("#country-error").length === 0) {
-                    $("#CountryId").after('<span id="country-error" class="text-danger">Please select a valid country.</span>');
-                }
-            }
-
-            function hideCountryError() {
-                $("#country-error").remove();
-            }
-
+            // Carrega as cidades automaticamente ao carregar a página com o país pré-selecionado
             if (selectedCountry && selectedCountry !== "0") {
                 $("#CountryId").val(selectedCountry);
                 loadCities(selectedCountry, selectedCity);
             }
 
+            // Ao mudar o país, carrega as cidades correspondentes
             $("#CountryId").change(function () {
                 var countryId = $(this).val();
                 if (countryId && countryId !== "0") {
                     loadCities(countryId, null);
-                    hideCountryError();
                 } else {
-                    showCountryError();
-                    $("#CityId").empty();
-                    $("#CityId").append('<option value="0">(Select a city...)</option>');
+                    $("#CityId").empty().append('<option value="0">(Select a city...)</option>');
                 }
             });
 
-            $("#CityId").change(function () {
-                var countryId = $("#CountryId").val();
-                if (!countryId || countryId === "0") {
-                    showCountryError();
-                }
-            });
+            // Pré-seleciona a Membership
+            if (selectedMembership && selectedMembership !== "0") {
+                $("#MembershipId").val(selectedMembership);
+            }
         });
     </script>
 }
-
-
-
-
-
-

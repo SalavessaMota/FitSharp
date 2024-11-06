@@ -1,27 +1,24 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace FitSharp.Models
 {
-    public class AdminEditUserViewModel
+    public class AdminEditUserViewModel : UserViewModel
     {
-        public string UserId { get; set; }
+        // Propriedade para identificar o tipo do usuário (Admin, Customer, Employee, Instructor)
+        public string UserType { get; set; }
 
-        [Display(Name = "Full Name")]
-        public string Fullname { get; set; }
+        // Propriedades específicas para Customer
+        public int? MembershipId { get; set; }
+        public IEnumerable<SelectListItem> Memberships { get; set; }
 
-        public string Email { get; set; }
+        // Propriedades específicas para Employee
+        public int? GymId { get; set; }
+        public IEnumerable<SelectListItem> Gyms { get; set; }
 
-        public string Role { get; set; }
-
-        public string Address { get; set; }
-
-        public string CityName { get; set; }
-
-        public string CountryName { get; set; }
-
-        public bool IsActive { get; set; }
-
-        public string ImageFullPath { get; set; }
+        // Propriedades específicas para Instructor (herda GymId de Employee)
+        public string Speciality { get; set; }
+        public string Description { get; set; }
     }
 }

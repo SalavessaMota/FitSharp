@@ -102,6 +102,10 @@ html {
 body {
     /* Margin bottom by footer height */
     margin-bottom: 60px;
+    background-image: url('https://aircinelmvc.blob.core.windows.net/resources/backgroundimageFitsharp.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
 }
 
 .footer {
@@ -145,7 +149,7 @@ video#bgVideo {
 
 
 .wider-container {
-    max-width: 2000px; /* ou outro valor que prefiras */
+   max-width: 70%;
 }
 
 /*Datatables*/

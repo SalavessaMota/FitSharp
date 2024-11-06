@@ -16,6 +16,8 @@ namespace FitSharp.Data
 
         Task<Employee> GetEmployeeByUserIdAsync(string id);
 
+        Task<Instructor> GetInstructorByUserIdAsync(string id);
+
         Task<Admin> GetAdminByUserIdAsync(string id);
 
         Task<bool> IsCustomerAsync(User user);
@@ -60,5 +62,13 @@ namespace FitSharp.Data
         Instructor GetInstructorByUserName(string instructorName);
 
         IEnumerable<SelectListItem> GetComboInstructors();
+
+        Task AddToSpecificTableAsync(User user, string role);
+
+        Task RemoveFromSpecificTableAsync(User user);
+
+        string DetermineUserType(User user);
+
+        Task UpdateCustomerAsync(Customer customer);
     }
 }

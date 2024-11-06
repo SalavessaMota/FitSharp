@@ -411,8 +411,13 @@ namespace FitSharp.Controllers
             return this.View(model);
         }
 
-        public IActionResult SetPassword(string token, string email)
-        {
+        public async Task<IActionResult> SetPassword(string token, string email)
+        {     
+            if (this.User.Identity.IsAuthenticated)
+            {
+                await _userHelper.LogoutAsync();
+            }
+
             return View();
         }
 

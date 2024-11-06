@@ -1,4 +1,5 @@
 ﻿using FitSharp.Entities;
+using System;
 
 namespace FitSharp.Data.Entities
 {
@@ -11,7 +12,12 @@ namespace FitSharp.Data.Entities
         public int? MembershipId { get; set; }
         public virtual Membership Membership { get; set; }
 
+        public int ClassesRemaining { get; set; }
 
+        public DateTime MembershipBeginDate { get; set; }
+        public DateTime MembershipEndDate { get; set; }
+
+        public bool MembershipIsActive { get; set; }
 
         //public virtual ICollection<GroupClass> GroupClasses { get; set; }
 

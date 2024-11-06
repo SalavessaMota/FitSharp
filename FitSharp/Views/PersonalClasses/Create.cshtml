@@ -24,6 +24,12 @@
                             <th>Photo</th>
                             <th></th>
                         </tr>
+                        <tr>
+                            <th><input type="text" placeholder="Search Name" class="form-control" /></th>
+                            <th><input type="text" placeholder="Search Email" class="form-control" /></th>
+                            <th></th>
+                            <th></th>
+                        </tr>
                     </thead>
                     <tbody>
                         @foreach (var item in Model)
@@ -52,92 +58,33 @@
 </div>
 
 <div class="text-center">
-    @* <button type="button" class="btn btn-primary btn-lg mt-3 roundedwithshadow" data-toggle="modal" data-target="#registerUserModal">
-    <i class="fa fa-user-plus"></i> Register New User
-    </button> *@
     <a href="~/Home/index" class="btn btn-primary btn-lg mt-3 roundedwithshadow"><i class="fas fa-home"></i> Return Home</a>
-</div>
-
-<div id="registerUserModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="registerUserModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content roundedwithshadow">
-            <div class="modal-header">
-                <h5 class="modal-title" id="registerUserModalLabel">Select User Type</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <p>Please select the type of user you wish to register:</p>
-                <div class="list-group">
-                    <button type="button" class="list-group-item list-group-item-action" onclick="redirectTo('Admin/RegisterAdmin')">
-                        <i class="fas fa-user-shield"></i> Admin
-                    </button>
-                    <button type="button" class="list-group-item list-group-item-action" onclick="redirectTo('Admin/RegisterEmployee')">
-                        <i class="fas fa-briefcase"></i> Employee
-                    </button>
-                    <button type="button" class="list-group-item list-group-item-action" onclick="redirectTo('Admin/RegisterInstructor')">
-                        <i class="fas fa-chalkboard-teacher"></i> Instructor
-                    </button>
-                    <button type="button" class="list-group-item list-group-item-action" onclick="redirectTo('Admin/RegisterCustomer')">
-                        <i class="fas fa-user"></i> Customer
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div id="deleteDialog" class="modal fade roundedwithshadow">
-    <div class="modal-dialog modal-sm">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title">Delete</h4>
-                <button type="button" class="close" data-dismiss="modal"><i class="fa fa-window-close"></i></button>
-            </div>
-            <div class="modal-body">
-                <p>Do you want to delete this user?</p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-danger" id="btnYesDelete">Delete</button>
-                <button type="button" class="btn btn-success" id="btnNoDelete">No</button>
-            </div>
-        </div>
-    </div>
 </div>
 
 @section Scripts {
     @await Html.PartialAsync("_ValidationScriptsPartial")
 
-    <script type="text/javascript">
-        $(document).ready(function () {
-            var id = 0;
-            $('a.btnDelete').click(function () {
-                id = $(this).data('id');
-                $("#deleteDialog").modal('show');
-                return false;
-            });
-
-            $("#btnNoDelete").click(function () {
-                $("#deleteDialog").modal('hide');
-                return false;
-            });
-
-            $("#btnYesDelete").click(function () {
-                window.location.href = '/Admin/DeleteUser/' + id;
-            });
-        });
-
-        function redirectTo(actionUrl) {
-            window.location.href = '/' + actionUrl;
-        }
-    </script>
-
+    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
     <script src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.10.25/js/dataTables.bootstrap4.min.js"></script>
+
     <script type="text/javascript">
         $(document).ready(function () {
-            $('#MyTable').DataTable();
+            var table = $('#MyTable').DataTable({
+                orderCellsTop: true,
+                initComplete: function () {
+                    var api = this.api();
+
+                    api.columns().every(function () {
+                        var column = this;
+                        $('input', $(column.header()).closest('thead').find('tr:eq(1) th').eq(column.index())).on('keyup change clear', function () {
+                            if (column.search() !== this.value) {
+                                column.search(this.value).draw();
+                            }
+                        });
+                    });
+                }
+            });
         });
     </script>
 }
