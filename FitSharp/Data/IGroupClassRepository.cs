@@ -8,6 +8,6 @@ namespace FitSharp.Data
     {
         Task<GroupClass> GetGroupClassWithAllRelatedDataAsync(int id);
 
-        Task<IEnumerable<GroupClass>> GetGroupClassesAsyncWithAllRelatedDataAsync();
+        Task<IEnumerable<GroupClass>> GetGroupClassesWithAllRelatedDataAsync();
     }
 }

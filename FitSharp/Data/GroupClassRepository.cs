@@ -27,7 +27,7 @@ namespace FitSharp.Data
                 .FirstOrDefaultAsync(g => g.Id == id);
         }
 
-        public async Task<IEnumerable<GroupClass>> GetGroupClassesAsyncWithAllRelatedDataAsync()
+        public async Task<IEnumerable<GroupClass>> GetGroupClassesWithAllRelatedDataAsync()
         {
             return await _dataContext.GroupClasses
                 .Include(g => g.Room)

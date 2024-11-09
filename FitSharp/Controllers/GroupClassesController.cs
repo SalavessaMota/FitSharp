@@ -38,7 +38,7 @@ namespace FitSharp.Controllers
 
         public async Task<IActionResult> Index(string filter)
         {
-            var classes = await _groupClassRepository.GetGroupClassesAsyncWithAllRelatedDataAsync();
+            var classes = await _groupClassRepository.GetGroupClassesWithAllRelatedDataAsync();
 
             switch (filter)
             {
