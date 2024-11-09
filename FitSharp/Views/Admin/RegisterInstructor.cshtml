@@ -9,6 +9,24 @@
         <h2>Register New Instructor</h2>
 
 
+        <div class="text-success text-center mt-3">
+            <h6>
+                @if (ViewBag.SuccessMessage != null)
+                {
+                    <div class="alert alert-success" id="successMessage">
+                        @ViewBag.SuccessMessage
+                    </div>
+                }
+                @if (ViewBag.ErrorMessage != null)
+                {
+                    <div class="alert alert-danger" id="errorMessage">
+                        @ViewBag.ErrorMessage
+                    </div>
+                }
+            </h6>
+        </div>
+
+
         <form method="post" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly"></div>
 
@@ -53,9 +71,18 @@
 
     <script type="text/javascript">
         $(document).ready(function () {
-            var successMessage = '@ViewBag.Message';
-            if (successMessage !== "") {
-                $('#successModal').modal('show');
+            // Verificar se há mensagens de sucesso ou erro
+            var successMessage = '@ViewBag.SuccessMessage';
+            var errorMessage = '@ViewBag.ErrorMessage';
+
+            // Se houver uma mensagem de sucesso, exibi-la e definir um tempo para desaparecer
+            if (successMessage) {
+                $('#successMessage').fadeIn().delay(5000).fadeOut();
+            }
+
+            // Se houver uma mensagem de erro, exibi-la e definir um tempo para desaparecer
+            if (errorMessage) {
+                $('#errorMessage').fadeIn().delay(5000).fadeOut();
             }
 
             $('#btnOk').click(function () {

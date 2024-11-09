@@ -411,20 +411,26 @@ namespace FitSharp.Controllers
             return this.View(model);
         }
 
-        public async Task<IActionResult> SetPassword(string token, string email)
+        public async Task<IActionResult> SetPassword(string token, string userId)
         {     
             if (this.User.Identity.IsAuthenticated)
             {
                 await _userHelper.LogoutAsync();
             }
 
-            return View();
+            var model = new SetPasswordViewModel
+            {
+                UserId = userId,
+                Token = token
+            };
+
+            return View(model);
         }
 
         [HttpPost]
         public async Task<IActionResult> SetPassword(SetPasswordViewModel model)
         {
-            var user = await _userRepository.GetUserByEmailAsync(model.Email);
+            var user = await _userRepository.GetUserByIdAsync(model.UserId);
 
             if (user != null)
             {

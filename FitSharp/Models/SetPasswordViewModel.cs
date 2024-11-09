@@ -5,7 +5,7 @@ namespace FitSharp.Models
     public class SetPasswordViewModel
     {
         [Required]
-        public string Email { get; set; }
+        public string UserId { get; set; }
 
         [Required]
         [DataType(DataType.Password)]

@@ -122,7 +122,7 @@ public class AdminController : Controller
                 string tokenLink = Url.Action("SetPassword", "Account", new
                 {
                     token = myToken,
-                    email = user.Email
+                    userId = user.Id
                 }, protocol: HttpContext.Request.Scheme);
 
                 Response response = _mailHelper.SendEmail(model.Username, "FitSharp - Set Your Password",
@@ -138,25 +138,25 @@ public class AdminController : Controller
 
                 if (response.IsSuccess)
                 {
-                    ViewBag.Message = "The account has been created, and the user has been sent an email to set their password.";
+                    ViewBag.SuccessMessage = "The account has been created, and the user has been sent an email to set their password.";
 
                     ModelState.Clear();
 
-                    return View(model = new AdminRegisterNewEmployeeViewModel
+                    return View(new AdminRegisterNewEmployeeViewModel
                     {
                         Countries = _countryRepository.GetComboCountries(),
-                        Cities = await _countryRepository.GetComboCitiesAsync(1),
-                        Gyms = _gymRepository.GetComboGyms()
+                        Cities = await _countryRepository.GetComboCitiesAsync(1)
                     });
                 }
+
+                ViewBag.ErrorMessage = "An error occurred while registering the user.";
 
                 return RedirectToAction("Index", "Admin");
             }
         }
 
         model.Countries = _countryRepository.GetComboCountries();
-        model.Cities = await _countryRepository.GetComboCitiesAsync(1);
-        model.Gyms = _gymRepository.GetComboGyms();
+        model.Cities = await _countryRepository.GetComboCitiesAsync(model.CountryId);
 
         return View(model);
     }
@@ -214,7 +214,7 @@ public class AdminController : Controller
                 string tokenLink = Url.Action("SetPassword", "Account", new
                 {
                     token = myToken,
-                    email = user.Email
+                    userId = user.Id
                 }, protocol: HttpContext.Request.Scheme);
 
                 Response response = _mailHelper.SendEmail(model.Username, "FitSharp - Set Your Password",
@@ -230,25 +230,25 @@ public class AdminController : Controller
 
                 if (response.IsSuccess)
                 {
-                    ViewBag.Message = "The account has been created, and the user has been sent an email to set their password.";
+                    ViewBag.SuccessMessage = "The account has been created, and the user has been sent an email to set their password.";
 
                     ModelState.Clear();
 
-                    return View(model = new AdminRegisterNewInstructorViewModel
+                    return View(new AdminRegisterNewInstructorViewModel
                     {
                         Countries = _countryRepository.GetComboCountries(),
-                        Cities = await _countryRepository.GetComboCitiesAsync(1),
-                        Gyms = _gymRepository.GetComboGyms()
+                        Cities = await _countryRepository.GetComboCitiesAsync(1)
                     });
                 }
 
-                model.Countries = _countryRepository.GetComboCountries();
-                model.Cities = await _countryRepository.GetComboCitiesAsync(1);
-                model.Gyms = _gymRepository.GetComboGyms();
+                ViewBag.ErrorMessage = "An error occurred while registering the user.";
 
                 return RedirectToAction("Index", "Admin");
             }
         }
+
+        model.Countries = _countryRepository.GetComboCountries();
+        model.Cities = await _countryRepository.GetComboCitiesAsync(model.CountryId);
 
         return View(model);
     }
@@ -298,12 +298,12 @@ public class AdminController : Controller
                 string tokenLink = Url.Action("SetPassword", "Account", new
                 {
                     token = myToken,
-                    email = user.Email
+                    userId = user.Id
                 }, protocol: HttpContext.Request.Scheme);
 
                 Response response = _mailHelper.SendEmail(model.Username, "FitSharp - Set your Password",
                                         $"<h1 style=\"color:#1E90FF;\">Welcome to FitSharp!</h1>" +
-                                        $"<p>Your admin account has been created by an authorized personnel.</p>" +
+                                        $"<p>Your account has been created by an authorized personnel.</p>" +
                                         $"<p>To complete your registration, please set your password by clicking the link below:</p>" +
                                         $"<p><a href = \"{tokenLink}\" style=\"color:#FFA500; font-weight:bold;\">Set Password</a></p>" +
                                         $"<p>If you didn’t expect this registration or believe it was a mistake, please contact us or disregard this        email.</p>" +
@@ -314,22 +314,25 @@ public class AdminController : Controller
 
                 if (response.IsSuccess)
                 {
-                    ViewBag.Message = "The account has been created, and the user has been sent an email to set their password.";
+                    ViewBag.SuccessMessage = "The account has been created, and the user has been sent an email to set their password.";
 
                     ModelState.Clear();
 
-                    return View( model = new AdminRegisterNewUserViewModel
+                    return View(new AdminRegisterNewUserViewModel
                     {
                         Countries = _countryRepository.GetComboCountries(),
                         Cities = await _countryRepository.GetComboCitiesAsync(1)
                     });
                 }
+
+                ViewBag.ErrorMessage = "An error occurred while registering the user.";
+
                 return RedirectToAction("Index", "Admin");
             }
         }
 
         model.Countries = _countryRepository.GetComboCountries();
-        model.Cities = await _countryRepository.GetComboCitiesAsync(1);
+        model.Cities = await _countryRepository.GetComboCitiesAsync(model.CountryId);
 
         return View(model);
     }
@@ -388,12 +391,13 @@ public class AdminController : Controller
                 var myToken = await _userHelper.GeneratePasswordResetTokenAsync(user);
                 string tokenLink = Url.Action("SetPassword", "Account", new
                 {
-                    token = myToken
+                    token = myToken,
+                    userId = user.Id
                 }, protocol: HttpContext.Request.Scheme);
 
                 Response response = _mailHelper.SendEmail(model.Username, "FitSharp - Set your Password",
                                         $"<h1 style=\"color:#1E90FF;\">Welcome to FitSharp!</h1>" +
-                                        $"<p>Your admin account has been created by an authorized personnel.</p>" +
+                                        $"<p>Your account has been created by an authorized personnel.</p>" +
                                         $"<p>To complete your registration, please set your password by clicking the link below:</p>" +
                                         $"<p><a href = \"{tokenLink}\" style=\"color:#FFA500; font-weight:bold;\">Set Password</a></p>" +
                                         $"<p>If you didn’t expect this registration or believe it was a mistake, please contact us or disregard this        email.</p>" +
@@ -404,7 +408,7 @@ public class AdminController : Controller
 
                 if (response.IsSuccess)
                 {
-                    ViewBag.SuccessMessage = "The admin account has been created, and the user has been sent an email to set their password.";
+                    ViewBag.SuccessMessage = "The account has been created, and the user has been sent an email to set their password.";
 
                     ModelState.Clear();
 
@@ -598,8 +602,7 @@ public class AdminController : Controller
             }
         }
         
-        // Caso para Admin - se houver propriedades específicas, adiciona-as aqui
-
+        // Caso para Admin
         return View(adminUserViewModel);
     }
 
