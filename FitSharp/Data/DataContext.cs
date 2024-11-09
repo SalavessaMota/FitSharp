@@ -29,6 +29,8 @@ namespace FitSharp.Data
 
         public DbSet<Membership> Memberships { get; set; }
 
+        public DbSet<Review> Reviews { get; set; }
+
         public DataContext(DbContextOptions<DataContext> options) : base(options)
         {
         }
