@@ -30,14 +30,14 @@
                     <ul class="navbar-nav d-flex align-items-center">                        
                         <li class="nav-item">
                             <a class="nav-link text-dark d-flex align-items-center" asp-area="" asp-controller="Home" asp-action="Index">
-                                <i class="fas fa-home mr-2"></i>@* Home *@
+                                <i class="fas fa-home mr-2 fa-lg"></i>@* Home *@
                             </a>
                         </li>
 
                         @if (this.User.Identity.IsAuthenticated && this.User.IsInRole("Admin")) // If user is admin
                         {
                             <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-cogs mr-1" aria-hidden="true"></i>Admin</a>
+                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-cogs mr-1 fa-lg" aria-hidden="true"></i>Admin</a>
                                 <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                                     <li><a class="dropdown-item" asp-area="" asp-controller="Admin" asp-action=""><i class="fas fa-user-cog"></i>  Users</a></li>
                                     <li><a class="dropdown-item" asp-area="" asp-controller="Countries" asp-action=""><i class="fas fa-globe-europe mr-1"></i>  Countries/Cities</a></li>
@@ -51,7 +51,7 @@
                         @if (this.User.Identity.IsAuthenticated && this.User.IsInRole("Employee")) // If user is employee
                         {
                             <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-cogs"></i> Management</a>
+                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-cogs fa-lg"></i> Management</a>
                                 <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                                     <li><a class="dropdown-item" asp-area="" asp-controller="ClassTypes" asp-action=""><i class="fas fa-chalkboard-teacher"></i> Class Types</a></li>
                                 </ul>
@@ -61,7 +61,7 @@
                         @if (this.User.Identity.IsAuthenticated && this.User.IsInRole("Instructor")) // If user is instructor
                         {
                             <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-cogs"></i> Classes</a>
+                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-cogs fa-lg"></i> Classes</a>
                                 <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                                     <li><a class="dropdown-item" asp-area="" asp-controller="PersonalClasses" asp-action=""><i class="fas fa-chalkboard-teacher"></i> Personal Classes</a></li>
                                     <li><a class="dropdown-item" asp-area="" asp-controller="GroupClasses" asp-action=""><i class="fas fa-users"></i> Group Classes</a></li>
@@ -72,7 +72,7 @@
                         @if (this.User.Identity.IsAuthenticated && this.User.IsInRole("Customer")) // If user is customer
                         {
                             <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-cogs"></i> Your Past Classes</a>
+                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-cogs fa-lg"></i> Your Past Classes</a>
                                 <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                                     <li><a class="dropdown-item" asp-area="" asp-controller="PersonalClasses" asp-action="CustomerPastPersonalClasses" asp-route-username="@User.Identity.Name"><i class="fas fa-chalkboard-teacher"></i> Personal Classes</a></li>
                                     <li><a class="dropdown-item" asp-area="" asp-controller="GroupClasses" asp-action="CustomerPastGroupClasses"><i class="fas fa-users"></i> Group Classes</a></li>
@@ -97,12 +97,12 @@
                                     {
                                         <img src="@user.ImageFullPath" alt="Profile Picture" style="width: 35px; height: 35px; border-radius: 50%; margin-right: 10px;" />
                                     }
-                                    <i class="fas fa-user-circle mr-2"></i>@* Edit Account *@
+                                <i class="fas fa-user-circle mr-2 fa-lg"></i>@* Edit Account *@
                                 </a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link text-dark d-flex align-items-center" asp-area="" asp-controller="Account" asp-action="Logout">
-                                    <i class="fas fa-sign-out-alt mr-2"></i>@* Logout *@
+                                    <i class="fas fa-sign-out-alt mr-2 fa-lg"></i>@* Logout *@
                                 </a>
                             </li>
                         }
@@ -110,13 +110,13 @@
                         {
                             <li class="nav-item">
                                 <a class="nav-link text-dark d-flex align-items-center" asp-area="" asp-controller="Account" asp-action="Login">
-                                    <i class="fas fa-sign-in-alt mr-2"></i>@* Login *@
+                                    <i class="fas fa-sign-in-alt mr-2 fa-lg"></i>@* Login *@
                                 </a>
                             </li>
                         }
                         <li class="nav-item">
                             <a class="nav-link text-dark d-flex align-items-center" asp-area="" asp-controller="Home" asp-action="Privacy">
-                                <i class="fas fa-user-secret mr-2"></i>@* Privacy *@
+                                <i class="fas fa-user-secret mr-2 fa-lg"></i>@* Privacy *@
                             </a>
                         </li>
                     </ul>
