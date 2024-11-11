@@ -16,5 +16,7 @@ namespace FitSharp.Data
         Task DeleteReview(Review review);
 
         Task<IEnumerable<Review>> GetReviewsWithAllRelatedDataAsync();
+
+        bool CustomerAlreadyReviewed(int customerId, int instructorId);
     }
 }

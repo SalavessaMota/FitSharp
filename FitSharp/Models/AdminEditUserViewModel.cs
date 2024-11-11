@@ -20,7 +20,7 @@ namespace FitSharp.Models
         public int? GymId { get; set; }
         public IEnumerable<SelectListItem> Gyms { get; set; }
 
-        public string GymName { get; set; }
+        public Gym Gym { get; set; }
 
         // Propriedades específicas para Instructor (herda GymId de Employee)
         public string Speciality { get; set; }

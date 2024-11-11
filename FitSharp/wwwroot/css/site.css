@@ -1,9 +1,12 @@
-﻿/* Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
-for details on configuring this project to bundle and minify static web assets. */
+﻿/* Cor primária do logo */
+.text-logo-primary {
+    color: #B70D00;
+}
 
-
+/* Navbar */
 .navbar {
     z-index: 100;
+    background-color: #FFFFFF; /* Fundo branco */
 }
 
 a.navbar-brand {
@@ -12,11 +15,17 @@ a.navbar-brand {
     word-break: break-all;
 }
 
-/* Provide sufficient contrast against white background */
+/* Links */
 a {
-    color: #0366d6;
+    color: #333333; /* Cor neutra para links */
+    transition: color 0.3s ease;
 }
 
+    a:hover {
+        color: #B70D00; /* Cor ao passar o mouse */
+    }
+
+/* Botões */
 .btn {
     margin: 5px;
     border: none;
@@ -25,56 +34,95 @@ a {
     transition: background-color 0.3s, transform 0.2s;
 }
 
-    /* Hover effect */
+    /* Efeito de hover */
     .btn:hover {
-        background-color: #0056b3;
         transform: scale(1.05);
     }
 
-    /* Click effect */
+    /* Efeito de clique */
     .btn:active {
-        background-color: #004494;
         transform: scale(0.98);
     }
 
+/* Botão Primário */
 .btn-primary {
-    color: #fff;
-    background-color: #1b6ec2;
-    border-color: #1861ac;
+    color: #FFFFFF;
+    background-color: #B70D00; /* Cor primária */
+    border-color: #960C00; /* Tom mais escuro */
 }
 
+    .btn-primary:hover {
+        background-color: #960C00; /* Escurece no hover */
+    }
+
+/* Botão Secundário */
+.btn-secondary {
+    color: #FFFFFF;
+    background-color: #1B6EC2; /* Cor complementar */
+    border-color: #1861AC;
+}
+
+    .btn-secondary:hover {
+        background-color: #165A9F;
+    }
+
+/* Nav Pills Ativo */
 .nav-pills .nav-link.active, .nav-pills .show > .nav-link {
-    color: #fff;
-    background-color: #1b6ec2;
-    border-color: #1861ac;
+    color: #FFFFFF;
+    background-color: #B70D00; /* Cor primária */
+    border-color: #960C00;
 }
 
 /* Efeito de hover para os itens da navbar */
-.navbar-nav .nav-link:hover {
-    color: #0056b3;
-    transform: scale(1.05);
-    transition: all 0.3s ease;
+.navbar-nav .nav-link {
+    color: #333333; /* Cor neutra */
+    transition: color 0.3s ease, transform 0.3s ease;
 }
 
-/* Efeito de clique para os itens da navbar */
-.navbar-nav .nav-link:active {
-    color: #004494;
-    transform: scale(0.98);
-    transition: all 0.1s ease;
-}
-
-/* Sticky footer styles
--------------------------------------------------- */
-html {
-    font-size: 14px;
-}
-
-@media (min-width: 768px) {
-    html {
-        font-size: 16px;
+    .navbar-nav .nav-link:hover {
+        color: #B70D00; /* Cor ao passar o mouse */
+        transform: scale(1.05);
     }
+
+    /* Efeito de hover para os ícones FontAwesome na navbar */
+    .navbar-nav .nav-link i {
+        color: #333333; /* Cor padrão dos ícones */
+        transition: color 0.3s ease;
+    }
+
+    .navbar-nav .nav-link:hover i {
+        color: #B70D00; /* Cor vermelha ao passar o mouse */
+    }
+
+    /* Efeito de hover para o texto "Admin" no dropdown */
+    .navbar-nav .nav-link.dropdown-toggle {
+        color: #333333; /* Cor neutra padrão */
+        transition: color 0.3s ease;
+    }
+
+        .navbar-nav .nav-link.dropdown-toggle:hover {
+            color: #B70D00; /* Cor vermelha ao passar o mouse */
+        }
+
+    .navbar-nav .nav-link:active {
+        color: #960C00; /* Cor ao clicar */
+        transform: scale(0.98);
+    }
+
+/* Efeito de hover para o logo */
+.navbar-brand {
+    transition: transform 0.3s ease;
 }
 
+    .navbar-brand:hover {
+        transform: scale(1.05);
+    }
+
+    .navbar-brand:active {
+        transform: scale(0.98);
+    }
+
+/* Bordas */
 .border-top {
     border-top: 1px solid #e5e5e5;
 }
@@ -83,6 +131,7 @@ html {
     border-bottom: 1px solid #e5e5e5;
 }
 
+/* Sombra */
 .box-shadow {
     box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
 }
@@ -92,38 +141,49 @@ button.accept-policy {
     line-height: inherit;
 }
 
-/* Sticky footer styles
--------------------------------------------------- */
+/* HTML e Body */
 html {
     position: relative;
     min-height: 100%;
+    font-size: 14px;
+}
+
+@media (min-width: 768px) {
+    html {
+        font-size: 16px;
+    }
 }
 
 body {
-    /* Margin bottom by footer height */
+    /* Margem inferior pelo tamanho do footer */
     margin-bottom: 60px;
+    background-color: #F5F5F5; /* Fundo suave */
     background-image: url('https://aircinelmvc.blob.core.windows.net/resources/backgroundimageFitsharp2.png');
     background-size: cover;
     background-repeat: no-repeat;
     background-attachment: fixed;
+    font-weight: bold;
 }
 
+/* Footer */
 .footer {
     position: absolute;
     bottom: 0;
     width: 100%;
     white-space: nowrap;
-    line-height: 60px; /* Vertically center the text there */
-    background-color: white;
+    line-height: 60px;
+    background-color: #FFFFFF;
 }
 
+/* Cards e Containers */
 .transparent-card {
-    background-color: rgba(255, 255, 255, 0.5);
+    background-color: rgba(235, 235, 235, 0.8); /* Tom cinza claro com transparência */
     border-radius: 15px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
     padding: 20px;
     backdrop-filter: blur(10px);
     overflow: auto;
+    max-width: 100%; /* Ocupa a largura total em ecrãs pequenos */
 }
 
 .roundedwithshadow {
@@ -131,8 +191,7 @@ body {
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
 }
 
-/*Background Video
-    --------------------------------------------------*/
+/* Vídeo de Fundo */
 video#bgVideo {
     position: fixed;
     top: 50%;
@@ -147,19 +206,26 @@ video#bgVideo {
     z-index: -100;
 }
 
-
+/* Container mais largo */
 .wider-container {
-   max-width: 70%;
+    max-width: 70%; /* Em ecrãs médios e grandes */
+    margin: 0 auto; /* Centraliza o container */
 }
 
-/*Datatables*/
+@media (max-width: 900px) { /* Para ecrãs pequenos */
+    .wider-container {
+        max-width: 100%; /* Usa toda a largura em ecrãs pequenos */
+    }
+}
+
+/* DataTables */
 /*table.dataTable {
     table-layout: fixed;
     width: 100%;
 }
 
-    table.dataTable th,
-    table.dataTable td {
-        word-break: break-word;  Permite quebra entre palavras 
-        white-space: normal;  Permite que o texto quebre para uma nova linha 
-    }*/
+table.dataTable th,
+table.dataTable td {
+    word-break: break-word;  Permite quebra entre palavras 
+    white-space: normal;  Permite que o texto quebre para uma nova linha 
+}*/

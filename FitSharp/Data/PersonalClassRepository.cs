@@ -43,13 +43,18 @@ namespace FitSharp.Data
         {
             return _context.PersonalClasses
                 .Include(p => p.Room)
-                .ThenInclude(r => r.Gym)
+                    .ThenInclude(r => r.Gym)
                 .Include(p => p.ClassType)
                 .Include(p => p.Instructor)
-                .ThenInclude(i => i.User)
+                    .ThenInclude(i => i.User)
+                .Include(p => p.Instructor)
+                    .ThenInclude(i => i.Reviews)
+                        .ThenInclude(r => r.Customer)
                 .Include(p => p.Customer)
-                .ThenInclude(c => c.User)
+                    .ThenInclude(c => c.User)
                 .Where(p => p.Instructor.User.UserName == name || p.Customer.User.UserName == name);
         }
+
+
     }
 }

@@ -61,10 +61,21 @@
                         @if (this.User.Identity.IsAuthenticated && this.User.IsInRole("Instructor")) // If user is instructor
                         {
                             <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-cogs"></i> Management</a>
+                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-cogs"></i> Classes</a>
                                 <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                                     <li><a class="dropdown-item" asp-area="" asp-controller="PersonalClasses" asp-action=""><i class="fas fa-chalkboard-teacher"></i> Personal Classes</a></li>
                                     <li><a class="dropdown-item" asp-area="" asp-controller="GroupClasses" asp-action=""><i class="fas fa-users"></i> Group Classes</a></li>
+                                </ul>
+                            </li>
+                        }
+
+                        @if (this.User.Identity.IsAuthenticated && this.User.IsInRole("Customer")) // If user is customer
+                        {
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-cogs"></i> Your Past Classes</a>
+                                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                    <li><a class="dropdown-item" asp-area="" asp-controller="PersonalClasses" asp-action="CustomerPastPersonalClasses" asp-route-username="@User.Identity.Name"><i class="fas fa-chalkboard-teacher"></i> Personal Classes</a></li>
+                                    <li><a class="dropdown-item" asp-area="" asp-controller="GroupClasses" asp-action="CustomerPastGroupClasses"><i class="fas fa-users"></i> Group Classes</a></li>
                                 </ul>
                             </li>
                         }

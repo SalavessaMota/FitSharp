@@ -436,6 +436,8 @@ public class AdminController : Controller
         var user = await _userRepository.GetUserWithCountryAndCityByIdAsync(id);
         if (user == null) return new NotFoundViewResult("UserNotFound");
 
+        //var entity = await _userRepository.GetEntityByUserIdAsync(user.Id);
+
         var model = new AdminEditUserViewModel
         {
             FirstName = user.FirstName,
@@ -447,34 +449,60 @@ public class AdminController : Controller
             CountryId = user.City.Country.Id
         };
 
-        switch (model.UserType)
+        // Obter a entidade associada ao usuário (Customer, Employee, Instructor, Admin)
+        var entity = await _userRepository.GetEntityByUserIdAsync(user.Id);
+        model.Entity = entity;
+
+        // Preenchendo propriedades específicas com base no tipo de usuário
+        if (entity is Customer customer)
         {
-            case "Customer":
-                var customer = await _userRepository.GetCustomerByUserIdAsync(user.Id);
-                if (customer != null)model.MembershipId = customer.MembershipId;
-                break;
-
-            case "Employee":
-                var employee = await _userRepository.GetEmployeeByUserIdAsync(user.Id);
-                if (employee != null)
-                {
-                    model.GymId = employee.GymId;
-                }
-                break;
-
-            case "Instructor":
-                var instructor = await _userRepository.GetInstructorByUserIdAsync(user.Id);
-                if (instructor != null)
-                {
-                    model.GymId = instructor.GymId;
-                    model.Speciality = instructor.Speciality;
-                    model.Description = instructor.Description;
-                }
-                break;
-
-            case "Admin":
-                break;
+            model.MembershipId = customer.MembershipId;
+            model.Membership = customer.Membership;
         }
+        else if (entity is Employee employee)
+        {
+            model.GymId = employee.GymId;
+            model.Gym = employee.Gym;
+
+            if (entity is Instructor instructor)
+            {
+                model.Speciality = instructor.Speciality;
+                model.Description = instructor.Description;
+            }
+        }
+
+        // Caso para Admin
+        //return View(model);
+
+
+        //switch (model.UserType)
+        //{
+        //    case "Customer":
+        //        var customer = await _userRepository.GetCustomerByUserIdAsync(user.Id);
+        //        if (customer != null)model.MembershipId = customer.MembershipId;
+        //        break;
+
+        //    case "Employee":
+        //        var employee = await _userRepository.GetEmployeeByUserIdAsync(user.Id);
+        //        if (employee != null)
+        //        {
+        //            model.GymId = employee.GymId;
+        //        }
+        //        break;
+
+        //    case "Instructor":
+        //        var instructor = await _userRepository.GetInstructorByUserIdAsync(user.Id);
+        //        if (instructor != null)
+        //        {
+        //            model.GymId = instructor.GymId;
+        //            model.Speciality = instructor.Speciality;
+        //            model.Description = instructor.Description;
+        //        }
+        //        break;
+
+        //    case "Admin":
+        //        break;
+        //}
 
         // Carregar países e cidades
         model.Countries = _countryRepository.GetComboCountries();
@@ -501,44 +529,69 @@ public class AdminController : Controller
         user.CityId = model.CityId;        
         user.PhoneNumber = model.PhoneNumber;
 
-        if(model.UserType == "Customer") 
+        //if(model.UserType == "Customer") 
+        //{
+        //    //var customer = await _userRepository.GetCustomerByUserIdAsync(user.Id);
+        //    var customer = await _userRepository.GetEntityByUserIdAsync(user.Id) as Customer;
+        //    if (customer != null)
+        //    {
+        //        customer.MembershipId = model.MembershipId;
+        //        await _userRepository.UpdateCustomerAsync(customer);
+        //    }
+        //}
+
+
+        // Atualizar campos específicos por tipo
+        //switch (model.UserType)
+        //{
+        //    case "Customer":
+        //        var customer = await _userRepository.GetEntityByUserIdAsync(user.Id) as Customer;
+        //        if (customer != null)
+        //        {
+        //            customer.MembershipId = model.MembershipId;
+        //            await _userRepository.UpdateCustomerAsync(customer);
+        //        }
+        //        break;
+
+        //    case "Employee":
+        //        var employee = await _userRepository.GetEntityByUserIdAsync(user.Id) as Employee;
+        //        if (employee != null) employee.GymId = model.GymId;
+        //        break;
+
+        //    case "Instructor":
+        //        var instructor = await _userRepository.GetEntityByUserIdAsync(user.Id) as Instructor;
+        //        if (instructor != null)
+        //        {
+        //            instructor.GymId = model.GymId;
+        //            instructor.Speciality = model.Speciality;
+        //            instructor.Description = model.Description;
+        //        }
+        //        break;
+        //}
+
+        // Obter a entidade associada ao usuário (Customer, Employee, Instructor, Admin)
+        var entity = await _userRepository.GetEntityByUserIdAsync(user.Id);
+        
+        // Preenchendo propriedades específicas com base no tipo de usuário
+        if (entity is Customer customer)
         {
-            var customer = await _userRepository.GetCustomerByUserIdAsync(user.Id);
-            if (customer != null)
+            //var customer = await _userRepository.GetEntityByUserIdAsync(user.Id) as Customer;
+            customer.MembershipId = model.MembershipId;
+            customer.Membership = model.Membership;
+        }
+        else if (entity is Employee employee)
+        {
+            employee.GymId = model.GymId;
+            employee.Gym = model.Gym;
+
+            if (entity is Instructor instructor)
             {
-                customer.MembershipId = model.MembershipId;
-                await _userRepository.UpdateCustomerAsync(customer);
+                instructor.Speciality = model.Speciality;
+                instructor.Description = model.Description;
             }
         }
 
 
-        // Atualizar campos específicos por tipo
-        switch (model.UserType)
-        {
-            case "Customer":
-                var customer = await _userRepository.GetCustomerByUserIdAsync(user.Id);
-                if (customer != null)
-                {
-                    customer.MembershipId = model.MembershipId;
-                    await _userRepository.UpdateCustomerAsync(customer);
-                }
-                break;
-
-            case "Employee":
-                var employee = await _userRepository.GetEmployeeByUserIdAsync(user.Id);
-                if (employee != null) employee.GymId = model.GymId;
-                break;
-
-            case "Instructor":
-                var instructor = await _userRepository.GetInstructorByUserIdAsync(user.Id);
-                if (instructor != null)
-                {
-                    instructor.GymId = model.GymId;
-                    instructor.Speciality = model.Speciality;
-                    instructor.Description = model.Description;
-                }
-                break;
-        }
 
         await _userRepository.UpdateUserAsync(user);
         TempData["Success"] = "User profile updated successfully.";
@@ -593,7 +646,7 @@ public class AdminController : Controller
         else if (entity is Employee employee)
         {
             adminUserViewModel.GymId = employee.GymId;
-            adminUserViewModel.GymName = employee.Gym?.Name;
+            adminUserViewModel.Gym = employee.Gym;
 
             if (entity is Instructor instructor)
             {

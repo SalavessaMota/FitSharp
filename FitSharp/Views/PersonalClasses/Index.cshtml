@@ -6,26 +6,26 @@
 
 <link rel="stylesheet" href="https://cdn.datatables.net/1.10.25/css/dataTables.bootstrap4.min.css" />
 
-<br />
-<p>
-    <a asp-action="Create" class="btn btn-primary roundedwithshadow"><i class="fa fa-save shadow-lg"></i> Create New</a>
-</p>
 
-<div class="row">
-    <div class="col-md-4 mb-3">
-        <label for="classFilter">Filter Classes:</label>
-        <select id="classFilter" class="form-control">
-            @foreach (var item in (List<SelectListItem>)ViewBag.CurrentFilter)
-            {
-                <option value="@item.Value" selected="@(item.Selected ? "selected" : null)">@item.Text</option>
-            }
-        </select>
-    </div>
-</div>
 
 <div class="row">
     <div class="col-12">
         <div class="card transparent-card">
+            <p>
+                <a asp-action="Create" class="btn btn-primary roundedwithshadow"><i class="fa fa-save shadow-lg"></i> Create New</a>
+            </p>
+            <br />
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <label for="classFilter">Filter Classes:</label>
+                    <select id="classFilter" class="form-control">
+                        @foreach (var item in (List<SelectListItem>)ViewBag.CurrentFilter)
+                        {
+                            <option value="@item.Value" selected="@(item.Selected ? "selected" : null)">@item.Text</option>
+                        }
+                    </select>
+                </div>
+            </div>
             <div class="card-header">
                 <h3 class="card-title">Personal Classes</h3>
             </div>
@@ -73,13 +73,13 @@
                     </tbody>
                 </table>
             </div>
+            <div class="text-center">
+                <a href="~/Home/index" class="btn btn-primary btn-lg mt-3 roundedwithshadow"><i class="fas fa-home"></i> Return Home</a>
+            </div>
         </div>
     </div>
 </div>
 
-<div class="text-center">
-    <a href="~/Home/index" class="btn btn-primary btn-lg mt-3 roundedwithshadow"><i class="fas fa-home"></i> Return Home</a>
-</div>
 
 <div id="deleteDialog" class="modal fade">
     <div class="modal-dialog modal-sm">

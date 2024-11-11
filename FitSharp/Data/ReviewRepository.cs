@@ -66,8 +66,15 @@ namespace FitSharp.Data
         {
             return await _context.Reviews
                 .Include(r => r.Customer)
+                .ThenInclude(c => c.User)
                 .Include(r => r.Instructor)
+                .ThenInclude(i => i.User)
                 .ToListAsync();
+        }
+
+        public bool CustomerAlreadyReviewed(int customerId, int instructorId)
+        {
+            return _context.Reviews.Any(r => r.CustomerId == customerId && r.InstructorId == instructorId);
         }
     }
 }

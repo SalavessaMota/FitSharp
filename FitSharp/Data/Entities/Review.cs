@@ -17,7 +17,7 @@ namespace FitSharp.Data.Entities
 
 
         [Required(ErrorMessage = "The field {0} is mandatory.")]
-        public DateTime ReviewDate { get; set; }
+        public DateTime ReviewDate { get; set; } = DateTime.Now;
 
 
         [Required(ErrorMessage = "The field {0} is mandatory.")]

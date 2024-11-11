@@ -5,14 +5,14 @@
 
 <link rel="stylesheet" href="https://cdn.datatables.net/1.10.25/css/dataTables.bootstrap4.min.css" />
 
-<br />
-<p>
-    <a asp-action="Create" class="btn btn-primary roundedwithshadow"><i class="fa fa-save shadow-lg"></i> Create New</a>
-</p>
 
 <div class="row">
     <div class="col-12">
         <div class="card transparent-card">
+            <p>
+                <a asp-action="Create" class="btn btn-primary roundedwithshadow"><i class="fa fa-save shadow-lg"></i> Create New</a>
+            </p>
+            <br />
             <div class="card-header">
                 <h3 class="card-title">Class types</h3>
             </div>
@@ -45,12 +45,11 @@
                     </tbody>
                 </table>
             </div>
+            <div class="text-center">
+                <a href="~/Home/index" class="btn btn-primary btn-lg mt-3 roundedwithshadow"><i class="fas fa-home"></i> Return Home</a>
+            </div>
         </div>
     </div>
-</div>
-
-<div class="text-center">
-    <a href="~/Home/index" class="btn btn-primary btn-lg mt-3 roundedwithshadow"><i class="fas fa-home"></i> Return Home</a>
 </div>
 
 <div id="deleteDialog" class="modal fade">

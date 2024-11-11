@@ -33,56 +33,13 @@ namespace FitSharp.Data
                 .Include(c => c.User);
         }
 
-        public async Task<Customer> GetCustomerByUserIdAsync(string id)
+        public async Task<Customer> GetCustomerByUserName(string userName)
         {
             return await _context.Customers
                 .Include(c => c.User)
                 .Include(c => c.User.City)
                 .ThenInclude(c => c.Country)
-                .FirstOrDefaultAsync(c => c.User.Id == id);
-        }
-
-        public async Task<Employee> GetEmployeeByUserIdAsync(string id)
-        {
-            return await _context.Employees
-                .Include(e => e.User)
-                .Include(e => e.User.City)
-                .ThenInclude(c => c.Country)
-                .FirstOrDefaultAsync(e => e.User.Id == id);
-        }
-
-        public async Task<Instructor> GetInstructorByUserIdAsync(string id)
-        {
-            return await _context.Instructors
-                .Include(i => i.User)
-                .Include(i => i.User.City)
-                .ThenInclude(c => c.Country)
-                .Include(i => i.Gym)
-                .FirstOrDefaultAsync(i => i.User.Id == id);
-        }
-
-        public async Task<Admin> GetAdminByUserIdAsync(string id)
-        {
-            return await _context.Admins
-                .Include(a => a.User)
-                .Include(a => a.User.City)
-                .ThenInclude(c => c.Country)
-                .FirstOrDefaultAsync(a => a.User.Id == id);
-        }
-
-        public Task<bool> IsCustomerAsync(User user)
-        {
-            return _context.Customers.AnyAsync(c => c.User.Id == user.Id);
-        }
-
-        public Task<bool> IsEmployeeAsync(User user)
-        {
-            return _context.Employees.AnyAsync(e => e.User.Id == user.Id);
-        }
-
-        public Task<bool> IsAdminAsync(User user)
-        {
-            return _context.Admins.AnyAsync(a => a.User.Id == user.Id);
+                .FirstOrDefaultAsync(c => c.User.UserName == userName);
         }
 
         public async Task<IdentityResult> AddUserAsync(User user, string password)
@@ -102,46 +59,12 @@ namespace FitSharp.Data
             await _context.SaveChangesAsync();
         }
 
-        public async Task AddInstructorAsync(Instructor instructor)
-        {
-            _context.Instructors.Add(instructor);
-            await _context.SaveChangesAsync();
-        }
-
         public async Task AddAdminAsync(Admin admin)
         {
             _context.Admins.Add(admin);
             await _context.SaveChangesAsync();
         }
 
-        public async Task<IdentityResult> DeleteUserAsync(User user)
-        {
-            return await _userManager.DeleteAsync(user);
-        }
-
-        public async Task DeleteCustomerAsync(Customer customer)
-        {
-            _context.Customers.Remove(customer);
-            await _context.SaveChangesAsync();
-        }
-
-        public async Task DeleteEmployeeAsync(Employee employee)
-        {
-            _context.Employees.Remove(employee);
-            await _context.SaveChangesAsync();
-        }
-
-        public async Task DeleteInstructorAsync(Instructor instructor)
-        {
-            _context.Instructors.Remove(instructor);
-            await _context.SaveChangesAsync();
-        }
-
-        public async Task DeleteAdminAsync(Admin admin)
-        {
-            _context.Admins.Remove(admin);
-            await _context.SaveChangesAsync();
-        }
 
         public async Task<User> GetUserByIdAsync(string userId)
         {
@@ -174,6 +97,7 @@ namespace FitSharp.Data
             //.FirstOrDefault(c => c.Id == customerId);
         }
 
+
         public async Task<object> GetEntityByUserIdAsync(string id)
         {
             var user = await GetUserByIdAsync(id);
@@ -184,6 +108,7 @@ namespace FitSharp.Data
                     .Include(c => c.User)
                     .Include(c => c.User.City)
                     .ThenInclude(c => c.Country)
+                    .Include(c => c.Membership)
                     .FirstOrDefaultAsync(c => c.User.Id == id);
             }
             else if (await _context.Employees.AnyAsync(c => c.User.Id == user.Id))
@@ -214,25 +139,17 @@ namespace FitSharp.Data
             }
 
             return null;
-            //if (await IsCustomerAsync(await GetUserByIdAsync(id)))
-            //{
-            //    return await _context.Customers.AnyAsync(c => c.User.Id == user.Id);
-            //}
-            //else if (await IsEmployeeAsync(await GetUserByIdAsync(id)))
-            //{
-            //    return await _context.Employees.AnyAsync(c => c.User.Id == user.Id);
-            //}
-            //else if (await IsAdminAsync(await GetUserByIdAsync(id)))
-            //{
-            //    return await GetAdminByUserIdAsync(id);
-            //}
-            //else
-            //{
-            //    return await GetInstructorByUserIdAsync(id);
-            //}
         }
 
-
+        public Instructor GetInstructorWithAllRelatedDataByInstructorId(int instructorId)
+        {
+            return _context.Instructors
+                .Include(i => i.User)
+                .Include(i => i.Gym)
+                .Include(i => i.Reviews)
+                .ThenInclude(r => r.Customer)
+                .FirstOrDefault(i => i.Id == instructorId);
+        }
 
         public Instructor GetInstructorByUserName(string instructorName)
         {
