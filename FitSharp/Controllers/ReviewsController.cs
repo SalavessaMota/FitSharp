@@ -1,10 +1,8 @@
 ﻿using FitSharp.Data;
 using FitSharp.Data.Entities;
-using FitSharp.Models;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
-using Vereyon.Web;
 
 namespace FitSharp.Controllers
 {
@@ -42,8 +40,8 @@ namespace FitSharp.Controllers
                 return NotFound();
             }
 
-            
-             
+
+
             var review = new Review
             {
                 InstructorId = instructorId,
@@ -69,10 +67,9 @@ namespace FitSharp.Controllers
             return RedirectToAction("CustomerPastPersonalClasses", "PersonalClasses");
         }
 
-
         public async Task<IActionResult> Edit(int? id)
         {
-           if (id == null)
+            if (id == null)
             {
                 return NotFound();
             }
@@ -92,15 +89,11 @@ namespace FitSharp.Controllers
         {
             if (ModelState.IsValid)
             {
-                await _reviewRepository.UpdateAsync(review);    
+                await _reviewRepository.UpdateAsync(review);
                 return RedirectToAction("CustomerPastPersonalClasses", "PersonalClasses");
             }
 
             return View(review);
         }
-
-
-
-
     }
 }
