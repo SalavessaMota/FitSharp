@@ -52,5 +52,25 @@ namespace FitSharp.Helpers
             CloudBlockBlob blockBlob = container.GetBlockBlobReference(blobName);
             await blockBlob.DeleteIfExistsAsync();
         }
+
+        public async Task<Guid> VerifyAndUploadImageAsync(Guid imageId, string containerName)
+        {
+            try
+            {
+                var container = _blobClient.GetContainerReference(containerName);
+                var blockBlob = container.GetBlockBlobReference(imageId.ToString());
+
+                if (await blockBlob.ExistsAsync())
+                {
+                    return imageId;
+                }
+
+                throw new FileNotFoundException("The image file was not found in Blob Storage.");
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
     }
 }
