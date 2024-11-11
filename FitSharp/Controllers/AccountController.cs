@@ -8,8 +8,11 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using QRCoder;
 using System;
+using System.Drawing.Imaging;
 using System.IdentityModel.Tokens.Jwt;
+using System.IO;
 using System.Linq;
 using System.Security.Claims;
 using System.Text;
@@ -338,19 +341,19 @@ namespace FitSharp.Controllers
         {
             if (string.IsNullOrEmpty(userId) || string.IsNullOrEmpty(token))
             {
-                return NotFound();
+                return new NotFoundViewResult("UserNotFound");
             }
 
             var user = await _userRepository.GetUserByIdAsync(userId);
             if (user == null)
             {
-                return NotFound();
+                return new NotFoundViewResult("UserNotFound");
             }
 
             var result = await _userHelper.ConfirmEmailAsync(user, token);
             if (!result.Succeeded)
             {
-                return NotFound();
+                return new NotFoundViewResult("UserNotFound");
             }
 
             return View();
@@ -448,6 +451,53 @@ namespace FitSharp.Controllers
             this.ViewBag.Message = "User not found.";
             return View(model);
         }
+
+
+        public async Task<IActionResult> GenerateQRCode(string userName)
+        {
+            //var customer = await _userRepository.GetCustomerByUserName(User.Identity.Name);
+            var customer = await _userRepository.GetCustomerByUserName(userName);
+
+            if (customer == null)
+            {
+                return new NotFoundViewResult("UserNotFound");
+            }
+
+            var qrData = $"Name: {customer.User.FullName}\n" +
+                         $"Membership ID: {customer.MembershipId}\n" +
+                         $"Classes Remaining: {customer.ClassesRemaining}\n" +
+                         $"Membership Start: {customer.MembershipBeginDate.ToShortDateString()}\n" +
+                         $"Membership End: {customer.MembershipEndDate.ToShortDateString()}\n" +
+                         $"Membership Active: {(customer.MembershipIsActive ? "Yes" : "No")}";
+
+            using (var qrGenerator = new QRCodeGenerator())
+            {
+                var qrCodeData = qrGenerator.CreateQrCode(qrData, QRCodeGenerator.ECCLevel.Q);
+                var qrCode = new QRCode(qrCodeData);
+
+                using (var qrCodeImage = qrCode.GetGraphic(20))
+                {
+                    using (var memoryStream = new MemoryStream())
+                    {
+                        qrCodeImage.Save(memoryStream, ImageFormat.Png);
+                        return File(memoryStream.ToArray(), "image/png");
+                    }
+                }
+            }
+        }
+
+        public async Task<IActionResult> DisplayQRCode(string userName)
+        {
+            var customer = await _userRepository.GetCustomerByUserName(userName);
+
+            if (customer == null)
+            {
+                return new NotFoundViewResult("UserNotFound");
+            }
+
+            return View(customer);
+        }
+
 
         public IActionResult NotAuthorized()
         {
