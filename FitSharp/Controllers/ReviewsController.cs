@@ -1,5 +1,6 @@
 ﻿using FitSharp.Data;
 using FitSharp.Data.Entities;
+using FitSharp.Helpers;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
@@ -40,8 +41,6 @@ namespace FitSharp.Controllers
                 return NotFound();
             }
 
-
-
             var review = new Review
             {
                 InstructorId = instructorId,
@@ -71,13 +70,13 @@ namespace FitSharp.Controllers
         {
             if (id == null)
             {
-                return NotFound();
+                return new NotFoundViewResult("ReviewNotFound");
             }
 
             var review = await _reviewRepository.GetByIdAsync(id.Value);
             if (review == null)
             {
-                return NotFound();
+                return new NotFoundViewResult("ReviewNotFound");
             }
 
             return View(review);
