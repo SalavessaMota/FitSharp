@@ -5,6 +5,7 @@ using FitSharp.Helpers;
 using FitSharp.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Razor.Language.Intermediate;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System;
@@ -65,7 +66,8 @@ public class AdminController : Controller
                 CityName = user.City?.Name,
                 CountryName = user.City?.Country.Name,
                 ImageFullPath = user.ImageFullPath,
-                IsActive = user.IsActive
+                IsActive = user.IsActive,
+                EmailConfirmed = user.EmailConfirmed
             });
         }
 
@@ -748,6 +750,67 @@ public class AdminController : Controller
             return RedirectToAction(nameof(Index));
         }
     }
+
+    [HttpPost]
+    public async Task<IActionResult> ResendEmail(string id)
+    {
+        if (string.IsNullOrEmpty(id))
+        {
+            return RedirectToAction("NotFound404", "Errors", new { entityName = "User" });
+        }
+
+        var user = await _userRepository.GetUserByIdAsync(id);
+        if (user == null)
+        {
+            return RedirectToAction("NotFound404", "Errors", new { entityName = "User" });
+        }
+
+        if (user.EmailConfirmed)
+        {
+            TempData["ErrorMessage"] = "That account has already been confirmed.";
+            return RedirectToAction("Index");
+        }
+
+        if (!await ConfirmAccount(user))
+        {
+            TempData["ErrorMessage"] = "Could not send account confirmation email.";
+            return RedirectToAction("Index", new { id });
+        }
+
+        TempData["SuccessMessage"] = "Account confirmation email sent successfully!";
+        return RedirectToAction("Index", new { id });
+    }
+
+    [Authorize(Roles = "Admin")]
+    private async Task<bool> ConfirmAccount(User user)
+    {
+        // Generate tokens for password reset and email confirmation
+        string Token = await _userHelper.GeneratePasswordResetTokenAsync(user);
+
+        // Build the confirmation URL
+        string tokenLink = Url.Action(
+            "SetPassword",
+            "Account",
+            new { Token, UserId = user.Id},
+            protocol: HttpContext.Request.Scheme
+        );
+
+        // Send the email
+        var response = _mailHelper.SendEmail(user.Email, "FitSharp - Set your Password",
+                                        $"<h1 style=\"color:#1E90FF;\">Welcome to FitSharp!</h1>" +
+                                        $"<p>Your account has been created by an authorized personnel.</p>" +
+                                        $"<p>To complete your registration, please set your password by clicking the link below:</p>" +
+                                        $"<p><a href = \"{tokenLink}\" style=\"color:#FFA500; font-weight:bold;\">Set Password</a></p>" +
+                                        $"<p>If you didn’t expect this registration or believe it was a mistake, please contact us or disregard this        email.</p>" +
+                                        $"<br>" +
+                                        $"<p>Best regards,</p>" +
+                                        $"<p>The FitSharp Team</p>" +
+                                        $"<p><small>This is an automated message. Please do not reply to this email.</small></p>");
+
+        return response.IsSuccess;
+    }
+
+
 
     public IActionResult UserNotFound()
     {

@@ -370,6 +370,9 @@ namespace FitSharp.Controllers
                 return new NotFoundViewResult("UserNotFound");
             }
 
+            user.IsActive = true;
+            await _userRepository.UpdateUserAsync(user);
+
             return View();
         }
 
@@ -455,6 +458,8 @@ namespace FitSharp.Controllers
                 if (result.Succeeded)
                 {
                     this.ViewBag.Message = "Password set successfully, you can now login.";
+                    user.IsActive = true;
+                    await _userRepository.UpdateUserAsync(user);
                     return View();
                 }
 
@@ -463,6 +468,8 @@ namespace FitSharp.Controllers
             }
 
             this.ViewBag.Message = "User not found.";
+
+
             return View(model);
         }
 

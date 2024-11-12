@@ -49,6 +49,7 @@
                             <th>Country</th>
                             <th>Role</th>
                             <th>Is Active</th>
+                            <th>Email Confirmed</th>
                             <th></th>
                         </tr>
                         <tr>
@@ -58,6 +59,7 @@
                             <th><input type="text" placeholder="Search City" class="form-control" /></th>
                             <th><input type="text" placeholder="Search Country" class="form-control" /></th>
                             <th><input type="text" placeholder="Search Role" class="form-control" /></th>
+                            <th></th>
                             <th></th>
                             <th></th>
                         </tr>
@@ -85,7 +87,25 @@
                                         <div class="text-center">
                                             <i class="far fa-square fa-lg"></i>
                                         </div>
-                                        
+                                    }
+                                </td>
+
+                                <td>
+                                    @if (item.EmailConfirmed)
+                                    {
+                                        <div class="text-center">
+                                            <i class="far fa-check-square fa-lg"></i>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div class="text-center">
+                                            <i class="far fa-square fa-lg"></i>
+                                        </div>
+                                        <form method="post" asp-action="ResendEmail">
+                                            <input type="hidden" name="Id" value="@item.UserId" />
+                                            <input type="submit" value="Resend email" class="btn btn-primary" />
+                                        </form>
                                     }
                                 </td>
 
@@ -94,7 +114,6 @@
                                     <a asp-action="Details" asp-route-id="@item.UserId" class="btn btn-info"><i class="fas fa-list"></i></a>
                                     @if (item.IsActive)
                                     {
-                                        @* <a asp-action="DisableUser" data-id="@item.UserId" class="btn btn-danger btnDisable"><i class="fas fa-user-alt-slash"></i></a> *@
                                         <a href="#" data-id="@item.UserId" class="btn btn-danger btnDisable"><i class="fas fa-user-alt-slash"></i></a>
                                     }
                                     else

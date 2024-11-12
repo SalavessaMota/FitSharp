@@ -22,6 +22,10 @@ namespace FitSharp.Models
 
         public bool IsActive { get; set; }
 
+        public bool EmailConfirmed { get; set; }
+
         public string ImageFullPath { get; set; }
+
+
     }
 }
