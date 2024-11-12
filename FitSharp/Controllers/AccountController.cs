@@ -17,6 +17,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using Vereyon.Web;
 
 namespace FitSharp.Controllers
 {
@@ -28,6 +29,7 @@ namespace FitSharp.Controllers
         private readonly ICountryRepository _countryRepository;
         private readonly IUserRepository _userRepository;
         private readonly IBlobHelper _blobHelper;
+        private readonly IFlashMessage _flashMessage;
 
         public AccountController(
             IUserHelper userHelper,
@@ -35,7 +37,8 @@ namespace FitSharp.Controllers
             IConfiguration configuration,
             ICountryRepository countryRepository,
             IUserRepository userRepository,
-            IBlobHelper blobHelper)
+            IBlobHelper blobHelper,
+            IFlashMessage flashMessage)
         {
             _userHelper = userHelper;
             _mailHelper = mailHelper;
@@ -43,6 +46,7 @@ namespace FitSharp.Controllers
             _countryRepository = countryRepository;
             _userRepository = userRepository;
             _blobHelper = blobHelper;
+            _flashMessage = flashMessage;
         }
 
         public IActionResult Login()
@@ -63,6 +67,14 @@ namespace FitSharp.Controllers
                 var result = await _userHelper.LoginAsync(model);
                 if (result.Succeeded)
                 {
+                    var user = await _userRepository.GetUserByEmailAsync(model.Username);
+                    if (!user.IsActive)
+                    {
+                        await _userHelper.LogoutAsync();
+                        _flashMessage.Danger("The account is not active, please contact administration.");
+                        return View(model);
+                    }
+
                     if (this.Request.Query.Keys.Contains("ReturnUrl"))
                     {
                         return Redirect(this.Request.Query["ReturnUrl"].First());
@@ -72,7 +84,9 @@ namespace FitSharp.Controllers
                 }
             }
 
-            this.ModelState.AddModelError(string.Empty, "Failed to login");
+            //this.ModelState.AddModelError(string.Empty, "Failed to login");
+            _flashMessage.Danger("Failed to login");
+
             return View(model);
         }
 

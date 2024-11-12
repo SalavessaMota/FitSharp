@@ -1,5 +1,6 @@
 ﻿using FitSharp.Data;
 using FitSharp.Data.Dtos;
+using FitSharp.Data.Entities;
 using FitSharp.Entities;
 using FitSharp.Helpers;
 using FitSharp.Models;
@@ -215,7 +216,8 @@ namespace fitsharpMVC.Controllers.API
                 Address = model.Address,
                 PhoneNumber = model.PhoneNumber,
                 CityId = model.CityId,
-                ImageId = model.ImageId
+                ImageId = model.ImageId,
+                IsActive = true
             };
 
             if (model.ImageId != Guid.Empty)
@@ -229,8 +231,11 @@ namespace fitsharpMVC.Controllers.API
             {
                 return BadRequest(new { Message = "The user couldn't be created.", Errors = result.Errors });
             }
-
             await _userHelper.AddUserToRoleAsync(user, "Customer");
+
+            var customer = new Customer { User = user };
+            await _userRepository.AddCustomerAsync(customer);
+
             string myToken = await _userHelper.GenerateEmailConfirmationTokenAsync(user);
 
             string tokenLink = Url.Action("ConfirmEmail", "Account", new

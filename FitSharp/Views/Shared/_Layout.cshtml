@@ -82,7 +82,7 @@
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" asp-controller="Account" asp-action="DisplayQRCode" asp-route-userName="@User.Identity.Name">
-                                    <i class="fas fa-qrcode fa-lg"></i> QR Code
+                                    <i class="fas fa-qrcode fa-lg"></i><span> QR Code</span>
                                 </a>
                             </li>
                         }
@@ -96,15 +96,14 @@
                             var user = await UserManager.FindByNameAsync(User.Identity.Name);
 
                             <li class="nav-item d-flex align-items-center">
-                                <li class="nav-item d-flex align-items-center text-dark">
-                                    <span>Welcome, @user?.FullName</span>
-                                </li>
                                 <a class="nav-link text-dark d-flex align-items-center" asp-area="" asp-controller="Account" asp-action="ChangeUser">
-                                    @if (!string.IsNullOrEmpty(user?.ImageFullPath) && user.ImageFullPath != "https://aircinelmvc.azurewebsites.net/images/noimage.png")
-                                    {
-                                        <img src="@user.ImageFullPath" alt="Profile Picture" style="width: 35px; height: 35px; border-radius: 50%; margin-right: 10px;" />
-                                    }
-                                <i class="fas fa-user-circle mr-2 fa-lg"></i>@* Edit Account *@
+                                    <li class="nav-item d-flex align-items-center text-dark">
+                                <span>Welcome, @user?.FullName </span>
+                                        @if (!string.IsNullOrEmpty(user?.ImageFullPath) && user.ImageFullPath != "https://aircinelmvc.azurewebsites.net/images/noimage.png")
+                                        {
+                                            <img src="@user.ImageFullPath" alt="Profile Picture" style="width: 35px; height: 35px; border-radius: 50%; margin-right: 10px; margin-left: 10px;" />
+                                        }
+                                        @* <i class="fas fa-user-circle mr-2 fa-lg"></i>@* Edit Account *@
                                 </a>
                             </li>
                             <li class="nav-item">

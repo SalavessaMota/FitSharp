@@ -3,15 +3,14 @@
     ViewData["Title"] = "DisplayQRCode";
 }
 
-<<div class="transparent-card text-center">
-    <div>
-        <h3>QR Code for @Model.User.FullName</h3>
-        <img src="@Url.Action("GenerateQRCode", "Account", new { userName = Model.User.UserName })" alt="QR Code for Customer" width="400px" height="auto" />
-    </div>
-    <div>
-        <a href="~/Home/index" class="btn btn-primary btn-lg mt-3 roundedwithshadow"><i class="fas fa-home"></i> Return Home</a>
+<div class="col-12 col-lg-4 offset-lg-4">
+    <div class="transparent-card text-center">
+        <div>
+            <h3>QR Code for @Model.User.FullName</h3>
+            <img src="@Url.Action("GenerateQRCode", "Account", new { userName = Model.User.UserName })" alt="QR Code for Customer" width="300px" height="auto" />
+        </div>
+        <div>
+            <a href="~/Home/index" class="btn btn-primary btn-lg mt-3 roundedwithshadow"><i class="fas fa-home"></i> Return Home</a>
+        </div>
     </div>
 </div>
-
-
- 

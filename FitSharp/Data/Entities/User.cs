@@ -32,7 +32,7 @@ namespace FitSharp.Entities
         public Guid ImageId { get; set; }
 
         public string ImageFullPath => ImageId == Guid.Empty
-            ? $"https://aircinelmvc.blob.core.windows.net/resources/noimage.png"
+            ? $"https://aircinelmvc.blob.core.windows.net/resources/default_profile_picture.jpg"
             : $"https://aircinelmvc.blob.core.windows.net/users/{ImageId}";
     }
 }
