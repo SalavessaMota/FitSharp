@@ -1,6 +1,6 @@
 ﻿@model IEnumerable<FitSharp.Data.Entities.Review>
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "InstructorReviews";
 }
 
 <link rel="stylesheet" href="https://cdn.datatables.net/1.10.25/css/dataTables.bootstrap4.min.css" />
@@ -10,7 +10,7 @@
     <div class="col-12">
         <div class="card transparent-card">
             <div class="card-header">
-                <h3 class="card-title">Reviews</h3>
+                <h3 class="card-title">Instructor Reviews</h3>
             </div>
             <div class="card-body">
                 <table class="table table-hover table-striped" id="MyTable">
@@ -48,9 +48,7 @@
                                     @truncatedDescription
                                 </td>
                                 <td>
-                                    @* <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning"><i class="far fa-edit"></i></a> *@
                                     <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info"><i class="fas fa-list"></i></a>
-                                    @* <a href="#" data-id="@item.Id" class="btn btn-danger btnDelete"><i class="fas fa-trash"></i></a> *@
                                 </td>
                             </tr>
 

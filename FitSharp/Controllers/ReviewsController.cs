@@ -1,12 +1,13 @@
 ﻿using FitSharp.Data;
 using FitSharp.Data.Entities;
 using FitSharp.Helpers;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
 
 namespace FitSharp.Controllers
-{
+{    
     public class ReviewsController : Controller
     {
         private readonly IReviewRepository _reviewRepository;
@@ -20,6 +21,7 @@ namespace FitSharp.Controllers
             _userRepository = userRepository;
         }
 
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Index()
         {
             var reviews = await _reviewRepository.GetReviewsWithAllRelatedDataAsync();
@@ -63,7 +65,8 @@ namespace FitSharp.Controllers
 
             await _reviewRepository.AddReviewAsync(review);
 
-            return RedirectToAction("CustomerPastPersonalClasses", "PersonalClasses");
+
+            return RedirectToAction("CustomerPastPersonalClasses", "PersonalClasses", new { username = User.Identity.Name });
         }
 
         public async Task<IActionResult> Edit(int? id)
@@ -89,10 +92,44 @@ namespace FitSharp.Controllers
             if (ModelState.IsValid)
             {
                 await _reviewRepository.UpdateAsync(review);
-                return RedirectToAction("CustomerPastPersonalClasses", "PersonalClasses");
+
+                // Obtém o username do utilizador relacionado com a review, caso não esteja no objeto `review`
+                var username = review.Customer?.User.UserName ?? User.Identity.Name;
+
+                return RedirectToAction("CustomerPastPersonalClasses", "PersonalClasses", new { username = username });
             }
 
             return View(review);
+        }
+
+        public async Task<IActionResult> Details(int? id)
+        {
+            if(id == null)
+            {
+                return new NotFoundViewResult("ReviewNotFound");
+            }
+
+            var review = await _reviewRepository.GetReviewWithAllRelatedDataByIdAsync(id.Value);
+            if (review == null)
+            {
+                return new NotFoundViewResult("ReviewNotFound");
+            }
+
+            return View(review);
+        }
+
+        public async Task<IActionResult> InstructorReviews(int? id)
+        
+        {
+            if (id == null)
+            {
+                //TODO: Create reviews not found view
+                return new NotFoundViewResult("ReviewNotFound");
+            }
+
+            var reviews = await _reviewRepository.GetAllReviewsWithRelatedDataByInstructorId(id.Value);
+
+            return View(reviews);
         }
     }
 }

@@ -180,6 +180,10 @@ body {
     background-color: #C8C6C5;
 }
 
+/*Text shadow*/
+.text-shadow {
+    text-shadow: 2px 2px 4px #000000;
+}
 
 /* Cards e Containers */
 .transparent-card {

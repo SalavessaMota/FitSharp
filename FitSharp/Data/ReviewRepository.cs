@@ -25,6 +25,16 @@ namespace FitSharp.Data
                 .FirstOrDefaultAsync();
         }
 
+        public async Task<IEnumerable<Review>> GetAllReviewsWithRelatedDataByInstructorId(int id)
+        {
+           return await _context.Reviews
+                .Include(r => r.Customer)
+                .ThenInclude(c => c.User)
+                .Include(r => r.Instructor)
+                .ThenInclude(i => i.User)
+                .Where(r => r.InstructorId == id)
+                .ToListAsync();
+        }
 
         public async Task AddReviewAsync(Review review)
         {
@@ -60,6 +70,17 @@ namespace FitSharp.Data
         {
             _context.Reviews.Remove(review);
             await _context.SaveChangesAsync();
+        }
+
+        public async Task<Review> GetReviewWithAllRelatedDataByIdAsync(int id)
+        {
+            return await _context.Reviews
+                .Include(r => r.Customer)
+                .ThenInclude(c => c.User)
+                .Include(r => r.Instructor)
+                .ThenInclude(i => i.User)
+                .Where(r => r.Id == id)
+                .FirstOrDefaultAsync();
         }
 
         public async Task<IEnumerable<Review>> GetReviewsWithAllRelatedDataAsync ()

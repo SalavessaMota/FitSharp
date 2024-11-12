@@ -9,11 +9,15 @@ namespace FitSharp.Data
     {
         Task<Instructor> GetInstructorWithReviewsAsync(int id);
 
+        Task<IEnumerable<Review>> GetAllReviewsWithRelatedDataByInstructorId(int id);
+
         Task<IEnumerable<Review>> GetReviewsByInstructorId(int instructorId);
 
         Task AddReviewAsync(Review review);
 
         Task DeleteReview(Review review);
+
+        Task<Review> GetReviewWithAllRelatedDataByIdAsync(int id);
 
         Task<IEnumerable<Review>> GetReviewsWithAllRelatedDataAsync();
 

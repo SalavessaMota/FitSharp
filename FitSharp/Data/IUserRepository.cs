@@ -16,6 +16,7 @@ namespace FitSharp.Data
 
         Task<Customer> GetCustomerByUserName(string userName);
 
+        IEnumerable<Instructor> GetAllInstructorsWithAllRelatedData();
         Instructor GetInstructorWithAllRelatedDataByInstructorId(int instructorId);
 
         Task AddCustomerAsync(Customer customer);

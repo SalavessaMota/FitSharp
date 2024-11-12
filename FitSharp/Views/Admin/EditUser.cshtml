@@ -106,6 +106,7 @@
         $(document).ready(function () {
             var selectedCountry = '@Model.CountryId';
             var selectedCity = '@Model.CityId';
+            var selectedGym = '@Model.GymId';
             var selectedMembership = '@Model.MembershipId';
 
             // Função para carregar as cidades com base no countryId e pré-selecionar a cidade
@@ -152,6 +153,13 @@
                     $("#CityId").empty().append('<option value="0">(Select a city...)</option>');
                 }
             });
+
+            //Pré-seleciona o gym
+            if (selectedGym && selectedGym !== "0") {
+                setTimeout(function () {
+                    $("#GymId").val(selectedGym);
+                }, 100); // Pequeno atraso para garantir que o elemento está carregado
+            }
 
             // Pré-seleciona a Membership
             if (selectedMembership && selectedMembership !== "0") {

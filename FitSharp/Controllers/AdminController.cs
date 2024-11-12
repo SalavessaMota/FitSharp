@@ -591,8 +591,6 @@ public class AdminController : Controller
             }
         }
 
-
-
         await _userRepository.UpdateUserAsync(user);
         TempData["Success"] = "User profile updated successfully.";
         return RedirectToAction("Index");

@@ -1,0 +1,44 @@
+﻿@model IEnumerable<FitSharp.Data.Entities.Instructor>
+@{
+    ViewData["Title"] = "OurInstructors";
+}
+
+
+<div class="transparent-card">
+    <h1 class="text-center mb-4">Our Instructors</h1>
+    <div class="row">
+        @foreach (var instructor in Model)
+        {
+            <div class="col-md-4 mb-4">
+                <div class="card transparent-card h-100">
+                    <div class="card-body text-center">
+                        <img src="@instructor.User.ImageFullPath" alt="@instructor.User.FullName" class="rounded-circle mb-3" style="width: 150px; height: 150px; object-fit: cover;">
+
+                        <h4 class="card-title">@instructor.User.FullName</h4>
+
+                        <h5 class="text-muted">@instructor.Speciality</h5>
+
+                        <p class="text-warning">
+                            @for (var i = 0; i < (int)instructor.Rating; i++)
+                            {
+                                <i class="fas fa-star text-shadow"></i>
+                            }
+                            @if (instructor.Rating % 1 > 0)
+                            {
+                                <i class="fas fa-star-half-alt text-shadow"></i>
+                            }
+                            <br/>
+                            <span class="text-muted"> (Rating: @instructor.Rating.ToString("0.0"))</span>
+                        </p>
+
+                        <p class="card-text">@instructor.Description</p>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+    <div class="text-center">
+        <a href="~/Home/index" class="btn btn-primary btn-lg mt-3 roundedwithshadow"><i class="fas fa-home"></i> Return Home</a>
+    </div>
+</div>
+

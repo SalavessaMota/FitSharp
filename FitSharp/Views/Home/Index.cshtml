@@ -1,44 +1,155 @@
-﻿<!-- Video Background -->
+﻿@model IEnumerable<FitSharp.Data.Entities.Instructor>
+<!-- Video Background -->
 <video id="bgVideo" autoplay loop muted preload="auto" style="width: 100%; height: 100vh; object-fit: cover;">
     <source src="https://aircinelmvc.blob.core.windows.net/resources/backgroundvideofitsharp2.mp4" type="video/mp4">
     Your browser does not support videos in HTML5.
 </video>
 
-<div class="transparent-card">
-    <div class="container text-center mt-5">
-        <h1 class="display-4">Welcome to FitSharp</h1>
+<!-- Overlay Section -->
+<div class="transparent-card" style="position: relative; z-index: 1; padding-top: 5rem;">
+    <!-- Welcome Section -->
+    <div class=" wider-container text-center mt-5">
+        <h1 class="display-3 font-weight-bold">Welcome to FitSharp</h1>
         <p class="lead">Transform your fitness journey with personalized classes and expert trainers.</p>
-        <a href="/Account/Login" class="btn btn-primary btn-lg mt-3 mb-5">Join Us</a>
+        @if(!User.Identity.IsAuthenticated)
+        {
+            <a href="/Account/Login" class="btn btn-primary btn-lg mt-3 mb-5">Join Us</a>
+
+        }
+        
     </div>
 
-    <div class="container text-center mt-5">
+    <!-- Features Section -->
+    <div class=" wider-container text-center mt-5">
         <div class="row mb-5">
             <div class="col-md-4">
                 <i class="fas fa-dumbbell fa-3x text-logo-primary mb-3"></i>
                 <h3>Personalized Training</h3>
-                <p>Discover classes designed to fit your goals, whether you’re a beginner or an expert.</p>
+                <p>Classes tailored to your fitness level, whether beginner or pro.</p>
             </div>
             <div class="col-md-4">
                 <i class="fas fa-heartbeat fa-3x text-logo-primary mb-3"></i>
                 <h3>Wellness Focus</h3>
-                <p>Balance fitness and wellness with our comprehensive approach to health.</p>
+                <p>Balance fitness and wellness with our comprehensive approach.</p>
             </div>
             <div class="col-md-4">
                 <i class="fas fa-calendar-alt fa-3x text-logo-primary mb-3"></i>
                 <h3>Flexible Schedules</h3>
-                <p>Find classes and trainers that fit into your schedule, making fitness easier than ever.</p>
+                <p>Find classes that fit your schedule, making fitness convenient.</p>
             </div>
         </div>
+    </div>
 
+    <!-- Our Instructors Section -->
+    <div class=" wider-container mt-5 text-center">
+        <h2 class="display-4 mb-4 text-logo-primary">Meet Our Expert Instructors</h2>
         <div class="row">
-            <div class="col">
-                <h2>What Our Members Say</h2>
+            @* Exemplos de Instrutores (substituir com conteúdo dinâmico no futuro) *@
+            @foreach (var instructor in Model.Take(3))
+            {
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100">
+                        <img src="@instructor.User.ImageFullPath" class="card-img-top" alt="@instructor.User.FullName" style="height: 286px; object-fit: cover;">
+                        <div class="card-body">
+                            <h4 class="card-title">@instructor.User.FullName</h4>
+                            <h5 class="text-muted">@instructor.Speciality</h5>
+                            <p class="card-text">@instructor.Description</p>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+        <a href="/home/OurInstructors" class="btn btn-primary btn-lg mt-3 mb-5">View All Instructors</a>
+    </div>
+
+    <!-- Popular Classes Section -->
+    <div class=" wider-container mt-5 text-center">
+        <h2 class="display-4 mb-4 text-logo-primary">Popular Classes</h2>
+        <div class="row">
+            <div class="col-md-6 mb-4">
+                <div class="card h-100">
+                    <img src="https://aircinelmvc.blob.core.windows.net/resources/fitsharp1.jpg" class="card-img-top" alt="Personal Training" style="height: 200px; object-fit: cover;">
+                    <div class="card-body">
+                        <h4 class="card-title">Personal Classes</h4>
+                        <p>Get one-on-one sessions tailored to your needs.</p>
+                        <a href="/PersonalClasses" class="btn btn-primary">Learn More</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 mb-4">
+                <div class="card h-100">
+                    <img src="https://aircinelmvc.blob.core.windows.net/resources/fitsharp2.jpg" class="card-img-top" alt="Group Classes" style="height: 200px; object-fit: cover;">
+                    <div class="card-body">
+                        <h4 class="card-title">Group Classes</h4>
+                        <p>Join others in high-energy classes for all fitness levels.</p>
+                        <a href="/GroupClasses" class="btn btn-primary">Learn More</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Membership Plans Section -->
+    <div class=" wider-container mt-5 text-center">
+        <h2 class="display-4 mb-4 text-logo-primary">Choose Your Membership</h2>
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h4 class="card-title">Basic</h4>
+                        <p>Access to group classes and gym facilities.</p>
+                        <p class="text-success">$29/month</p>
+                        <a href="/Memberships" class="btn btn-outline-primary">Get Started</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h4 class="card-title">Premium</h4>
+                        <p>Includes personal training sessions and wellness resources.</p>
+                        <p class="text-success">$49/month</p>
+                        <a href="/Memberships" class="btn btn-outline-primary">Get Started</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h4 class="card-title">VIP</h4>
+                        <p>All-access pass with priority booking and exclusive perks.</p>
+                        <p class="text-success">$79/month</p>
+                        <a href="/Memberships" class="btn btn-outline-primary">Get Started</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Testimonials Section -->
+    <div class="wider-container mt-5 text-center">
+        <h2 class="display-4 mb-4 text-logo-primary">What Our Trainers Say</h2>
+        <div class="row">
+            <div class="col-md-6 offset-md-3">
                 <blockquote class="blockquote">
-                    <p class="mb-0">"FitSharp has changed the way I work out. The trainers are amazing, and I love the flexibility."</p>
-                    <footer class="blockquote-footer text-logo-primary">Happy Member</footer>
+                    <p class="mb-0">"Training at FitSharp feels like working with clean, high-quality code – efficient, effective, and well-organized. Just like our members!"</p>
+                    <footer class="blockquote-footer text-logo-primary">Rafael Santos, Trainer</footer>
+                </blockquote>
+            </div>
+            <div class="col-md-6 offset-md-3 mt-4">
+                <blockquote class="blockquote">
+                    <p class="mb-0">"With FitSharp, it's like we’ve achieved the perfect balance between aesthetics and functionality – the site looks amazing, and it just works!"</p>
+                    <footer class="blockquote-footer text-logo-primary">Susana Pimentel, Trainer</footer>
+                </blockquote>
+            </div>
+            <div class="col-md-6 offset-md-3 mt-4">
+                <blockquote class="blockquote">
+                    <p class="mb-0">"At FitSharp, we combine clean code principles with a sleek design. Whether in our classes or on the website, everything is optimized for the best user experience!"</p>
+                    <footer class="blockquote-footer text-logo-primary">Ana Marta Grade, Trainer</footer>
                 </blockquote>
             </div>
         </div>
     </div>
+
 </div>
 

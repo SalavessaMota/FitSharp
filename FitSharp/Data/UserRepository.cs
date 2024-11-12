@@ -3,6 +3,7 @@ using FitSharp.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Identity.Client;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -139,6 +140,16 @@ namespace FitSharp.Data
             }
 
             return null;
+        }
+
+        public IEnumerable<Instructor> GetAllInstructorsWithAllRelatedData()
+        {
+            return _context.Instructors
+                .Include(i => i.User)
+                .Include(i => i.Gym)
+                .Include(i => i.Reviews)
+                .ThenInclude(r => r.Customer)
+                .ToList();
         }
 
         public Instructor GetInstructorWithAllRelatedDataByInstructorId(int instructorId)
