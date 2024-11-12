@@ -47,5 +47,7 @@ namespace FitSharp.Helpers
         Task<string> GeneratePasswordResetTokenAsync(User user);
 
         Task<IdentityResult> SetPasswordAsync(User user, string token, string password);
+
+        Task<string> GetRoleNameAsync(User user);
     }
 }

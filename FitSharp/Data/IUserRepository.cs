@@ -50,5 +50,9 @@ namespace FitSharp.Data
         string DetermineUserType(User user);
 
         Task UpdateCustomerAsync(Customer customer);
+
+        Task<Notification> GetNotificationByIdAsync(int id);
+
+        IQueryable<Notification> GetNotifications(string userId, string roleName);
     }
 }

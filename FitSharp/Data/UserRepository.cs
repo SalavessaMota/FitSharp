@@ -252,5 +252,26 @@ namespace FitSharp.Data
             _context.Customers.Update(customer);
             await _context.SaveChangesAsync();
         }
+
+        public async Task<Notification> GetNotificationByIdAsync(int id)
+        {
+            return await _context.Notifications.FindAsync(id);
+        }
+
+        public IQueryable<Notification> GetNotifications(string userId, string roleName)
+        {
+            if (userId != null)
+            {
+                return _context.Notifications
+                        .Include(n => n.User)
+                        .Where(n => n.UserId == userId)
+                        .OrderByDescending(n => n.Date);
+            }
+
+            return _context.Notifications
+                    .Include(n => n.User)
+                    .Where(n => n.Role == roleName)
+                    .OrderByDescending(n => n.Date);
+        }
     }
 }

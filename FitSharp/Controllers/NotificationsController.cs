@@ -1,0 +1,54 @@
+﻿using FitSharp.Data;
+using FitSharp.Helpers;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
+
+[Authorize]
+public class NotificationsController : Controller
+{
+    private readonly IUserHelper _userHelper;
+    private readonly IUserRepository _userRepository;
+    private readonly DataContext _context;
+
+    public NotificationsController(
+        IUserHelper userHelper,
+        IUserRepository userRepository,
+        DataContext context)
+    {
+        _userHelper = userHelper;
+        _userRepository = userRepository;
+        _context = context;
+    }
+
+    public async Task<IActionResult> Index()
+    {
+        var user = await _userRepository.GetUserByEmailAsync(User.Identity.Name);
+        var userRole = await _userHelper.GetRoleNameAsync(user);
+        var notifications = _userRepository.GetNotifications(user.Id, userRole);
+        return View(notifications);
+    }
+
+    public async Task<IActionResult> Details(int? id)
+    {
+        if (id == null)
+        {
+            return RedirectToAction("NotFound404", "Errors", new { entityName = "Notification" });
+        }
+
+        var notification = await _userRepository.GetNotificationByIdAsync(id.Value);
+        if (notification == null)
+        {
+            return RedirectToAction("NotFound404", "Errors", new { entityName = "Notification" });
+        }
+
+        if (!notification.IsRead)
+        {
+            notification.IsRead = true;
+            _context.Notifications.Update(notification);
+            await _context.SaveChangesAsync();
+        }
+
+        return View(notification);
+    }
+}
