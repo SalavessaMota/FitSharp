@@ -1,4 +1,8 @@
 ﻿@using Microsoft.AspNetCore.Identity
+
+@inject FitSharp.Helpers.IUserHelper _userHelper
+@inject FitSharp.Data.IUserRepository _userRepository
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -79,19 +83,18 @@
                                 </ul>
                             </li>
                         }
-
                     </ul>
 
 
                     <ul class="navbar-nav d-flex align-items-center">
                         @if (this.User.Identity.IsAuthenticated)
                         {
-                            var user = await UserManager.FindByNameAsync(User.Identity.Name);
+                            var user = await _userRepository.GetUserByEmailAsync(User.Identity.Name);
 
                             <li class="nav-item d-flex align-items-center">
-                                <li class="nav-item d-flex align-items-center text-dark">
+
                                     <span>Welcome, @user?.FullName</span>
-                                </li>
+
                                 <a class="nav-link text-dark d-flex align-items-center" asp-area="" asp-controller="Account" asp-action="ChangeUser">
                                     @if (!string.IsNullOrEmpty(user?.ImageFullPath) && user.ImageFullPath != "https://aircinelmvc.azurewebsites.net/images/noimage.png")
                                     {
@@ -100,6 +103,24 @@
                                 <i class="fas fa-user-circle mr-2 fa-lg"></i>@* Edit Account *@
                                 </a>
                             </li>
+
+
+                            <a class="nav-link text-dark" asp-controller="Notifications" asp-action="Index">
+                                <i class="fa fa-bell" style="position: relative;">
+                                    @if (this.User.Identity.IsAuthenticated)
+                                    {
+                                        var roleName = await _userHelper.GetRoleNameAsync(user);
+                                        var notifications = _userRepository.GetNotifications(user.Id, roleName);
+                                        var unreadNotifications = notifications.Count(n => !n.IsRead);
+                                        if (unreadNotifications > 0)
+                                        {
+                                            <span style="position: absolute; top: -5px; right: -10px; background-color: red; color: white;
+                                                        border-radius: 50%; padding: 3px 6px; font-size: 0.55em; line-height: 1;">@unreadNotifications</span>
+                                        }
+                                    }
+                                </i>
+                            </a>
+
                             <li class="nav-item">
                                 <a class="nav-link text-dark d-flex align-items-center" asp-area="" asp-controller="Account" asp-action="Logout">
                                     <i class="fas fa-sign-out-alt mr-2 fa-lg"></i>@* Logout *@
@@ -142,4 +163,3 @@
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
-

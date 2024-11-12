@@ -72,7 +72,6 @@ public class AdminController : Controller
         return View(model);
     }
 
-
     public async Task<IActionResult> RegisterEmployee()
     {
         var model = new AdminRegisterNewEmployeeViewModel
@@ -751,8 +750,6 @@ public class AdminController : Controller
             return RedirectToAction(nameof(Index));
         }
     }
-
-
 
     public IActionResult UserNotFound()
     {

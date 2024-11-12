@@ -125,5 +125,12 @@ namespace FitSharp.Helpers
         {
             return await _userManager.ResetPasswordAsync(user, token, password);
         }
+
+        public async Task<string> GetRoleNameAsync(User user)
+        {
+            var roleName = "";
+            roleName += await _userManager.GetRolesAsync(user);
+            return roleName;
+        }
     }
 }

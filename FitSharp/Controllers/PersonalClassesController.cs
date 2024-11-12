@@ -18,17 +18,20 @@ namespace FitSharp.Controllers
         private readonly IGymRepository _gymRepository;
         private readonly IUserRepository _userRepository;
         private readonly IClassTypeRepository _classTypeRepository;
+        private readonly DataContext _context;
 
         public PersonalClassesController(
             IPersonalClassRepository personalClassesRepository,
             IGymRepository gymRepository,
             IUserRepository userRepository,
-            IClassTypeRepository classTypeRepository)
+            IClassTypeRepository classTypeRepository,
+            DataContext context)
         {
             _personalClassesRepository = personalClassesRepository;
             _gymRepository = gymRepository;
             _userRepository = userRepository;
             _classTypeRepository = classTypeRepository;
+            _context = context;
         }
 
         public IActionResult Index(string filter)
@@ -88,6 +91,7 @@ namespace FitSharp.Controllers
             if (ModelState.IsValid)
             {
                 var instructor = _userRepository.GetInstructorByUserName(this.User.Identity.Name);
+                var customer = await _userRepository.GetCustomerByIdAsync(model.CustomerId);
 
                 var personalClass = new PersonalClass
                 {
@@ -95,7 +99,7 @@ namespace FitSharp.Controllers
                     InstructorId = instructor.Id,
                     Instructor = instructor,
                     CustomerId = model.CustomerId,
-                    Customer = await _userRepository.GetCustomerByIdAsync(model.CustomerId),
+                    Customer = customer,
                     ClassTypeId = model.ClassTypeId,
                     ClassType = model.ClassType,
                     RoomId = model.RoomId,
@@ -106,6 +110,24 @@ namespace FitSharp.Controllers
                 };
 
                 await _personalClassesRepository.CreateAsync(personalClass);
+
+
+
+                var actionUrl = Url.Action("Details", "PersonalClasses", new { id = personalClass.Id }, protocol: HttpContext.Request.Scheme);
+                var notification = new Notification
+                {
+                    Title = "An instructor has scheduled a new personal class and is awaiting confirmation.",
+                    Action = $"<a href=\"{actionUrl}\" class=\"btn btn-primary\">Go to personal class.</a>",
+                    User = customer.User,
+                    UserId = customer.User.Id,
+                };
+
+                _context.Notifications.Add(notification);
+                await _context.SaveChangesAsync();
+
+
+
+
                 return RedirectToAction(nameof(Index));
             }
 
@@ -227,7 +249,5 @@ namespace FitSharp.Controllers
 
             return View(classes);
         }
-
-
     }
 }

@@ -1,0 +1,26 @@
+﻿@model FitSharp.Data.Entities.Notification
+
+@{
+    ViewData["Title"] = "Notification details";
+}
+
+<div class="transparent-card">
+    <h2>Notification details</h2>
+    <div>
+        <a asp-action="Index" class="btn btn-success">Back to list</a>
+    </div>
+    <hr />
+
+    <h4>@Model.Title</h4>
+    <p>@Model.Date</p>
+    @if (!string.IsNullOrEmpty(@Model.Message))
+    {
+        <p>@Html.Raw(@Model.Message)</p>
+        <br />
+    }
+    @if (!string.IsNullOrEmpty(@Model.Action))
+    {
+        @Html.Raw(@Model.Action)
+        <br />
+    }
+</div>
