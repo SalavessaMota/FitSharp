@@ -23,6 +23,7 @@
                         <tr>
                             <th>@Html.DisplayNameFor(model => model.Name)</th>
                             <th>@Html.DisplayNameFor(model => model.Address)</th>
+                            <th>Country</th>
                             <th>@Html.DisplayNameFor(model => model.NumberOfRooms)</th>
                             <th>@Html.DisplayNameFor(model => model.NumberOfEquipments)</th>
                             <th></th>
@@ -30,6 +31,7 @@
                         <tr>
                             <th><input type="text" placeholder="Search Name" class="form-control" /></th>
                             <th><input type="text" placeholder="Search Address" class="form-control" /></th>
+                            <th><input type="text" placeholder="Search Country" class="form-control" /></th>
                             <th><input type="text" placeholder="Search Rooms" class="form-control" /></th>
                             <th><input type="text" placeholder="Search Equipments" class="form-control" /></th>
                             <th></th>
@@ -41,6 +43,7 @@
                             <tr>
                                 <td>@Html.DisplayFor(modelItem => item.Name)</td>
                                 <td>@Html.DisplayFor(modelItem => item.Address)</td>
+                                <td>@Html.DisplayFor(modelItem => item.City.Country.Name)</td>
                                 <td>@Html.DisplayFor(modelItem => item.NumberOfRooms)</td>
                                 <td>@Html.DisplayFor(modelItem => item.NumberOfEquipments)</td>
                                 <td>

@@ -219,10 +219,14 @@ namespace FitSharp.Data
             return rooms;
         }
 
-        public async Task<IEnumerable<Gym>> GetAllGymsAsync()
+        public async Task<IEnumerable<Gym>> GetAllGymsWithAllRelatedDataAsync()
         {
             return await _context.Gyms
-                .AsNoTracking()
+                .Include(g => g.City)
+                .ThenInclude(g => g.Country)
+                .Include(g => g.Rooms)
+                .Include(g => g.Equipments)
+                .Include(g => g.Employees)
                 .ToListAsync();
         }
     }

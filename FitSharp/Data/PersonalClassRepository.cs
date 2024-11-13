@@ -52,7 +52,7 @@ namespace FitSharp.Data
                         .ThenInclude(r => r.Customer)
                 .Include(p => p.Customer)
                     .ThenInclude(c => c.User)
-                .Where(p => p.Instructor.User.UserName == name || p.Customer.User.UserName == name);
+                .Where(p => p.Customer.User.UserName == name);
         }
 
 

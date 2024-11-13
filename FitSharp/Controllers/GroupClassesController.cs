@@ -218,11 +218,9 @@ namespace FitSharp.Controllers
             return View("Error");
         }
 
-        public IActionResult CustomerPastGroupClasses(string username)
+        public IActionResult CustomerGroupClasses(string username)
         {
             var classes = _groupClassRepository.GetAllGroupClassesWithRelatedDataByUserName(username);
-
-            classes = classes.Where(c => c.EndTime < DateTime.Now);
 
             return View(classes);
         }

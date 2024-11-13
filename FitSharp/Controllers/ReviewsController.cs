@@ -66,7 +66,7 @@ namespace FitSharp.Controllers
             await _reviewRepository.AddReviewAsync(review);
 
 
-            return RedirectToAction("CustomerPastPersonalClasses", "PersonalClasses", new { username = User.Identity.Name });
+            return RedirectToAction("CustomerPersonalClasses", "PersonalClasses", new { username = User.Identity.Name });
         }
 
         public async Task<IActionResult> Edit(int? id)
@@ -96,7 +96,7 @@ namespace FitSharp.Controllers
                 // Obtém o username do utilizador relacionado com a review, caso não esteja no objeto `review`
                 var username = review.Customer?.User.UserName ?? User.Identity.Name;
 
-                return RedirectToAction("CustomerPastPersonalClasses", "PersonalClasses", new { username = username });
+                return RedirectToAction("CustomerPersonalClasses", "PersonalClasses", new { username = username });
             }
 
             return View(review);

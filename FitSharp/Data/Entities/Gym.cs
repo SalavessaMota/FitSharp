@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace FitSharp.Data.Entities
@@ -26,10 +27,7 @@ namespace FitSharp.Data.Entities
         [Display(Name = "Number of Equipments")]
         public int NumberOfEquipments => Equipments == null ? 0 : Equipments.Count;
 
-        //TODO: Image collection.
-
         public ICollection<Employee> Employees { get; set; } = new List<Employee>();
 
-        //public ICollection<Instructor> Instructors { get; set; } = new List<Instructor>();
     }
 }

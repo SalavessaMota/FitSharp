@@ -241,11 +241,9 @@ namespace FitSharp.Controllers
             }
         }
 
-        public IActionResult CustomerPastPersonalClasses(string username)
+        public IActionResult CustomerPersonalClasses(string username)
         {
             var classes = _personalClassesRepository.GetAllPersonalClassesWithRelatedDataByUserName(username);
-
-            classes = classes.Where(c => c.EndTime < DateTime.Now);
 
             return View(classes);
         }

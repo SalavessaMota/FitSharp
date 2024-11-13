@@ -407,7 +407,7 @@ namespace FitSharp.Controllers
                     new 
                     { 
                         token = myToken, 
-                        email = user.Email 
+                        userid = user.Id
                     }, protocol: HttpContext.Request.Scheme);
 
                 Response response = _mailHelper.SendEmail(model.Email, "FitSharp - Password Reset",

@@ -16,6 +16,5 @@ namespace FitSharp.Data.Entities
         public virtual ICollection<Review> Reviews { get; set; }
 
         public double Rating => (Reviews?.Count ?? 0) > 0 ? Reviews.Average(r => r.Stars) : 0;
-
     }
 }

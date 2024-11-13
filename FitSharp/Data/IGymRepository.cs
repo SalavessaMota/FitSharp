@@ -39,6 +39,6 @@ namespace FitSharp.Data
 
         IEnumerable<SelectListItem> GetComboRoomsByInstructorName(string instructorName);
 
-        Task<IEnumerable<Gym>> GetAllGymsAsync();
+        Task<IEnumerable<Gym>> GetAllGymsWithAllRelatedDataAsync();
     }
 }

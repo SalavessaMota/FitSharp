@@ -4,11 +4,11 @@
     ViewData["Title"] = "Edit";
 }
 
-<h1>Edit gym</h1>
-<hr />
 
 <div class="row">
     <div class="col-md-6 offset-md-3 transparent-card">
+        <h1>Edit gym</h1>
+        <br />
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Id" />

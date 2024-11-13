@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Vereyon.Web;
 
@@ -257,7 +258,7 @@ namespace FitSharp.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var gyms = await _gymRepository.GetGymsWithRoomsAndEquipmentsAsync();
+            var gyms = await _gymRepository.GetAllGymsWithAllRelatedDataAsync();
             return View(gyms);
         }
 
