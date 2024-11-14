@@ -263,11 +263,36 @@ namespace FitSharp.Data
             {
                 _context.Memberships.Add(new Membership
                 {
-                    Name = "Monthly",
-                    Price = 30,
+                    Name = "Basic",
+                    Price = 40.00m,
                     NumberOfClasses = 8,
-                    Description = "Monthly membership with 8 classes"
+                    Description = "Basic Plan: Access to 8 classes per month and unlimited use of gym equipment."
                 });
+
+                _context.Memberships.Add(new Membership
+                {
+                    Name = "Premium",
+                    Price = 70.00m,
+                    NumberOfClasses = 16,
+                    Description = "Premium Plan: Access to 16 classes per month and unlimited use of gym equipment, ideal for a more intense routine."
+                });
+
+                _context.Memberships.Add(new Membership
+                {
+                    Name = "Ultimate",
+                    Price = 90.00m,
+                    NumberOfClasses = 999999999,
+                    Description = "Ultimate Plan: Unlimited classes and unlimited use of gym equipment, perfect for clients seeking maximum flexibility and personalization."
+                });
+
+                _context.Memberships.Add(new Membership
+                {
+                    Name = "Trial",
+                    Price = 0.00m,
+                    NumberOfClasses = 2,
+                    Description = "Trial Membership: Access to 2 classes over a 1-week period."
+                });
+
                 await _context.SaveChangesAsync();
             }
         }

@@ -47,18 +47,21 @@
         <tbody>
             @foreach (var membership in Model)
             {
-                <tr>
-                    <td>@membership.Name</td>
-                    <td>@(membership.NumberOfClasses == 999999999 ? "Unlimited" : membership.NumberOfClasses.ToString())</td>
-                    <td>@membership.Description</td>
-                    <td>@membership.Price</td>
-                    <td>
-                        <form asp-action="PurchaseMembership" method="post" id="purchaseForm-@membership.Id">
-                            <input type="hidden" name="membershipId" value="@membership.Id" />
-                            <button type="submit" class="btn btn-primary purchase-button" data-membership-id="@membership.Id">Purchase</button>
-                        </form>
-                    </td>
-                </tr>
+                @if (membership.Id != 4)
+                {
+                    <tr>
+                        <td>@membership.Name</td>
+                        <td>@(membership.NumberOfClasses == 999999999 ? "Unlimited" : membership.NumberOfClasses.ToString())</td>
+                        <td>@membership.Description</td>
+                        <td>@membership.Price</td>
+                        <td>
+                            <form asp-action="PurchaseMembership" method="post" id="purchaseForm-@membership.Id">
+                                <input type="hidden" name="membershipId" value="@membership.Id" />
+                                <button type="submit" class="btn btn-primary purchase-button" data-membership-id="@membership.Id">Purchase</button>
+                            </form>
+                        </td>
+                    </tr>
+                }
             }
         </tbody>
     </table>

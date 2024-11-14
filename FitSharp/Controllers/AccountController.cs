@@ -177,7 +177,16 @@ namespace FitSharp.Controllers
                 }
                 await _userHelper.AddUserToRoleAsync(user, "Customer");
 
-                var customer = new Customer { User = user };
+                var customer = new Customer 
+                { 
+                    User = user,
+                    MembershipIsActive = true,
+                    MembershipBeginDate = DateTime.Now,
+                    MembershipEndDate = DateTime.Now.AddMonths(1),
+                    ClassesRemaining = 2,
+                    MembershipId = 4
+                };
+
                 await _userRepository.AddCustomerAsync(customer);
 
                 string myToken = await _userHelper.GenerateEmailConfirmationTokenAsync(user);
