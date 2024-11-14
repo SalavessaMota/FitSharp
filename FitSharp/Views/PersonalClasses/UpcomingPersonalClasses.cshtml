@@ -1,49 +1,36 @@
 ﻿@model IEnumerable<FitSharp.Data.Entities.PersonalClass>
 @{
-    ViewData["Title"] = "CustomerPersonalClasses";
+    ViewData["Title"] = "UpcomingPersonalClasses";
 }
-
-<link rel="stylesheet" href="https://cdn.datatables.net/1.10.25/css/dataTables.bootstrap4.min.css" />
 
 <div class="row">
     <div class="col-12">
         <div class="card transparent-card">
             <flash dismissable="true" />
 
-            <div class="row">
-                <div class="col-md-4 mb-3">
-                    <label for="classFilter">Filter Classes:</label>
-                    <select id="classFilter" class="form-control">
-                        @foreach (var item in (List<SelectListItem>)ViewBag.CurrentFilter)
-                        {
-                            <option value="@item.Value" selected="@(item.Selected ? "selected" : null)">@item.Text</option>
-                        }
-                    </select>
-                </div>
-            </div>
             <div class="card-header">
                 <h3 class="card-title">Personal Classes</h3>
             </div>
             <div class="card-body">
                 <table class="table table-hover table-striped" id="MyTable">
                     <thead>
+                        <!-- Primeira linha: Títulos das colunas com ordenação -->
                         <tr>
                             <th>Class</th>
-                            <th>Gym</th>
                             <th>Room</th>
-                            <th>Class Type</th>
                             <th>Instructor</th>
                             <th>Start Time</th>
                             <th>End Time</th>
+                            <th></th>
                         </tr>
+                        <!-- Segunda linha: Campos de pesquisa por coluna -->
                         <tr>
                             <th><input type="text" placeholder="Search Class" class="form-control" /></th>
-                            <th><input type="text" placeholder="Search Gym" class="form-control" /></th>
                             <th><input type="text" placeholder="Search Room" class="form-control" /></th>
-                            <th><input type="text" placeholder="Search Class Type" class="form-control" /></th>
                             <th><input type="text" placeholder="Search Instructor" class="form-control" /></th>
                             <th><input type="text" placeholder="Search Start Time" class="form-control" /></th>
                             <th><input type="text" placeholder="Search End Time" class="form-control" /></th>
+                            <th></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -51,30 +38,25 @@
                         {
                             <tr>
                                 <td>@Html.DisplayFor(modelItem => item.Name)</td>
-                                <td>@Html.DisplayFor(modelItem => item.Room.Gym.Name)</td>
                                 <td>@Html.DisplayFor(modelItem => item.Room.Name)</td>
-                                <td>@Html.DisplayFor(modelItem => item.ClassType.Name)</td>
-                                <td>@Html.DisplayFor(modelItem => item.Instructor.User.FullName)
-                                    <br />
-                                    @{
-                                        var review = item.Instructor.Reviews.FirstOrDefault(r => r.CustomerId == item.CustomerId);
-                                    }
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Instructor.User.FullName)
+                                    
 
-                                    @if (review != null)
-                                    {
-                                        <a asp-controller="Reviews" asp-action="Edit" asp-route-id="@review.Id" class="btn btn-link">
-                                            <i class="far fa-edit ml-0"></i> Edit Review
-                                        </a>
-                                    }
-                                    else
-                                    {
-                                        <a asp-controller="Reviews" asp-action="WriteReview" asp-route-instructorId="@item.Instructor.Id" class="btn btn-link">
-                                            <i class="far fa-edit ml-0"></i> Write Review
-                                        </a>
-                                    }
+                                    @* <a asp-controller="Reviews" asp-action="WriteReview" asp-route-instructorId="@item.Instructor.Id" class="btn btn-link"><i class="far fa-edit ml-0"></i>Review</a> *@
                                 </td>
                                 <td>@Html.DisplayFor(modelItem => item.StartTime)</td>
                                 <td>@Html.DisplayFor(modelItem => item.EndTime)</td>
+                                <td>
+                                    @if (item.EndTime > DateTime.Now)
+                                    {
+                                        <a asp-action="SignUp" asp-route-id="@item.Id" class="btn btn-warning"><i class="fas fa-user-plus"></i></a>
+                                    }
+                                    else if (item.Customer?.User.UserName == User.Identity.Name)
+                                    {
+                                        <a asp-action="CancelSignUp" asp-route-id="@item.Id" class="btn btn-danger"><i class="fas fa-user-minus"></i></a>
+                                    }
+                                </td>
                             </tr>
                         }
                     </tbody>
@@ -96,13 +78,6 @@
 
     <script type="text/javascript">
         $(document).ready(function () {
-            // Aplica o filtro imediatamente ao mudar a seleção no dropdown
-            $('#classFilter').change(function () {
-                var selectedFilter = $(this).val();
-                var userName = '@User.Identity.Name';
-                window.location.href = '@Url.Action("CustomerPersonalClasses")' + '?filter=' + selectedFilter + '&username=' + userName;
-            });
-
             // Inicializar DataTable com pesquisa individual por coluna
             var table = $('#MyTable').DataTable({
                 orderCellsTop: true,

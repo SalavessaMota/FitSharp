@@ -4,35 +4,22 @@ using FitSharp.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace FitSharp.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20241113162843_MakeCustomerIdNullableInPersonalClass")]
+    partial class MakeCustomerIdNullableInPersonalClass
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("ProductVersion", "5.0.7")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-            modelBuilder.Entity("CustomerGroupClass", b =>
-                {
-                    b.Property<int>("CustomersId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("GroupClassesId")
-                        .HasColumnType("int");
-
-                    b.HasKey("CustomersId", "GroupClassesId");
-
-                    b.HasIndex("GroupClassesId");
-
-                    b.ToTable("CustomerGroupClass");
-                });
 
             modelBuilder.Entity("FitSharp.Data.Entities.Admin", b =>
                 {
@@ -125,6 +112,9 @@ namespace FitSharp.Migrations
                     b.Property<int>("ClassesRemaining")
                         .HasColumnType("int");
 
+                    b.Property<int?>("GroupClassId")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("MembershipBeginDate")
                         .HasColumnType("datetime2");
 
@@ -141,6 +131,8 @@ namespace FitSharp.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("GroupClassId");
 
                     b.HasIndex("MembershipId");
 
@@ -644,21 +636,6 @@ namespace FitSharp.Migrations
                     b.HasDiscriminator().HasValue("PersonalClass");
                 });
 
-            modelBuilder.Entity("CustomerGroupClass", b =>
-                {
-                    b.HasOne("FitSharp.Data.Entities.Customer", null)
-                        .WithMany()
-                        .HasForeignKey("CustomersId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("FitSharp.Data.Entities.GroupClass", null)
-                        .WithMany()
-                        .HasForeignKey("GroupClassesId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("FitSharp.Data.Entities.Admin", b =>
                 {
                     b.HasOne("FitSharp.Entities.User", "User")
@@ -682,6 +659,11 @@ namespace FitSharp.Migrations
 
             modelBuilder.Entity("FitSharp.Data.Entities.Customer", b =>
                 {
+                    b.HasOne("FitSharp.Data.Entities.GroupClass", null)
+                        .WithMany("Customers")
+                        .HasForeignKey("GroupClassId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
                     b.HasOne("FitSharp.Data.Entities.Membership", "Membership")
                         .WithMany("Customers")
                         .HasForeignKey("MembershipId")
@@ -871,7 +853,7 @@ namespace FitSharp.Migrations
             modelBuilder.Entity("FitSharp.Data.Entities.PersonalClass", b =>
                 {
                     b.HasOne("FitSharp.Data.Entities.Customer", "Customer")
-                        .WithMany("PersonalClasses")
+                        .WithMany()
                         .HasForeignKey("CustomerId")
                         .OnDelete(DeleteBehavior.Restrict);
 
@@ -896,11 +878,6 @@ namespace FitSharp.Migrations
                     b.Navigation("Cities");
                 });
 
-            modelBuilder.Entity("FitSharp.Data.Entities.Customer", b =>
-                {
-                    b.Navigation("PersonalClasses");
-                });
-
             modelBuilder.Entity("FitSharp.Data.Entities.Gym", b =>
                 {
                     b.Navigation("Employees");
@@ -922,6 +899,11 @@ namespace FitSharp.Migrations
                     b.Navigation("PersonalClasses");
 
                     b.Navigation("Reviews");
+                });
+
+            modelBuilder.Entity("FitSharp.Data.Entities.GroupClass", b =>
+                {
+                    b.Navigation("Customers");
                 });
 #pragma warning restore 612, 618
         }

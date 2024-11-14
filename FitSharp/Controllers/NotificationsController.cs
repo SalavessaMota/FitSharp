@@ -9,16 +9,16 @@ public class NotificationsController : Controller
 {
     private readonly IUserHelper _userHelper;
     private readonly IUserRepository _userRepository;
-    private readonly DataContext _context;
+    private readonly INotificationRepository _notificationRepository;
 
     public NotificationsController(
         IUserHelper userHelper,
         IUserRepository userRepository,
-        DataContext context)
+        INotificationRepository notificationRepository)
     {
         _userHelper = userHelper;
         _userRepository = userRepository;
-        _context = context;
+        _notificationRepository = notificationRepository;
     }
 
     public async Task<IActionResult> Index()
@@ -45,8 +45,7 @@ public class NotificationsController : Controller
         if (!notification.IsRead)
         {
             notification.IsRead = true;
-            _context.Notifications.Update(notification);
-            await _context.SaveChangesAsync();
+            await _notificationRepository.UpdateAsync(notification);
         }
 
         return View(notification);

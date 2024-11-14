@@ -54,6 +54,11 @@ namespace FitSharp.Data
                 .WithMany(p => p.Cities)
                 .HasForeignKey(c => c.CountryId);
 
+            //modelBuilder.Entity<Customer>()
+            //    .HasMany(c => c.GroupClasses)
+            //    .WithMany(gc => gc.Customers)
+            //    .UsingEntity(j => j.ToTable("CustomerGroupClasses"));modelBuilder.Entity<Room>();
+
             foreach (var relationship in modelBuilder.Model.GetEntityTypes().SelectMany(e => e.GetForeignKeys()))
             {
                 relationship.DeleteBehavior = DeleteBehavior.Restrict;

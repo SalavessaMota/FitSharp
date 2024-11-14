@@ -59,6 +59,16 @@ namespace FitSharp.Controllers
             return View();
         }
 
+        public async Task CheckMembershipStatus()
+        {
+            var customer = await _userRepository.GetCustomerByUserName(User.Identity.Name);
+            if (customer.MembershipIsActive == true && customer.MembershipEndDate <= DateTime.Now)
+            {
+                customer.MembershipIsActive = false;
+                await _userRepository.UpdateCustomerAsync(customer);
+            }
+        }
+
         [HttpPost]
         public async Task<IActionResult> Login(LoginViewModel model)
         {
@@ -68,6 +78,7 @@ namespace FitSharp.Controllers
                 if (result.Succeeded)
                 {
                     var user = await _userRepository.GetUserByEmailAsync(model.Username);
+
                     if (!user.IsActive)
                     {
                         await _userHelper.LogoutAsync();
@@ -78,6 +89,20 @@ namespace FitSharp.Controllers
                     if (this.Request.Query.Keys.Contains("ReturnUrl"))
                     {
                         return Redirect(this.Request.Query["ReturnUrl"].First());
+                    }
+
+                    if(await _userHelper.IsUserInRoleAsync(user, "Customer"))
+                    {
+                        //await CheckMembershipStatus();
+                        var customer = await _userRepository.GetCustomerByUserName(user.UserName);
+                        if (customer.MembershipIsActive == true && customer.MembershipEndDate <= DateTime.Now)
+                        {
+                            customer.MembershipIsActive = false;
+                            customer.MembershipId = null;
+                            customer.Membership = null;
+                            customer.ClassesRemaining = 0;
+                            await _userRepository.UpdateCustomerAsync(customer);
+                        }
                     }
 
                     return this.RedirectToAction("Index", "Home");

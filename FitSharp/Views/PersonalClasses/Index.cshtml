@@ -11,9 +11,12 @@
 <div class="row">
     <div class="col-12">
         <div class="card transparent-card">
-            <p>
-                <a asp-action="Create" class="btn btn-primary roundedwithshadow"><i class="fa fa-save shadow-lg"></i> Create New</a>
-            </p>
+            <div class="text-center">
+                <a asp-action="Create" class="btn btn-primary roundedwithshadow"><i class="fa fa-save shadow-lg"></i> Create Class for Customer</a>
+                <a asp-action="CreatePersonalClass" class="btn btn-primary roundedwithshadow"><i class="fa fa-save shadow-lg"></i> Create Open Class</a>
+            </div>
+
+            <br />
             <br />
             <div class="row">
                 <div class="col-md-4 mb-3">
@@ -37,6 +40,7 @@
                             <th>Class</th>
                             <th>Room</th>
                             <th>Class Type</th>
+                            <th>Instructor</th>
                             <th>Customer</th>
                             <th>Start Time</th>
                             <th>End Time</th>
@@ -47,6 +51,7 @@
                             <th><input type="text" placeholder="Search Class" class="form-control" /></th>
                             <th><input type="text" placeholder="Search Room" class="form-control" /></th>
                             <th><input type="text" placeholder="Search Class Type" class="form-control" /></th>
+                            <th><input type="text" placeholder="Search Instructor" class="form-control" /></th>
                             <th><input type="text" placeholder="Search Customer" class="form-control" /></th>
                             <th><input type="text" placeholder="Search Start Time" class="form-control" /></th>
                             <th><input type="text" placeholder="Search End Time" class="form-control" /></th>
@@ -60,6 +65,7 @@
                                 <td>@Html.DisplayFor(modelItem => item.Name)</td>
                                 <td>@Html.DisplayFor(modelItem => item.Room.Name)</td>
                                 <td>@Html.DisplayFor(modelItem => item.ClassType.Name)</td>
+                                <td>@Html.DisplayFor(modelItem => item.Instructor.User.FullName)</td>
                                 <td>@Html.DisplayFor(modelItem => item.Customer.User.FullName)</td>
                                 <td>@Html.DisplayFor(modelItem => item.StartTime)</td>
                                 <td>@Html.DisplayFor(modelItem => item.EndTime)</td>

@@ -25,7 +25,7 @@ namespace FitSharp.Data
 
         Task AddAdminAsync(Admin admin);
 
-        IQueryable<Customer> GetAllCustomersWithUser();
+        IQueryable<Customer> GetAllCustomersWithAllRelatedData();
 
         Task<User> GetUserByIdAsync(string userId);
 
@@ -37,7 +37,7 @@ namespace FitSharp.Data
 
         Task<IdentityResult> UpdateUserAsync(User user);
 
-        Task<Customer> GetCustomerByIdAsync(int customerId);
+        Task<Customer> GetCustomerByIdAsync(int? customerId);
 
         Instructor GetInstructorByUserName(string instructorName);
 

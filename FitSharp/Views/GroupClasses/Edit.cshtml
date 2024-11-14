@@ -5,6 +5,7 @@
 
 <div class="row">
     <div class="col-md-6 offset-md-3 transparent-card">
+        <flash dismissable="true" />
 
         <h4>Choose class details</h4>
         <hr />
@@ -41,18 +42,7 @@
             <div class="form-group">
                 <label for="StartTime">Start Time:</label>
                 <input type="datetime-local" id="StartTime" asp-for="StartTime"
-                       value="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm")"
-                       min="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm")" class="form-control" />
-            </div>
-
-            @{
-                var endTimeDefault = DateTime.Now.AddHours(1);
-            }
-
-            <div class="form-group">
-                <label for="EndTime">End Time:</label>
-                <input type="datetime-local" id="EndTime" asp-for="EndTime"
-                       value="@endTimeDefault.ToString("yyyy-MM-ddTHH:mm")"
+                       value="@Model.StartTime.ToString("yyyy-MM-ddTHH:mm")"
                        min="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm")" class="form-control" />
             </div>
 
@@ -63,7 +53,7 @@
             </div>
 
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary roundedwithshadow" />
+                <input type="submit" value="Edit" class="btn btn-primary roundedwithshadow" />
                 <a asp-action="Index" class="btn btn-success roundedwithshadow">Back to List</a>
             </div>
         </form>

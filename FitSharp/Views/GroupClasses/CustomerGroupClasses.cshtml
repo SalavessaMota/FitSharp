@@ -5,9 +5,25 @@
     var loggedInCustomerId = ViewBag.LoggedInCustomerId; // Supondo que o ID do customer logado é passado via ViewBag
 }
 
+<link rel="stylesheet" href="https://cdn.datatables.net/1.10.25/css/dataTables.bootstrap4.min.css" />
+
 <div class="row">
     <div class="col-12">
         <div class="card transparent-card">
+            <flash dismissable="true" />
+
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <label for="classFilter">Filter Classes:</label>
+                    <select id="classFilter" class="form-control">
+                        @foreach (var item in (List<SelectListItem>)ViewBag.CurrentFilter)
+                        {
+                            <option value="@item.Value" selected="@(item.Selected ? "selected" : null)">@item.Text</option>
+                        }
+                    </select>
+                </div>
+            </div>
+
             <div class="card-header">
                 <h3 class="card-title">Group Classes</h3>
             </div>
@@ -20,7 +36,7 @@
                             <th>Instructor</th>
                             <th>Start Time</th>
                             <th>End Time</th>
-                            <th></th>
+                            <th>Available Spots</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -28,42 +44,34 @@
                         {
                             @foreach (var item in Model)
                             {
-                                // Verifica se o usuário logado é um dos customers da GroupClass
-                                var loggedInCustomer = item.Customers?.FirstOrDefault(c => c.Id == loggedInCustomerId);
-                                if (loggedInCustomer != null)
-                                {
-                                    <tr>
-                                        <td>@Html.DisplayFor(modelItem => item.Name)</td>
-                                        <td>@Html.DisplayFor(modelItem => item.Room.Name)</td>
-                                        <td>
-                                            @Html.DisplayFor(modelItem => item.Instructor.User.FullName)
-                                            <br />
-                                            @{
-                                                // Procura uma review do usuário logado para o instrutor
-                                                var review = item.Instructor.Reviews?.FirstOrDefault(r => r.CustomerId == loggedInCustomerId);
-                                            }
+                                <tr>
+                                    <td>@Html.DisplayFor(modelItem => item.Name)</td>
+                                    <td>@Html.DisplayFor(modelItem => item.Room.Name)</td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Instructor.User.FullName)
+                                        <br />
+                                        @{
+                                            // Procura uma review do usuário logado para o instrutor
+                                            var review = item.Instructor.Reviews?.FirstOrDefault(r => r.Customer.User.UserName == User.Identity.Name);
+                                        }
 
-                                            @if (review != null)
-                                            {
-                                                <!-- Exibe botão para editar a review existente -->
-                                                <a asp-controller="Reviews" asp-action="Edit" asp-route-id="@review.Id" class="btn btn-link">
-                                                    <i class="far fa-edit ml-0"></i> Edit Review
-                                                </a>
-                                            }
-                                            else
-                                            {
-                                                <!-- Exibe botão para fazer uma nova review -->
-                                                <a asp-controller="Reviews" asp-action="WriteReview" asp-route-instructorId="@item.Instructor.Id" class="btn btn-link">
-                                                    <i class="far fa-edit ml-0"></i> Write Review
-                                                </a>
-                                            }
-                                        </td>
-                                        <td>@Html.DisplayFor(modelItem => item.StartTime)</td>
-                                        <td>@Html.DisplayFor(modelItem => item.EndTime)</td>
-                                        <td>
-                                        </td>
-                                    </tr>
-                                }
+                                        @if (review != null)
+                                        {
+                                            <a asp-controller="Reviews" asp-action="Edit" asp-route-id="@review.Id" class="btn btn-link">
+                                                <i class="far fa-edit ml-0"></i> Edit Review
+                                            </a>
+                                        }
+                                        else
+                                        {
+                                            <a asp-controller="Reviews" asp-action="WriteReview" asp-route-instructorId="@item.Instructor.Id" class="btn btn-link">
+                                                <i class="far fa-edit ml-0"></i> Write Review
+                                            </a>
+                                        }
+                                    </td>
+                                    <td>@Html.DisplayFor(modelItem => item.StartTime)</td>
+                                    <td>@Html.DisplayFor(modelItem => item.EndTime)</td>
+                                    <td>@item.AvailableSpots</td>
+                                </tr>
                             }
                         }
                         else
@@ -81,3 +89,40 @@
         </div>
     </div>
 </div>
+
+@section Scripts {
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+
+    <script src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.25/js/dataTables.bootstrap4.min.js"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            // Aplica o filtro imediatamente ao mudar a seleção no dropdown
+            $('#classFilter').change(function () {
+                var selectedFilter = $(this).val();
+                var userName = '@User.Identity.Name';
+                window.location.href = '@Url.Action("CustomerGroupClasses")' + '?filter=' + selectedFilter + '&username=' + userName;
+            });
+
+
+            // Inicializar DataTable com pesquisa individual por coluna
+            var table = $('#MyTable').DataTable({
+                orderCellsTop: true,
+                initComplete: function () {
+                    var api = this.api();
+
+                    // Aplicar o filtro para cada coluna com base na segunda linha do thead
+                    api.columns().every(function () {
+                        var column = this;
+                        $('input', $(column.header()).closest('thead').find('tr:eq(1) th').eq(column.index())).on('keyup change clear', function () {
+                            if (column.search() !== this.value) {
+                                column.search(this.value).draw();
+                            }
+                        });
+                    });
+                }
+            });
+        });
+    </script>
+}

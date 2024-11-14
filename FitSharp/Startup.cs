@@ -77,6 +77,7 @@ namespace FitSharp
             services.AddScoped<IPersonalClassRepository, PersonalClassRepository>();
             services.AddScoped<IGroupClassRepository, GroupClassRepository>();
             services.AddScoped<IReviewRepository, ReviewRepository>();
+            services.AddScoped<INotificationRepository, NotificationRepository>();
 
             services.ConfigureApplicationCookie(options =>
             {

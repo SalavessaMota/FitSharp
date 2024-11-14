@@ -10,17 +10,19 @@ using Vereyon.Web;
 
 namespace FitSharp.Controllers
 {
-    [Authorize(Roles = "Admin")]
     public class MembershipsController : Controller
     {
         private readonly IMembershipRepository _membershipRepository;
+        private readonly IUserRepository _userRepository;
         private readonly IFlashMessage _flashMessage;
 
         public MembershipsController(
             IMembershipRepository membershipRepository,
+            IUserRepository userRepository,
             IFlashMessage flashMessage)
         {
             _membershipRepository = membershipRepository;
+            _userRepository = userRepository;
             _flashMessage = flashMessage;
         }
 
@@ -113,5 +115,48 @@ namespace FitSharp.Controllers
                 return View("Error");
             }
         }
+
+
+        [Authorize(Roles = "Customer")]
+        public async Task<IActionResult> AvailableMemberships()
+        {
+            var memberships = await _membershipRepository.GetAll().ToListAsync();
+
+            return View(memberships);
+        }
+
+
+
+        [HttpPost]
+        public async Task<IActionResult> PurchaseMembership(int membershipId)
+        {
+            var userName = User.Identity.Name;
+            var customer = await _userRepository.GetCustomerByUserName(userName);
+
+            if (customer == null)
+            {
+                return NotFound();
+            }
+
+            var membership = await _membershipRepository.GetByIdAsync(membershipId);
+            if (membership == null)
+            {
+                return NotFound();
+            }
+
+            customer.MembershipId = membership.Id;
+            customer.MembershipBeginDate = DateTime.Now;
+            customer.MembershipEndDate = DateTime.Now.AddMonths(1);
+            customer.ClassesRemaining = membership.NumberOfClasses;
+            customer.MembershipIsActive = true;
+
+            await _userRepository.UpdateCustomerAsync(customer);
+
+            _flashMessage.Confirmation("Membership purchased successfully!");
+
+            return RedirectToAction("AvailableMemberships", "MemberShips");
+        }
+
+
     }
 }

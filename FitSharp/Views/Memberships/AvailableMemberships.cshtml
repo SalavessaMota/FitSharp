@@ -1,0 +1,126 @@
+﻿@model IEnumerable<FitSharp.Data.Entities.Membership>
+@{
+    ViewData["Title"] = "Available Memberships";
+}
+
+@inject FitSharp.Data.IUserRepository _userRepository
+
+@{
+    var customer = await _userRepository.GetCustomerByUserName(User.Identity.Name);
+    var hasRemainingTime = customer.MembershipEndDate > DateTime.Now;
+}
+
+<div class="transparent-card">
+    <div class="flash-message">
+        <flash dismissable="true" />
+    </div>
+
+    @if (customer.Membership != null)
+    {
+        <div class="current-membership mb-4">
+            <h3>Your Current Membership</h3>
+            <p><strong>Name:</strong> @customer.Membership.Name</p>
+            <p><strong>Description:</strong> @customer.Membership.Description</p>
+            <p><strong>Classes Remaining:</strong> @(customer.ClassesRemaining > 1000 ? "Unlimited" : customer.ClassesRemaining.ToString())</p>
+            <p><strong>Membership Start Date:</strong> @customer.MembershipBeginDate.ToString("dd/MM/yyyy")</p>
+            <p><strong>Membership End Date:</strong> @customer.MembershipEndDate.ToString("dd/MM/yyyy")</p>
+        </div>
+    }
+    else
+    {
+        <div class="no-membership mb-4">
+            <p>You do not have an active membership.</p>
+        </div>
+    }
+
+    <h2>Available Memberships</h2>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Number of Classes</th>
+                <th>Description</th>
+                <th>Price</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var membership in Model)
+            {
+                <tr>
+                    <td>@membership.Name</td>
+                    <td>@(membership.NumberOfClasses == 999999999 ? "Unlimited" : membership.NumberOfClasses.ToString())</td>
+                    <td>@membership.Description</td>
+                    <td>@membership.Price</td>
+                    <td>
+                        <form asp-action="PurchaseMembership" method="post" id="purchaseForm-@membership.Id">
+                            <input type="hidden" name="membershipId" value="@membership.Id" />
+                            <button type="submit" class="btn btn-primary purchase-button" data-membership-id="@membership.Id">Purchase</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<!-- Modal Window -->
+<div class="modal fade" id="confirmationModal" tabindex="-1" role="dialog" aria-labelledby="confirmationModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Confirm Purchase</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                You still have remaining time on your current membership. Are you sure you want to purchase a new membership?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <button type="button" id="confirmPurchaseButton" class="btn btn-primary">Confirm Purchase</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const purchaseButtons = document.querySelectorAll('.purchase-button');
+            purchaseButtons.forEach(function (button) {
+                button.addEventListener('click', function (event) {
+                    event.preventDefault();
+                    const membershipId = button.getAttribute('data-membership-id');
+
+                    var hasRemainingTime = '@hasRemainingTime'.toLowerCase();
+
+                    if (hasRemainingTime === 'true') {
+                        $('#confirmationModal').modal('show');
+
+                        $('#confirmPurchaseButton').off('click');
+
+                        document.getElementById('confirmPurchaseButton').onclick = function () {
+                            document.getElementById('purchaseForm-' + membershipId).submit();
+                        };
+                    } else {
+                        document.getElementById('purchaseForm-' + membershipId).submit();
+                    }
+                });
+            });
+
+            const flashMessage = document.querySelector('.flash-message');
+            if (flashMessage) {
+                setTimeout(() => {
+                    flashMessage.style.transition = "opacity 0.5s ease";
+                    flashMessage.style.opacity = "0";
+                    setTimeout(() => flashMessage.remove(), 500);
+                }, 4000);
+            }
+        });
+    </script>
+}

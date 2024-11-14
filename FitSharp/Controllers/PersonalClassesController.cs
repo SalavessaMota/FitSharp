@@ -1,5 +1,6 @@
 ﻿using FitSharp.Data;
 using FitSharp.Data.Entities;
+using FitSharp.Entities;
 using FitSharp.Helpers;
 using FitSharp.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -9,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Vereyon.Web;
 
 namespace FitSharp.Controllers
 {
@@ -18,27 +20,30 @@ namespace FitSharp.Controllers
         private readonly IGymRepository _gymRepository;
         private readonly IUserRepository _userRepository;
         private readonly IClassTypeRepository _classTypeRepository;
-        private readonly DataContext _context;
+        private readonly INotificationRepository _notificationRepository;
+        private readonly IFlashMessage _flashMessage;
 
         public PersonalClassesController(
             IPersonalClassRepository personalClassesRepository,
             IGymRepository gymRepository,
             IUserRepository userRepository,
             IClassTypeRepository classTypeRepository,
-            DataContext context)
+            INotificationRepository notificationRepository,
+            IFlashMessage flashMessage)
         {
             _personalClassesRepository = personalClassesRepository;
             _gymRepository = gymRepository;
             _userRepository = userRepository;
             _classTypeRepository = classTypeRepository;
-            _context = context;
+            _notificationRepository = notificationRepository;
+            _flashMessage = flashMessage;
         }
 
         public IActionResult Index(string filter)
         {
             var name = User.Identity.Name;
 
-            var classes = _personalClassesRepository.GetAllPersonalClassesWithRelatedDataByUserName(name);
+            var classes = _personalClassesRepository.GetAllPersonalClassesWithRelatedData();
 
             switch (filter)
             {
@@ -65,11 +70,19 @@ namespace FitSharp.Controllers
             return View(classes);
         }
 
-        public IActionResult Create()
+        public IActionResult CreateOpenPersonalClass()
         {
-            return View(_userRepository.GetAllCustomersWithUser());
+            return View();
         }
 
+        public IActionResult Create()
+        {
+            var clients = _userRepository.GetAllCustomersWithAllRelatedData();
+            var clientsWithMembershipActive = clients.Where(c => c.ClassesRemaining > 0 && c.Membership != null);
+
+            return View(clientsWithMembershipActive);
+        }
+                
         public IActionResult CreatePersonalClass(int customerId)
         {
             var model = new CreatePersonalClassViewModel
@@ -91,42 +104,57 @@ namespace FitSharp.Controllers
             if (ModelState.IsValid)
             {
                 var instructor = _userRepository.GetInstructorByUserName(this.User.Identity.Name);
-                var customer = await _userRepository.GetCustomerByIdAsync(model.CustomerId);
 
                 var personalClass = new PersonalClass
                 {
                     Name = model.Name,
                     InstructorId = instructor.Id,
                     Instructor = instructor,
-                    CustomerId = model.CustomerId,
-                    Customer = customer,
                     ClassTypeId = model.ClassTypeId,
                     ClassType = model.ClassType,
                     RoomId = model.RoomId,
                     Room = await _gymRepository.GetRoomAsync(model.RoomId),
                     StartTime = model.StartTime,
-                    EndTime = model.EndTime,
+                    EndTime = model.StartTime.AddHours(1),
                     Informations = model.Informations
                 };
 
                 await _personalClassesRepository.CreateAsync(personalClass);
 
-
-
-                var actionUrl = Url.Action("Details", "PersonalClasses", new { id = personalClass.Id }, protocol: HttpContext.Request.Scheme);
-                var notification = new Notification
+                if (model.CustomerId != 0)
                 {
-                    Title = "An instructor has scheduled a new personal class and is awaiting confirmation.",
-                    Action = $"<a href=\"{actionUrl}\" class=\"btn btn-primary\">Go to personal class.</a>",
-                    User = customer.User,
-                    UserId = customer.User.Id,
-                };
+                    var customer = await _userRepository.GetCustomerByIdAsync(model.CustomerId);
 
-                _context.Notifications.Add(notification);
-                await _context.SaveChangesAsync();
+                    if (customer != null)
+                    {
+                        personalClass.CustomerId = model.CustomerId;
+                        personalClass.Customer = customer;
+                        await _personalClassesRepository.UpdateAsync(personalClass);
+
+                        var actionUrl = Url.Action("Details", "PersonalClasses", new { id = personalClass.Id }, protocol: HttpContext.Request.Scheme);
+                        var notification = new Notification
+                        {
+                            Title = "An instructor has scheduled a new personal class and is awaiting confirmation.",
+                            Action = $"<a href=\"{actionUrl}\" class=\"btn btn-primary\">Go to personal class.</a>",
+                            User = customer.User,
+                            UserId = customer.User.Id,
+                        };
+
+                        await _notificationRepository.CreateAsync(notification);
 
 
+                    }
+                    else
+                    {
+                        ModelState.AddModelError(string.Empty, "The specified customer does not exist.");
+                        model.Rooms = _gymRepository.GetComboRoomsByInstructorName(this.User.Identity.Name);
+                        model.ClassTypes = _classTypeRepository.GetComboClassTypes();
+                        return View(model);
+                    }
 
+                    customer.ClassesRemaining--;
+                    await _userRepository.UpdateCustomerAsync(customer);
+                }
 
                 return RedirectToAction(nameof(Index));
             }
@@ -136,6 +164,7 @@ namespace FitSharp.Controllers
 
             return View(model);
         }
+
 
         public IActionResult Details(int id)
         {
@@ -172,7 +201,6 @@ namespace FitSharp.Controllers
                 ClassTypeId = personalClass.ClassTypeId,
                 ClassTypes = _classTypeRepository.GetComboClassTypes(),
                 StartTime = personalClass.StartTime,
-                EndTime = personalClass.EndTime,
                 Informations = personalClass.Informations
             };
 
@@ -198,7 +226,7 @@ namespace FitSharp.Controllers
                 personalClass.RoomId = model.RoomId;
                 personalClass.ClassTypeId = model.ClassTypeId;
                 personalClass.StartTime = model.StartTime;
-                personalClass.EndTime = model.EndTime;
+                personalClass.EndTime = model.StartTime.AddHours(1);
                 personalClass.Informations = model.Informations;
 
                 await _personalClassesRepository.UpdateAsync(personalClass);
@@ -226,6 +254,26 @@ namespace FitSharp.Controllers
 
             try
             {
+                if(personalClass.CustomerId != null) 
+                {                     
+                    var customer = await _userRepository.GetCustomerByIdAsync(personalClass.CustomerId.Value);
+                    if(customer == null)
+                    {
+                        return RedirectToAction("UserNotFound", "Account");
+                    }
+                    customer.ClassesRemaining++;
+                    await _userRepository.UpdateCustomerAsync(customer);
+
+                    var notification = new Notification
+                    {
+                        Title = $"An instructor has cancelled your personal class on {personalClass.StartTime:dd/MM/yyyy HH:mm}.",
+                        User = customer.User,
+                        UserId = customer.User.Id,
+                    };
+
+                    await _notificationRepository.CreateAsync(notification);
+                }
+
                 await _personalClassesRepository.DeleteAsync(personalClass);
                 return RedirectToAction(nameof(Index));
             }
@@ -241,11 +289,76 @@ namespace FitSharp.Controllers
             }
         }
 
-        public IActionResult CustomerPersonalClasses(string username)
+        public IActionResult CustomerPersonalClasses(string username, string filter)
         {
             var classes = _personalClassesRepository.GetAllPersonalClassesWithRelatedDataByUserName(username);
 
+            switch (filter)
+            {
+                case "past":
+                    classes = classes.Where(c => c.EndTime < DateTime.Now);
+                    break;
+
+                case "future":
+                    classes = classes.Where(c => c.EndTime > DateTime.Now);
+                    break;
+
+                default:
+                    filter = "all";
+                    break;
+            }
+
+            ViewBag.CurrentFilter = new List<SelectListItem>
+            {
+                new SelectListItem { Value = "all", Text = "All Classes", Selected = (filter == "all") },
+                new SelectListItem { Value = "past", Text = "Past Classes", Selected = (filter == "past") },
+                new SelectListItem { Value = "future", Text = "Future Classes", Selected = (filter == "future") }
+            };
+
             return View(classes);
+        }
+
+        public IActionResult UpcomingPersonalClasses()
+        {
+            var classes = _personalClassesRepository.GetAllPersonalClassesWithRelatedData();
+            var futureAvailableclasses = classes.Where(c => c.EndTime > DateTime.Now && c.CustomerId == null);
+
+            return View(futureAvailableclasses);
+        }
+
+        public async Task<IActionResult> Signup(int id)
+        {
+            var personalClass = await _personalClassesRepository.GetPersonalClassWithAllRelatedData(id);
+            
+            if (personalClass == null)
+            {
+                return new NotFoundViewResult("PersonalClassNotFound");
+            }
+
+            if(personalClass.CustomerId != null)
+            {
+                _flashMessage.Danger("This personal class is already booked.");
+                return RedirectToAction(nameof(UpcomingPersonalClasses));
+            }
+
+            var customer = await _userRepository.GetCustomerByUserName(this.User.Identity.Name);
+
+            if(customer.ClassesRemaining <= 0 || !customer.MembershipIsActive)
+            {
+                _flashMessage.Danger("You don't have any available classes remaining in your membership.");
+                return RedirectToAction(nameof(UpcomingPersonalClasses));
+            }
+
+            personalClass.CustomerId = customer.Id;
+            personalClass.Customer = customer;
+            await _personalClassesRepository.UpdateAsync(personalClass);
+
+            customer.PersonalClasses.Add(personalClass);
+            customer.ClassesRemaining--;
+            await _userRepository.UpdateCustomerAsync(customer);
+
+            _flashMessage.Confirmation("You have successfully signed up for the personal class.");
+            return RedirectToAction(nameof(UpcomingPersonalClasses));
         }
     }
 }

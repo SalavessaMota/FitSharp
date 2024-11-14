@@ -28,10 +28,13 @@ namespace FitSharp.Data
              .ThenInclude(c => c.Country);
         }
 
-        public IQueryable<Customer> GetAllCustomersWithUser()
+        public IQueryable<Customer> GetAllCustomersWithAllRelatedData()
         {
             return _context.Customers
-                .Include(c => c.User);
+                .Include(c => c.User)
+                .Include(c => c.User.City)
+                .ThenInclude(c => c.Country)
+                .Include(c => c.Membership);
         }
 
         public async Task<Customer> GetCustomerByUserName(string userName)
@@ -40,6 +43,7 @@ namespace FitSharp.Data
                 .Include(c => c.User)
                 .Include(c => c.User.City)
                 .ThenInclude(c => c.Country)
+                .Include(c => c.Membership)
                 .FirstOrDefaultAsync(c => c.User.UserName == userName);
         }
 
@@ -90,7 +94,7 @@ namespace FitSharp.Data
             return await _userManager.UpdateAsync(user);
         }
 
-        public async Task<Customer> GetCustomerByIdAsync(int customerId)
+        public async Task<Customer> GetCustomerByIdAsync(int? customerId)
         {
             return await _context.Customers
                 .Include(c => c.User)

@@ -81,15 +81,44 @@
                                 </a>
                                 <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                                     <li><a class="dropdown-item" asp-area="" asp-controller="PersonalClasses" asp-action="CustomerPersonalClasses" asp-route-username="@User.Identity.Name"><i class="fas fa-chalkboard-teacher"></i> Personal Classes</a></li>
-                                    <li><a class="dropdown-item" asp-area="" asp-controller="GroupClasses" asp-action="CustomerGroupClasses"><i class="fas fa-users"></i> Group Classes</a></li>
+                                    <li><a class="dropdown-item" asp-area="" asp-controller="GroupClasses" asp-action="CustomerGroupClasses" asp-route-username="@User.Identity.Name"><i class="fas fa-users"></i> Group Classes</a></li>
                                 </ul>
                             </li>
+
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <i class="fas fa-cogs fa-lg"></i> New Class
+                                </a>
+
+                                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                    <li><a class="dropdown-item" asp-area="" asp-controller="PersonalClasses" asp-action="UpcomingPersonalClasses"><i class="fas fa-chalkboard-teacher"></i> Personal Classes</a></li>
+                                    <li><a class="dropdown-item" asp-area="" asp-controller="GroupClasses" asp-action="UpcomingGroupClasses"><i class="fas fa-users"></i> Group Classes</a></li>
+                                </ul>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Memberships" asp-action="AvailableMemberships">
+                                    <i class="fas fa-pencil-alt"></i><span>  Get your Membership</span>
+                                </a>
+                            </li>
+
                             <li class="nav-item">
                                 <a class="nav-link" asp-controller="Account" asp-action="DisplayQRCode" asp-route-userName="@User.Identity.Name">
                                     <i class="fas fa-qrcode fa-lg"></i><span> QR Code</span>
                                 </a>
                             </li>
                         }
+
+                        @if (this.User.Identity.IsAuthenticated && ( this.User.IsInRole("Admin") || this.User.IsInRole("Employee") || this.User.IsInRole("Instructor" ) ) )
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Home" asp-action="CustomersInformations">
+                                    <i class="fas fa-users"></i><span> Our Customers</span>
+                                </a>
+                            </li>
+                        }
+
+
                     </ul>
 
 

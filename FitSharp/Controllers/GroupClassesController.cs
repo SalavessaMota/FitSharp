@@ -72,7 +72,7 @@ namespace FitSharp.Controllers
                 Rooms = _gymRepository.GetComboRoomsByInstructorName(User.Identity.Name),
                 ClassTypes = _classTypeRepository.GetComboClassTypes(),
                 StartTime = DateTime.Now,
-                EndTime = DateTime.Now.AddHours(1)
+                EndTime = DateTime.Now.AddHours(1) 
             };
 
             return View(model);
@@ -96,7 +96,7 @@ namespace FitSharp.Controllers
                     InstructorId = instructor.Id,
                     Instructor = instructor,
                     StartTime = model.StartTime,
-                    EndTime = model.EndTime,
+                    EndTime = model.StartTime.AddHours(1),
                     Informations = model.Informations
                 };
 
@@ -142,7 +142,6 @@ namespace FitSharp.Controllers
                 ClassTypeId = groupClass.ClassTypeId,
                 ClassTypes = _classTypeRepository.GetComboClassTypes(),
                 StartTime = groupClass.StartTime,
-                EndTime = groupClass.EndTime,
                 Informations = groupClass.Informations,
             };
 
@@ -167,8 +166,20 @@ namespace FitSharp.Controllers
                 groupClass.RoomId = model.RoomId;
                 groupClass.ClassTypeId = model.ClassTypeId;
                 groupClass.StartTime = model.StartTime;
-                groupClass.EndTime = model.EndTime;
+                groupClass.EndTime = model.StartTime.AddHours(1);
                 groupClass.Informations = model.Informations;
+
+                if(groupClass.EndTime < DateTime.Now)
+                {
+                    _flashMessage.Danger("You can't edit a class that has already happened.");
+                    return View(model);
+                }
+
+                if(groupClass.StartTime < DateTime.Now)
+                {
+                    _flashMessage.Danger("You can't edit a class that has already started.");
+                    return View(model);
+                }
 
                 await _groupClassRepository.UpdateAsync(groupClass);
                 return RedirectToAction(nameof(Index));
@@ -218,11 +229,111 @@ namespace FitSharp.Controllers
             return View("Error");
         }
 
-        public IActionResult CustomerGroupClasses(string username)
+        public IActionResult CustomerGroupClasses(string filter, string username)
         {
-            var classes = _groupClassRepository.GetAllGroupClassesWithRelatedDataByUserName(username);
+            var classes = _groupClassRepository.GetAllGroupClassesWithRelatedDataByUserName(User.Identity.Name);
 
-            return View(classes);
+            switch (filter)
+            {
+                case "past":
+                    classes = classes.Where(c => c.EndTime < DateTime.Now);
+                    break;
+
+                case "future":
+                    classes = classes.Where(c => c.EndTime > DateTime.Now);
+                    break;
+
+                default:
+                    filter = "all";
+                    break;
+            }
+
+            ViewBag.CurrentFilter = new List<SelectListItem>
+            {
+                new SelectListItem { Value = "all", Text = "All Classes", Selected = (filter == "all") },
+                new SelectListItem { Value = "past", Text = "Past Classes", Selected = (filter == "past") },
+                new SelectListItem { Value = "future", Text = "Future Classes", Selected = (filter == "future") }
+            };
+
+            return View(classes.ToList());
         }
+
+
+        public async Task<IActionResult> UpcomingGroupClasses()
+        {
+            var classes = await _groupClassRepository.GetGroupClassesWithAllRelatedDataAsync();
+
+            var upcomingGroupClasses = classes.Where(c => c.EndTime > DateTime.Now);
+
+            return View(upcomingGroupClasses);
+        }
+
+        public async Task<IActionResult> SignUp(int id)
+        {
+            var groupClass = await _groupClassRepository.GetGroupClassWithAllRelatedDataAsync(id);
+
+            if (groupClass == null)
+            {
+                return new NotFoundViewResult("GroupClassNotFound");
+            }
+
+            var customer = await _userRepository.GetCustomerByUserName(User.Identity.Name);
+
+            if (customer.ClassesRemaining <= 0 || !customer.MembershipIsActive)
+            {
+                _flashMessage.Danger("You don't have any available classes remaining in your membership.");
+                return RedirectToAction(nameof(UpcomingGroupClasses));
+            }
+
+            if (groupClass.AvailableSpots <= 0)
+            {
+                _flashMessage.Danger("There are no available spots for this class.");
+                return RedirectToAction(nameof(UpcomingGroupClasses));
+            }
+
+            if (groupClass.Customers.Any(c => c.User.UserName == customer.User.UserName))
+            {
+                _flashMessage.Danger("You are already signed up for this class.");
+                return RedirectToAction(nameof(UpcomingGroupClasses));
+            }
+
+            groupClass.Customers.Add(customer);
+            await _groupClassRepository.UpdateAsync(groupClass);
+
+            customer.GroupClasses.Add(groupClass);
+            customer.ClassesRemaining--;
+            await _userRepository.UpdateCustomerAsync(customer);
+
+            _flashMessage.Confirmation("You have successfully signed up for the class.");
+            return RedirectToAction(nameof(UpcomingGroupClasses));
+        }
+
+        public async Task<IActionResult> CancelSignUp(int id)
+        {
+            var groupClass = await _groupClassRepository.GetGroupClassWithAllRelatedDataAsync(id);
+
+            if (groupClass == null)
+            {
+                return new NotFoundViewResult("GroupClassNotFound");
+            }
+
+            var customer = await _userRepository.GetCustomerByUserName(User.Identity.Name);
+
+            if (!groupClass.Customers.Any(c => c.User.UserName == customer.User.UserName))
+            {
+                _flashMessage.Danger("You are not signed up for this class.");
+                return RedirectToAction(nameof(UpcomingGroupClasses));
+            }
+
+            groupClass.Customers.Remove(customer);
+            await _groupClassRepository.UpdateAsync(groupClass);
+
+            customer.ClassesRemaining++;
+            await _userRepository.UpdateCustomerAsync(customer);
+
+            _flashMessage.Confirmation("You have successfully canceled your sign up for the class.");
+            return RedirectToAction(nameof(UpcomingGroupClasses));
+        }
+
     }
 }

@@ -51,5 +51,12 @@ namespace FitSharp.Controllers
 
             return View(instructors);
         }
+
+        public IActionResult CustomersInformations()
+        {
+            var customers = _userRepository.GetAllCustomersWithAllRelatedData();
+
+            return View(customers);
+        }
     }
 }

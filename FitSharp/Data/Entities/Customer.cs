@@ -1,5 +1,6 @@
 ﻿using FitSharp.Entities;
 using System;
+using System.Collections.Generic;
 
 namespace FitSharp.Data.Entities
 {
@@ -19,8 +20,11 @@ namespace FitSharp.Data.Entities
 
         public bool MembershipIsActive { get; set; }
 
-        //public virtual ICollection<GroupClass> GroupClasses { get; set; }
 
-        //public DateTime MembershipBeginDate { get; set; }
+        // Relação com GroupClass
+        public virtual ICollection<GroupClass> GroupClasses { get; set; } = new List<GroupClass>();
+
+        // Relação com PersonalClass
+        public virtual ICollection<PersonalClass> PersonalClasses { get; set; } = new List<PersonalClass>();
     }
 }
