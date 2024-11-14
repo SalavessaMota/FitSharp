@@ -8,14 +8,22 @@
 <!-- Overlay Section -->
 <div class="transparent-card" style="position: relative; z-index: 1; padding-top: 5rem;">
     <!-- Welcome Section -->
-    <div class=" wider-container text-center mt-5">
+    <div class="wider-container text-center mt-5">
         <h1 class="display-3 font-weight-bold">Welcome to FitSharp</h1>
         <p class="lead">Transform your fitness journey with personalized classes and expert trainers.</p>
-        @if(!User.Identity.IsAuthenticated)
-        {
-            <a href="/Account/Login" class="btn btn-primary btn-lg mt-3 mb-5">Join Us</a>
 
-        }
+        <!-- Free Trial Campaign Banner -->
+        <div class="transparent-card">
+            <div class="mt-4 mb-5 p-4 text-dark rounded" style="font-size: 1.2rem;">
+                <strong>Special Offer:</strong> Sign up today and get a <strong>Free Trial Membership!</strong>
+                <br/>Enjoy access to <strong>2 classes</strong> over a 1-month period. Join us now to kickstart your fitness journey!
+            </div>
+
+            @if (!User.Identity.IsAuthenticated)
+            {
+                <a href="/Account/Register" class="btn btn-primary btn-lg mt-3 mb-5">Join Us</a>
+            }
+        </div>
         
     </div>
 
@@ -134,7 +142,7 @@
                 <div class="card h-100">
                     <div class="card-body">
                         <h4 class="card-title">Trial</h4>
-                        <p>Trial Membership: Access to 2 classes over a 1-week period. Simply register on our site to get started!</p>
+                        <p>Trial Membership: Access to 2 classes over a 1-month period. Simply register on our site to get started!</p>
                         <p class="text-success">Free</p>
                         <a href="/Account/Register" class="btn btn-outline-primary">Register Now</a>
                     </div>

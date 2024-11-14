@@ -187,7 +187,7 @@ body {
 
 /* Cards e Containers */
 .transparent-card {
-    background-color: rgba(235, 235, 235, 0.8); /* Tom cinza claro com transparência */
+    background-color: rgba(235, 235, 235, 0.6); /* Tom cinza claro com transparência */
     border-radius: 15px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
     padding: 20px;

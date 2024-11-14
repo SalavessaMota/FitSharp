@@ -117,7 +117,6 @@ namespace FitSharp.Controllers
         }
 
 
-        [Authorize(Roles = "Customer")]
         public async Task<IActionResult> AvailableMemberships()
         {
             var memberships = await _membershipRepository.GetAll().ToListAsync();
