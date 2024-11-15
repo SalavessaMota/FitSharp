@@ -1,5 +1,6 @@
 ﻿using FitSharp.Data;
 using FitSharp.Data.Entities;
+using FitSharp.Entities;
 using FitSharp.Helpers;
 using FitSharp.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -17,16 +18,19 @@ namespace FitSharp.Controllers
     {
         private readonly IGymRepository _gymRepository;
         private readonly ICountryRepository _countryRepository;
+        private readonly IBlobHelper _blobHelper;
         private readonly IFlashMessage _flashMessage;
 
         public GymsController(
             IGymRepository gymRepository,
             ICountryRepository countryRepository,
+            IBlobHelper blobHelper,
             IFlashMessage flashMessage
         )
         {
             _gymRepository = gymRepository;
             _countryRepository = countryRepository;
+            _blobHelper = blobHelper;
             _flashMessage = flashMessage;
         }
 
@@ -275,7 +279,18 @@ namespace FitSharp.Controllers
                 return new NotFoundViewResult("GymNotFound");
             }
 
-            return View(gym);
+            var model = new GymViewModel
+            {
+                Id = gym.Id,
+                Name = gym.Name,
+                Address = gym.Address,
+                CityId = gym.CityId,
+                ImageId = gym.ImageId,
+                Rooms = gym.Rooms,
+                Equipments = gym.Equipments
+            };
+
+            return View(model);
         }
 
         public async Task<IActionResult> Create()
@@ -327,20 +342,43 @@ namespace FitSharp.Controllers
                 return new NotFoundViewResult("GymNotFound");
             }
 
-            var gym = await _gymRepository.GetByIdAsync(id.Value);
+            var gym = await _gymRepository.GetGymWithAllRelatedDataAsync(id.Value);
             if (gym == null)
             {
                 return new NotFoundViewResult("GymNotFound");
             }
-            return View(gym);
+
+            var model = new GymViewModel
+            {
+                Id = gym.Id,
+                Name = gym.Name,
+                Address = gym.Address,
+                CityId = gym.CityId,
+                Countries = _countryRepository.GetComboCountries(),
+                Cities = await _countryRepository.GetComboCitiesAsync(gym.City.Country.Id)
+            };
+
+            return View(model);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Gym gym)
+        public async Task<IActionResult> Edit(GymViewModel model)
         {
             if (ModelState.IsValid)
             {
+                var gym = await _gymRepository.GetByIdAsync(model.Id);
+
+                gym.Name = model.Name;
+                gym.Address = model.Address;
+                gym.CityId = model.CityId;                
+
+                if (model.ImageFile != null && model.ImageFile.Length > 0)
+                {
+                    var imageId = await _blobHelper.UploadBlobAsync(model.ImageFile, "gyms");
+                    gym.ImageId = imageId;
+                }
+
                 try
                 {
                     await _gymRepository.UpdateAsync(gym);
@@ -358,7 +396,7 @@ namespace FitSharp.Controllers
                 }
             }
 
-            return View(gym);
+            return View(model);
         }
 
         public async Task<IActionResult> Delete(int? id)

@@ -15,6 +15,8 @@ namespace FitSharp.Data
 
         Task<Gym> GetGymWithRoomsAndEquipmentsAsync(int id);
 
+        Task<Gym> GetGymWithAllRelatedDataAsync(int id);
+
         Task<Room> GetRoomAsync(int id);
 
         Task<Equipment> GetEquipmentAsync(int id);

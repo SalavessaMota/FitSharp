@@ -139,6 +139,18 @@ namespace FitSharp.Data
                 .ToListAsync();
         }
 
+        public async Task<Gym> GetGymWithAllRelatedDataAsync(int id)
+        {
+            return await _context.Gyms
+                .Include(g => g.City)
+                .ThenInclude(g => g.Country)
+                .Include(g => g.Rooms)
+                .Include(g => g.Equipments)
+                .Include(g => g.Employees)
+                .Where(g => g.Id == id)
+                .FirstOrDefaultAsync();
+        }
+
         public async Task<Gym> GetGymWithRoomsAsync(int id)
         {
             return await _context.Gyms

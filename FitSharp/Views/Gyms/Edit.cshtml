@@ -1,4 +1,4 @@
-﻿@model FitSharp.Data.Entities.Gym
+﻿@model FitSharp.Models.GymViewModel
 
 @{
     ViewData["Title"] = "Edit";
@@ -9,10 +9,16 @@
     <div class="col-md-6 offset-md-3 transparent-card">
         <h1>Edit gym</h1>
         <br />
-        <form asp-action="Edit">
+        <form asp-action="Edit" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Id" />
             <input type="hidden" asp-for="CityId" />
+
+            <div class="form-group">
+                <label asp-for="ImageFile" class="control-label"></label>
+                <input asp-for="ImageFile" type="file" class="form-control" accept="image/*" />
+                <span asp-validation-for="ImageFile" class="text-danger"></span>
+            </div>
 
             <div class="form-group">
                 <label asp-for="Name" class="control-label"></label>
