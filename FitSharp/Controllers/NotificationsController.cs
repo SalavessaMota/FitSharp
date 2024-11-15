@@ -25,7 +25,7 @@ public class NotificationsController : Controller
     {
         var user = await _userRepository.GetUserByEmailAsync(User.Identity.Name);
         var userRole = await _userHelper.GetRoleNameAsync(user);
-        var notifications = _userRepository.GetNotifications(user.Id, userRole);
+        var notifications = _notificationRepository.GetNotifications(user.Id);
         return View(notifications);
     }
 
@@ -36,7 +36,7 @@ public class NotificationsController : Controller
             return RedirectToAction("NotFound404", "Errors", new { entityName = "Notification" });
         }
 
-        var notification = await _userRepository.GetNotificationByIdAsync(id.Value);
+        var notification = await _notificationRepository.GetNotificationByIdAsync(id.Value);
         if (notification == null)
         {
             return RedirectToAction("NotFound404", "Errors", new { entityName = "Notification" });

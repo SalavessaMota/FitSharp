@@ -7,33 +7,110 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using Vereyon.Web;
 
 namespace FitSharp.Controllers
 {
-    [Authorize(Roles = "Admin")]
+    [Authorize]
     public class GymsController : Controller
     {
         private readonly IGymRepository _gymRepository;
         private readonly ICountryRepository _countryRepository;
+        private readonly IUserRepository _userRepository;
+        private readonly INotificationRepository _notificationRepository;
         private readonly IBlobHelper _blobHelper;
         private readonly IFlashMessage _flashMessage;
 
         public GymsController(
             IGymRepository gymRepository,
             ICountryRepository countryRepository,
+            IUserRepository userRepository,
+            INotificationRepository notificationRepository,
             IBlobHelper blobHelper,
             IFlashMessage flashMessage
         )
         {
             _gymRepository = gymRepository;
             _countryRepository = countryRepository;
+            _userRepository = userRepository;
+            _notificationRepository = notificationRepository;
             _blobHelper = blobHelper;
             _flashMessage = flashMessage;
         }
 
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> Index()
+        {
+            var gyms = await _gymRepository.GetGymsWithAllRelatedDataAsync();
+            return View(gyms);
+        }
+
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> Equipments()
+        {
+            User user = await _userRepository.GetUserByEmailAsync(User.Identity.Name);
+            object userRole = await _userRepository.GetEntityByUserIdAsync(user.Id);
+
+            if (userRole is Employee employee)
+            {
+                var gymEquiments = await _gymRepository.GetGymEquipments(employee.GymId);
+                return View(gymEquiments);
+            }
+
+            var equiments = await _gymRepository.GetEquipments();
+            return View(equiments);
+        }
+
+        [Authorize(Roles = "Employee")]
+        public async Task<IActionResult> ChangeEquipmentStatus(int id)
+        {
+            var equipment = await _gymRepository.GetEquipmentAsync(id);
+            if (equipment == null)
+            {
+                return RedirectToAction("EquipmentNotFound");
+            }
+
+            equipment.RequiresRepair = !equipment.RequiresRepair;
+            await _gymRepository.UpdateEquipmentAsync(equipment);
+
+            var admins = _userRepository.GetAllAdminsWithAllRelatedData();
+            var actionUrl = Url.Action("Details", "Gyms", new { id = equipment.GymId }, protocol: HttpContext.Request.Scheme);
+            foreach (Admin admin in admins)
+            {
+                if (equipment.RequiresRepair)
+                {
+                    var notification = new Notification
+                    {
+                        Title = $"The equipment {equipment.Name} at the gym {equipment.Gym.Name} requires repair.",
+                        Message = $"The equipment {equipment.Name} ({equipment.Id}) at the gym {equipment.Gym.Name} ({equipment.Gym.Id}) requires repair.",
+                        Action = $"<a href=\"{actionUrl}\" class=\"btn btn-primary\">Go to gym.</a>",
+                        User = admin.User,
+                        UserId = admin.User.Id,
+                    };
+
+                    await _notificationRepository.CreateAsync(notification);
+                }
+                else
+                {
+                    var notification = new Notification
+                    {
+                        Title = $"The equipment {equipment.Name} at the gym {equipment.Gym.Name} has been repaired.",
+                        Message = $"The equipment {equipment.Name} ({equipment.Id}) at the gym {equipment.Gym.Name} ({equipment.Gym.Id}) has been repaired.",
+                        Action = $"<a href=\"{actionUrl}\" class=\"btn btn-primary\">Go to gym.</a>",
+                        User = admin.User,
+                        UserId = admin.User.Id,
+                    };
+
+                    await _notificationRepository.CreateAsync(notification);
+                }
+            }
+
+            _flashMessage.Confirmation("Equipment status notification successfully sent.");
+            return RedirectToAction("Details", new { id = equipment.Gym.Id });
+        }
+
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteRoom(int? id)
         {
             if (id == null)
@@ -64,6 +141,7 @@ namespace FitSharp.Controllers
             }
         }
 
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteEquipment(int? id)
         {
             if (id == null)
@@ -94,6 +172,7 @@ namespace FitSharp.Controllers
             }
         }
 
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> EditRoom(int? id)
         {
             if (id == null)
@@ -143,6 +222,7 @@ namespace FitSharp.Controllers
             return this.View(room);
         }
 
+        [Authorize(Roles = "Admin, Employee")]
         public async Task<IActionResult> EditEquipment(int? id)
         {
             if (id == null)
@@ -187,6 +267,7 @@ namespace FitSharp.Controllers
             return this.View(equipment);
         }
 
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> AddRoom(int? id)
         {
             if (id == null)
@@ -224,6 +305,7 @@ namespace FitSharp.Controllers
             return this.View(model);
         }
 
+        [Authorize(Roles = "Admin, Employee")]
         public async Task<IActionResult> AddEquipment(int? id)
         {
             if (id == null)
@@ -260,12 +342,7 @@ namespace FitSharp.Controllers
             return this.View(model);
         }
 
-        public async Task<IActionResult> Index()
-        {
-            var gyms = await _gymRepository.GetAllGymsWithAllRelatedDataAsync();
-            return View(gyms);
-        }
-
+        [Authorize(Roles = "Admin, Employee")]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -293,6 +370,7 @@ namespace FitSharp.Controllers
             return View(model);
         }
 
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Create()
         {
             var model = new GymViewModel
@@ -335,6 +413,7 @@ namespace FitSharp.Controllers
             return View(model);
         }
 
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -399,6 +478,7 @@ namespace FitSharp.Controllers
             return View(model);
         }
 
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)

@@ -3,7 +3,6 @@ using FitSharp.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Identity.Client;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -37,6 +36,31 @@ namespace FitSharp.Data
                 .Include(c => c.Membership);
         }
 
+        public IEnumerable<Instructor> GetAllInstructorsWithAllRelatedData()
+        {
+            return _context.Instructors
+                .Include(i => i.User)
+                .Include(i => i.Gym)
+                .Include(i => i.Reviews)
+                .ThenInclude(r => r.Customer)
+                .ToList();
+        }
+
+        public IEnumerable<Employee> GetAllEmployeesWithAllRelatedData()
+        {
+            return _context.Employees
+                .Include(i => i.User)
+                .Include(i => i.Gym)
+                .ToList();
+        }
+
+        public IEnumerable<Admin> GetAllAdminsWithAllRelatedData()
+        {
+            return _context.Admins
+                .Include(i => i.User)
+                .ToList();
+        }
+
         public async Task<Customer> GetCustomerByUserName(string userName)
         {
             return await _context.Customers
@@ -44,6 +68,19 @@ namespace FitSharp.Data
                 .Include(c => c.User.City)
                 .ThenInclude(c => c.Country)
                 .Include(c => c.Membership)
+                .FirstOrDefaultAsync(c => c.User.UserName == userName);
+        }
+
+        public async Task<Employee> GetEmployeeByUserName(string userName)
+        {
+            return await _context.Employees
+                .Include(c => c.User)
+                .Include(c => c.User.City)
+                .ThenInclude(c => c.Country)
+                .Include(c => c.Gym)
+                .ThenInclude(g => g.Equipments)
+                .Include(c => c.Gym)
+                .ThenInclude(g => g.Rooms)
                 .FirstOrDefaultAsync(c => c.User.UserName == userName);
         }
 
@@ -107,8 +144,8 @@ namespace FitSharp.Data
         {
             var user = await GetUserByIdAsync(id);
 
-            if(await _context.Customers.AnyAsync(c => c.User.Id == user.Id))
-            {                
+            if (await _context.Customers.AnyAsync(c => c.User.Id == user.Id))
+            {
                 return await _context.Customers
                     .Include(c => c.User)
                     .Include(c => c.User.City)
@@ -144,16 +181,6 @@ namespace FitSharp.Data
             }
 
             return null;
-        }
-
-        public IEnumerable<Instructor> GetAllInstructorsWithAllRelatedData()
-        {
-            return _context.Instructors
-                .Include(i => i.User)
-                .Include(i => i.Gym)
-                .Include(i => i.Reviews)
-                .ThenInclude(r => r.Customer)
-                .ToList();
         }
 
         public Instructor GetInstructorWithAllRelatedDataByInstructorId(int instructorId)
@@ -255,27 +282,6 @@ namespace FitSharp.Data
         {
             _context.Customers.Update(customer);
             await _context.SaveChangesAsync();
-        }
-
-        public async Task<Notification> GetNotificationByIdAsync(int id)
-        {
-            return await _context.Notifications.FindAsync(id);
-        }
-
-        public IQueryable<Notification> GetNotifications(string userId, string roleName)
-        {
-            if (userId != null)
-            {
-                return _context.Notifications
-                        .Include(n => n.User)
-                        .Where(n => n.UserId == userId)
-                        .OrderByDescending(n => n.Date);
-            }
-
-            return _context.Notifications
-                    .Include(n => n.User)
-                    .Where(n => n.Role == roleName)
-                    .OrderByDescending(n => n.Date);
         }
     }
 }

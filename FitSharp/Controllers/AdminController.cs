@@ -5,7 +5,6 @@ using FitSharp.Helpers;
 using FitSharp.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Razor.Language.Intermediate;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System;
@@ -88,8 +87,6 @@ public class AdminController : Controller
     [HttpPost]
     public async Task<IActionResult> RegisterEmployee(AdminRegisterNewEmployeeViewModel model)
     {
-        //TODO: Add email already used message.
-
         if (ModelState.IsValid)
         {
             var user = await _userRepository.GetUserByEmailAsync(model.Username);
@@ -139,26 +136,31 @@ public class AdminController : Controller
 
                 if (response.IsSuccess)
                 {
-                    ViewBag.SuccessMessage = "The account has been created, and the user has been sent an email to set their password.";
-
+                    ViewBag.SuccessMessage = "The account has been created, and the user will receive a password set email shortly.";
                     ModelState.Clear();
 
                     return View(new AdminRegisterNewEmployeeViewModel
                     {
                         Countries = _countryRepository.GetComboCountries(),
-                        Cities = await _countryRepository.GetComboCitiesAsync(1)
+                        Cities = await _countryRepository.GetComboCitiesAsync(1),
+                        Gyms = _gymRepository.GetComboGyms()
                     });
                 }
 
                 ViewBag.ErrorMessage = "An error occurred while registering the user.";
-
                 return RedirectToAction("Index", "Admin");
             }
+
+            ViewBag.ErrorMessage = "That email address is already being used.";
+            model.Countries = _countryRepository.GetComboCountries();
+            model.Cities = await _countryRepository.GetComboCitiesAsync(model.CountryId);
+            model.Gyms = _gymRepository.GetComboGyms();
+            return View(model);
         }
 
         model.Countries = _countryRepository.GetComboCountries();
         model.Cities = await _countryRepository.GetComboCitiesAsync(model.CountryId);
-
+        model.Gyms = _gymRepository.GetComboGyms();
         return View(model);
     }
 
@@ -208,10 +210,10 @@ public class AdminController : Controller
                     Speciality = model.Speciality,
                     Description = model.Description
                 };
+
                 await _userRepository.AddEmployeeAsync(instructor);
 
                 var myToken = await _userHelper.GeneratePasswordResetTokenAsync(user);
-
                 string tokenLink = Url.Action("SetPassword", "Account", new
                 {
                     token = myToken,
@@ -231,26 +233,31 @@ public class AdminController : Controller
 
                 if (response.IsSuccess)
                 {
-                    ViewBag.SuccessMessage = "The account has been created, and the user has been sent an email to set their password.";
-
+                    ViewBag.SuccessMessage = "The account has been created, and the user will receive a password set email shortly.";
                     ModelState.Clear();
 
                     return View(new AdminRegisterNewInstructorViewModel
                     {
                         Countries = _countryRepository.GetComboCountries(),
-                        Cities = await _countryRepository.GetComboCitiesAsync(1)
+                        Cities = await _countryRepository.GetComboCitiesAsync(1),
+                        Gyms = _gymRepository.GetComboGyms()
                     });
                 }
 
                 ViewBag.ErrorMessage = "An error occurred while registering the user.";
-
                 return RedirectToAction("Index", "Admin");
             }
+
+            ViewBag.ErrorMessage = "That email address is already being used.";
+            model.Countries = _countryRepository.GetComboCountries();
+            model.Cities = await _countryRepository.GetComboCitiesAsync(model.CountryId);
+            model.Gyms = _gymRepository.GetComboGyms();
+            return View(model);
         }
 
         model.Countries = _countryRepository.GetComboCountries();
         model.Cities = await _countryRepository.GetComboCitiesAsync(model.CountryId);
-
+        model.Gyms = _gymRepository.GetComboGyms();
         return View(model);
     }
 
@@ -307,7 +314,7 @@ public class AdminController : Controller
                                         $"<p>Your account has been created by an authorized personnel.</p>" +
                                         $"<p>To complete your registration, please set your password by clicking the link below:</p>" +
                                         $"<p><a href = \"{tokenLink}\" style=\"color:#FFA500; font-weight:bold;\">Set Password</a></p>" +
-                                        $"<p>If you didn’t expect this registration or believe it was a mistake, please contact us or disregard this        email.</p>" +
+                                        $"<p>If you didn’t expect this registration or believe it was a mistake, please contact us or disregard this email.</p>" +
                                         $"<br>" +
                                         $"<p>Best regards,</p>" +
                                         $"<p>The FitSharp Team</p>" +
@@ -315,8 +322,7 @@ public class AdminController : Controller
 
                 if (response.IsSuccess)
                 {
-                    ViewBag.SuccessMessage = "The account has been created, and the user has been sent an email to set their password.";
-
+                    ViewBag.SuccessMessage = "The account has been created, and the user will receive a password set email shortly.";
                     ModelState.Clear();
 
                     return View(new AdminRegisterNewUserViewModel
@@ -327,14 +333,17 @@ public class AdminController : Controller
                 }
 
                 ViewBag.ErrorMessage = "An error occurred while registering the user.";
-
                 return RedirectToAction("Index", "Admin");
             }
+
+            ViewBag.ErrorMessage = "That email address is already being used.";
+            model.Countries = _countryRepository.GetComboCountries();
+            model.Cities = await _countryRepository.GetComboCitiesAsync(model.CountryId);
+            return View(model);
         }
 
         model.Countries = _countryRepository.GetComboCountries();
         model.Cities = await _countryRepository.GetComboCitiesAsync(model.CountryId);
-
         return View(model);
     }
 
@@ -409,8 +418,7 @@ public class AdminController : Controller
 
                 if (response.IsSuccess)
                 {
-                    ViewBag.SuccessMessage = "The account has been created, and the user has been sent an email to set their password.";
-
+                    ViewBag.SuccessMessage = "The account has been created, and the user will receive a password set email shortly.";
                     ModelState.Clear();
 
                     return View(new AdminRegisterNewAdminViewModel
@@ -421,14 +429,17 @@ public class AdminController : Controller
                 }
 
                 ViewBag.ErrorMessage = "An error occurred while registering the user.";
-
                 return RedirectToAction("Index", "Admin");
             }
+
+            ViewBag.ErrorMessage = "That email address is already being used.";
+            model.Countries = _countryRepository.GetComboCountries();
+            model.Cities = await _countryRepository.GetComboCitiesAsync(model.CountryId);
+            return View(model);
         }
 
         model.Countries = _countryRepository.GetComboCountries();
         model.Cities = await _countryRepository.GetComboCitiesAsync(model.CountryId);
-
         return View(model);
     }
 
@@ -527,7 +538,7 @@ public class AdminController : Controller
         user.FirstName = model.FirstName;
         user.LastName = model.LastName;
         user.Address = model.Address;
-        user.CityId = model.CityId;        
+        user.CityId = model.CityId;
         user.PhoneNumber = model.PhoneNumber;
 
         //if(model.UserType == "Customer") 
@@ -572,7 +583,7 @@ public class AdminController : Controller
 
         // Obter a entidade associada ao usuário (Customer, Employee, Instructor, Admin)
         var entity = await _userRepository.GetEntityByUserIdAsync(user.Id);
-        
+
         // Preenchendo propriedades específicas com base no tipo de usuário
         if (entity is Customer customer)
         {
@@ -653,7 +664,7 @@ public class AdminController : Controller
                 adminUserViewModel.Description = instructor.Description;
             }
         }
-        
+
         // Caso para Admin
         return View(adminUserViewModel);
     }
@@ -791,7 +802,7 @@ public class AdminController : Controller
         string tokenLink = Url.Action(
             "SetPassword",
             "Account",
-            new { Token, UserId = user.Id},
+            new { Token, UserId = user.Id },
             protocol: HttpContext.Request.Scheme
         );
 

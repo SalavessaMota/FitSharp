@@ -1,6 +1,5 @@
 ﻿using FitSharp.Data;
 using FitSharp.Data.Entities;
-using FitSharp.Entities;
 using FitSharp.Helpers;
 using FitSharp.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -82,7 +81,7 @@ namespace FitSharp.Controllers
 
             return View(clientsWithMembershipActive);
         }
-                
+
         public IActionResult CreatePersonalClass(int customerId)
         {
             var model = new CreatePersonalClassViewModel
@@ -141,8 +140,6 @@ namespace FitSharp.Controllers
                         };
 
                         await _notificationRepository.CreateAsync(notification);
-
-
                     }
                     else
                     {
@@ -254,10 +251,10 @@ namespace FitSharp.Controllers
 
             try
             {
-                if(personalClass.CustomerId != null) 
-                {                     
+                if (personalClass.CustomerId != null)
+                {
                     var customer = await _userRepository.GetCustomerByIdAsync(personalClass.CustomerId.Value);
-                    if(customer == null)
+                    if (customer == null)
                     {
                         return RedirectToAction("UserNotFound", "Account");
                     }
@@ -266,7 +263,8 @@ namespace FitSharp.Controllers
 
                     var notification = new Notification
                     {
-                        Title = $"An instructor has cancelled your personal class on {personalClass.StartTime:dd/MM/yyyy HH:mm}.",
+                        Title = $"A personal class has been cancelled on {personalClass.StartTime:dd/MM/yyyy HH:mm}.",
+                        Message = $"The instructor {personalClass.Instructor.User.FullName} has cancelled your personal class on {personalClass.StartTime:dd/MM/yyyy HH:mm}.",
                         User = customer.User,
                         UserId = customer.User.Id,
                     };
@@ -329,13 +327,13 @@ namespace FitSharp.Controllers
         public async Task<IActionResult> Signup(int id)
         {
             var personalClass = await _personalClassesRepository.GetPersonalClassWithAllRelatedData(id);
-            
+
             if (personalClass == null)
             {
                 return new NotFoundViewResult("PersonalClassNotFound");
             }
 
-            if(personalClass.CustomerId != null)
+            if (personalClass.CustomerId != null)
             {
                 _flashMessage.Danger("This personal class is already booked.");
                 return RedirectToAction(nameof(UpcomingPersonalClasses));
@@ -343,7 +341,7 @@ namespace FitSharp.Controllers
 
             var customer = await _userRepository.GetCustomerByUserName(this.User.Identity.Name);
 
-            if(customer.ClassesRemaining <= 0 || !customer.MembershipIsActive)
+            if (customer.ClassesRemaining <= 0 || !customer.MembershipIsActive)
             {
                 _flashMessage.Danger("You don't have any available classes remaining in your membership.");
                 return RedirectToAction(nameof(UpcomingPersonalClasses));

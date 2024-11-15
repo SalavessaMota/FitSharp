@@ -231,7 +231,7 @@ namespace FitSharp.Data
             return rooms;
         }
 
-        public async Task<IEnumerable<Gym>> GetAllGymsWithAllRelatedDataAsync()
+        public async Task<IEnumerable<Gym>> GetGymsWithAllRelatedDataAsync()
         {
             return await _context.Gyms
                 .Include(g => g.City)
@@ -239,6 +239,21 @@ namespace FitSharp.Data
                 .Include(g => g.Rooms)
                 .Include(g => g.Equipments)
                 .Include(g => g.Employees)
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<Equipment>> GetEquipments()
+        {
+            return await _context.Equipments
+                .Include(e => e.Gym)
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<Equipment>> GetGymEquipments(int? gymId)
+        {
+            return await _context.Equipments
+                .Include(e => e.Gym)
+                .Where(e => e.Gym.Id == gymId)
                 .ToListAsync();
         }
     }
