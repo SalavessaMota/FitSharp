@@ -1,0 +1,180 @@
+﻿@{
+    ViewData["Title"] = "CustomerPersonalClassesCalendar";
+}
+
+<!-- Calendar Header -->
+<div class="text-center transparent-card">
+    <h1>Available Personal Classes</h1>
+    <div id="calendar" style="overflow: auto; background-color: white;"></div>
+</div>
+
+<!-- Modal for Personal Class Details -->
+<div class="modal fade" id="personalClassModal" tabindex="-1" role="dialog" aria-labelledby="personalClassModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header" style="background-color: #B70D00; color: white;">
+                <h5 class="modal-title" id="personalClassModalLabel">Personal Class Details</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p><strong>Class Type:</strong> <span id="classType"></span></p>
+                <p><strong>Instructor:</strong> <span id="classInstructor"></span></p>
+                <p><strong>Start Time:</strong> <span id="classStartTime"></span></p>
+                <p><strong>End Time:</strong> <span id="classEndTime"></span></p>
+                <p><strong>Instructor Score:</strong> <span id="instructorScoreStars"></span> <span class="text-muted" id="instructorScoreText"></span></p>
+
+            </div>
+            <div class="modal-footer">
+                @if (User.Identity.IsAuthenticated)
+                {
+                    <button type="button" id="enrollButton" class="btn btn-primary">Enroll in Class</button>
+                }
+                else
+                {
+                    <a href="/Account/Login" class="btn btn-primary">Login to Enroll</a>
+                    <a href="/Account/Register" class="btn btn-secondary">Register</a>
+                }
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js'></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var calendarEl = document.getElementById('calendar');
+
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'timeGridWeek',
+                slotMinTime: '06:00:00',  // Começa às 6h
+                slotMaxTime: '23:00:00',  // Termina exatamente às 23h
+                slotDuration: '00:30:00', // Cada slot representa 30 minutos
+                scrollTime: '06:00:00',   // Rolagem inicial para as 6h
+                height: 'auto',           // Ajusta a altura do calendário de acordo com o conteúdo
+                expandRows: false,        // Garante que o calendário não expanda desnecessariamente
+                locale: 'pt',
+                editable: false,
+                selectable: false,
+                headerToolbar: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'dayGridMonth,timeGridWeek,timeGridDay'
+                },
+                events: function (fetchInfo, successCallback, failureCallback) {
+                    fetch('/api/PersonalClasses/Available')
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error('Network response was not ok');
+                            }
+                            return response.json();
+                        })
+                        .then(data => {
+                            const events = data.map(pc => ({
+                                id: pc.id,
+                                title: pc.title,
+                                start: pc.start,
+                                end: pc.end,
+                                instructor: pc.instructor,
+                                classtype: pc.classtype,
+                                instructorscore: pc.instructorscore,
+                                classNames: ['custom-event']
+                            }));
+                            successCallback(events);
+                        })
+                        .catch(error => {
+                            console.error('Error fetching personal classes:', error);
+                            failureCallback(error);
+                        });
+                },
+                eventClick: function (info) {
+                    const start = new Date(info.event.start);
+                    const end = new Date(info.event.end);
+
+                    const options = { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' };
+                    const formattedStart = start.toLocaleDateString('en-GB', options).replace(',', '');
+                    const formattedEnd = end.toLocaleDateString('en-GB', options).replace(',', '');
+
+                    document.getElementById('classType').textContent = info.event.extendedProps.classtype;
+                    document.getElementById('classInstructor').textContent = info.event.extendedProps.instructor;
+                    document.getElementById('classStartTime').textContent = formattedStart;
+                    document.getElementById('classEndTime').textContent = formattedEnd;
+
+                    // Render stars for instructor score
+                    const instructorScore = info.event.extendedProps.instructorscore;
+                    const fullStars = Math.floor(instructorScore);  // Número de estrelas inteiras
+                    const halfStar = instructorScore % 1 !== 0;     // Verifica se há meia estrela
+                    const starsContainer = document.getElementById('instructorScoreStars');
+                    const scoreText = document.getElementById('instructorScoreText');
+
+                    // Limpar estrelas anteriores
+                    starsContainer.innerHTML = '';
+                    scoreText.textContent = ` (${instructorScore.toFixed(1)})`;
+
+                    // Adicionar estrelas inteiras
+                    for (let i = 0; i < fullStars; i++) {
+                        const starIcon = document.createElement('i');
+                        starIcon.classList.add('fas', 'fa-star', 'text-warning');
+                        starsContainer.appendChild(starIcon);
+                    }
+
+                    // Adicionar meia estrela, se aplicável
+                    if (halfStar) {
+                        const halfStarIcon = document.createElement('i');
+                        halfStarIcon.classList.add('fas', 'fa-star-half-alt', 'text-warning');
+                        starsContainer.appendChild(halfStarIcon);
+                    }
+
+                    // Save event ID in the enroll button's dataset if user is authenticated
+                    const enrollButton = document.getElementById('enrollButton');
+                    if (enrollButton) {
+                        enrollButton.dataset.eventId = info.event.id;
+                    }
+
+                    $('#personalClassModal').modal('show');
+                }
+            });
+
+            calendar.render();
+
+            // Enroll Button Click
+            const enrollButton = document.getElementById('enrollButton');
+            if (enrollButton) {
+                enrollButton.addEventListener('click', function () {
+                    const eventId = this.dataset.eventId;
+
+                    fetch('/api/PersonalClasses/Enroll', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json'
+                        },
+                        body: JSON.stringify(eventId)
+                    })
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error('Network response was not ok');
+                            }
+                            return response.json();
+                        })
+                        .then(data => {
+                            if (data.success) {
+                                alert(data.message);
+                                $('#personalClassModal').modal('hide');
+                                calendar.refetchEvents(); // Atualiza o calendário
+                            } else {
+                                alert(data.message);
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error enrolling in class:', error);
+                        });
+                });
+            }
+        });
+
+    </script>
+}

@@ -228,14 +228,25 @@ video#bgVideo {
     }
 }
 
-/* DataTables */
-/*table.dataTable {
-    table-layout: fixed;
-    width: 100%;
+/*calendar*/
+.custom-event {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    background-color: #B70D00;
+    color: white !important; /* Define a cor do texto como branca e usa !important */
 }
 
-table.dataTable th,
-table.dataTable td {
-    word-break: break-word;  Permite quebra entre palavras 
-    white-space: normal;  Permite que o texto quebre para uma nova linha 
-}*/
+    .custom-event:hover {
+        transform: scale(1.05); /* Aumenta o tamanho do evento em 5% */
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2); /* Adiciona uma sombra */
+        background-color: #960C00; /* Muda a cor de fundo no hover */
+        cursor: pointer;
+    }
+
+/* Força a cor do título do evento para branco em todas as visualizações */
+.fc-event-title,
+.fc-daygrid-event .fc-event-title,
+.fc-timegrid-event .fc-event-title,
+.fc-daygrid-event .custom-event .fc-event-title,
+.fc-timegrid-event .custom-event .fc-event-title {
+    color: white !important;
+}

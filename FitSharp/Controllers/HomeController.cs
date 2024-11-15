@@ -25,7 +25,7 @@ namespace FitSharp.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var gyms = await _gymsRepository.GetAllGymsWithAllRelatedDataAsync();
+            var gyms = await _gymsRepository.GetGymsWithAllRelatedDataAsync();
             var instructors = _userRepository.GetAllInstructorsWithAllRelatedData();
 
             if(gyms == null || instructors == null)
@@ -71,7 +71,7 @@ namespace FitSharp.Controllers
 
         public async Task<IActionResult> OurGyms()
         {
-            var gyms = await _gymsRepository.GetAllGymsWithAllRelatedDataAsync();
+            var gyms = await _gymsRepository.GetGymsWithAllRelatedDataAsync();
             if(gyms == null)
             {
                 return NotFound();
