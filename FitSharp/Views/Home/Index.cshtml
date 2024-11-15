@@ -80,7 +80,7 @@
                     <div class="card-body">
                         <h4 class="card-title">Personal Classes</h4>
                         <p>Get one-on-one sessions tailored to your needs.</p>
-                        <a href="/PersonalClasses" class="btn btn-primary">Learn More</a>
+                        <a href="/Home/PersonalClassesInfo" class="btn btn-primary">Learn More</a>
                     </div>
                 </div>
             </div>
@@ -90,7 +90,7 @@
                     <div class="card-body">
                         <h4 class="card-title">Group Classes</h4>
                         <p>Join others in high-energy classes for all fitness levels.</p>
-                        <a href="/GroupClasses" class="btn btn-primary">Learn More</a>
+                        <a href="/Home/GroupClassesInfo" class="btn btn-primary">Learn More</a>
                     </div>
                 </div>
             </div>
@@ -153,29 +153,38 @@
 
 
     <!-- Testimonials Section -->
-    <div class="wider-container mt-5 text-center">
-        <h2 class="display-4 mb-4 text-logo-primary">What Our Trainers Say</h2>
-        <div class="row">
-            <div class="col-md-6 offset-md-3">
-                <blockquote class="blockquote">
-                    <p class="mb-0">"Training at FitSharp feels like working with clean, high-quality code – efficient, effective, and well-organized. Just like our members!"</p>
-                    <footer class="blockquote-footer text-logo-primary">Rafael Santos, Trainer</footer>
-                </blockquote>
+    <div class="container mt-5">
+        <h2 class="display-4 mb-4 text-center text-logo-primary">What Our Favorite Customers Say</h2>
+        <div class="carousel slide" id="trainersCarousel" data-ride="carousel">
+            <div class="carousel-inner">
+                <div class="carousel-item active">
+                    <blockquote class="blockquote text-center">
+                        <p class="mb-0">"Training at FitSharp feels like working with clean, high-quality code – efficient, effective, and well-organized. Just like our members!"</p>
+                        <footer class="blockquote-footer text-logo-primary">Rafael Santos, Customer</footer>
+                    </blockquote>
+                </div>
+                <div class="carousel-item">
+                    <blockquote class="blockquote text-center">
+                        <p class="mb-0">"With FitSharp, it's like we’ve achieved the perfect balance between aesthetics and functionality – the site looks amazing, and it just works!"</p>
+                        <footer class="blockquote-footer text-logo-primary">Susana Pimentel, Customer</footer>
+                    </blockquote>
+                </div>
+                <div class="carousel-item">
+                    <blockquote class="blockquote text-center">
+                        <p class="mb-0">"At FitSharp, we combine clean code principles with a sleek design. Whether in our classes or on the website, everything is optimized for the best user experience!"</p>
+                        <footer class="blockquote-footer text-logo-primary">Ana Marta Grade, Customer</footer>
+                    </blockquote>
+                </div>
             </div>
-            <div class="col-md-6 offset-md-3 mt-4">
-                <blockquote class="blockquote">
-                    <p class="mb-0">"With FitSharp, it's like we’ve achieved the perfect balance between aesthetics and functionality – the site looks amazing, and it just works!"</p>
-                    <footer class="blockquote-footer text-logo-primary">Susana Pimentel, Trainer</footer>
-                </blockquote>
-            </div>
-            <div class="col-md-6 offset-md-3 mt-4">
-                <blockquote class="blockquote">
-                    <p class="mb-0">"At FitSharp, we combine clean code principles with a sleek design. Whether in our classes or on the website, everything is optimized for the best user experience!"</p>
-                    <footer class="blockquote-footer text-logo-primary">Ana Marta Grade, Trainer</footer>
-                </blockquote>
-            </div>
+            <a class="carousel-control-prev" href="#trainersCarousel" role="button" data-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="sr-only">Previous</span>
+            </a>
+            <a class="carousel-control-next" href="#trainersCarousel" role="button" data-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="sr-only">Next</span>
+            </a>
         </div>
     </div>
-
 </div>
 

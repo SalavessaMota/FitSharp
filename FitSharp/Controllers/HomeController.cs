@@ -58,5 +58,15 @@ namespace FitSharp.Controllers
 
             return View(customers);
         }
+
+        public IActionResult PersonalClassesInfo()
+        {
+            return View();
+        }
+
+        public IActionResult GroupClassesInfo()
+        {
+           return View();
+        }
     }
 }

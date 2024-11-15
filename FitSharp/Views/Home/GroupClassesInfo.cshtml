@@ -1,0 +1,103 @@
+﻿
+@{
+    ViewData["Title"] = "GroupClassesInfo";
+}
+
+<div class="container mt-5 transparent-card">
+    <div class="text-center">
+        <h1 class="display-4">Achieve More with Group Classes</h1>
+        <p class="lead mt-3">
+            FitSharp's Group Classes bring people together to achieve their fitness goals. Train in a fun, energetic, and motivating environment led by top instructors!
+        </p>
+    </div>
+
+    <div class="row mt-5 align-items-center">
+        <div class="col-lg-6 col-md-12">
+            <img src="https://aircinelmvc.blob.core.windows.net/resources/fitsharp3.jpg" alt="Group Training Image" class="img-fluid rounded shadow">
+        </div>
+        <div class="col-lg-6 col-md-12">
+            <h3 class="mt-3 mt-lg-0">Why Join Group Classes?</h3>
+            <ul class="list-group mt-3">
+                <li class="list-group-item">
+                    <i class="fas fa-users text-logo-primary"></i>
+                    <strong>Community Spirit:</strong> Build connections and stay motivated with like-minded individuals.
+                </li>
+                <li class="list-group-item">
+                    <i class="fas fa-music text-logo-primary"></i>
+                    <strong>Energetic Atmosphere:</strong> Dynamic classes with uplifting music and engaging instructors.
+                </li>
+                <li class="list-group-item">
+                    <i class="fas fa-heartbeat text-logo-primary"></i>
+                    <strong>Health Benefits:</strong> Improve your endurance, strength, and overall fitness level.
+                </li>
+                <li class="list-group-item">
+                    <i class="fas fa-smile text-logo-primary"></i>
+                    <strong>Fun and Engaging:</strong> Experience workouts that feel less like work and more like fun!
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="text-center mt-5">
+        <h3>Meet Our Instructors</h3>
+        <p>Our certified personal trainers are here to guide and motivate you.</p>
+        <a href="/home/OurInstructors" class="btn btn-primary btn-lg mt-3 roundedwithshadow">
+            View Instructors <i class="fas fa-arrow-right"></i>
+        </a>
+    </div>
+
+    <div class="mt-5">
+        <h3 class="text-center">What Our Members Say</h3>
+        <div class="carousel slide mt-3" id="testimonialsCarousel" data-ride="carousel">
+            <div class="carousel-inner">
+                <div class="carousel-item active">
+                    <blockquote class="blockquote text-center">
+                        <p class="mb-0">"The group classes are so motivating and fun! I’ve met amazing people and stayed consistent with my fitness goals."</p>
+                        <footer class="blockquote-footer">Laura Green</footer>
+                    </blockquote>
+                </div>
+                <div class="carousel-item">
+                    <blockquote class="blockquote text-center">
+                        <p class="mb-0">"I love the energy of the group sessions – they push me to work harder and enjoy every moment!"</p>
+                        <footer class="blockquote-footer">James Wilson</footer>
+                    </blockquote>
+                </div>
+                <div class="carousel-item">
+                    <blockquote class="blockquote text-center">
+                        <p class="mb-0">"The instructors are amazing, and the classes are so dynamic. I feel stronger every week!"</p>
+                        <footer class="blockquote-footer">Sophia Brown</footer>
+                    </blockquote>
+                </div>
+            </div>
+            <a class="carousel-control-prev" href="#testimonialsCarousel" role="button" data-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="sr-only">Previous</span>
+            </a>
+            <a class="carousel-control-next" href="#testimonialsCarousel" role="button" data-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="sr-only">Next</span>
+            </a>
+        </div>
+    </div>
+
+    @if (this.User.Identity.IsAuthenticated)
+    {
+        <div class="text-center mt-5">
+            <a href="/GroupClasses/UpcomingGroupClasses" class="btn btn-primary btn-lg mt-3 roundedwithshadow">
+                Join a Group Class Now <i class="fas fa-calendar-alt"></i>
+            </a>
+        </div>
+    }
+    else
+    {
+        <div class="text-center mt-5">
+            <a href="/Account/Login" class="btn btn-primary btn-lg mt-3 roundedwithshadow">
+                Log in to Join a Group Class <i class="fas fa-calendar-alt"></i>
+            </a>
+        </div>
+    }
+    <div class="text-center">
+        <a href="~/Home/index" class="btn btn-primary btn-lg mt-3 roundedwithshadow"><i class="fas fa-home"></i> Return Home</a>
+    </div>
+</div>
+

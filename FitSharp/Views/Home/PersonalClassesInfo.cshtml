@@ -1,0 +1,103 @@
+﻿
+@{
+    ViewData["Title"] = "PersonalClassesInfo";
+}
+
+<div class="container mt-5 transparent-card">
+    <div class="text-center">
+        <h1 class="display-4">Transform Yourself with Personal Classes</h1>
+        <p class="lead mt-3">
+            At FitSharp, our Personal Classes are designed specifically for you. Train with top instructors
+            who focus on your goals and create tailored plans for your success!
+        </p>
+    </div>
+
+    <div class="row mt-5 align-items-center">
+        <div class="col-lg-6 col-md-12">
+            <img src="https://aircinelmvc.blob.core.windows.net/resources/fitsharp5.jpg" alt="Personal Training Image" class="img-fluid rounded shadow">
+        </div>
+        <div class="col-lg-6 col-md-12">
+            <h3 class="mt-3 mt-lg-0">Why Choose Personal Classes?</h3>
+            <ul class="list-group mt-3">
+                <li class="list-group-item">
+                    <i class="fas fa-user-check text-logo-primary"></i>
+                    <strong>Customized Plans:</strong> Every session is tailored to your fitness level and goals.
+                </li>
+                <li class="list-group-item">
+                    <i class="fas fa-dumbbell text-logo-primary"></i>
+                    <strong>One-on-One Coaching:</strong> Get undivided attention from your instructor.
+                </li>
+                <li class="list-group-item">
+                    <i class="fas fa-clock text-logo-primary"></i>
+                    <strong>Flexible Scheduling:</strong> Fit your sessions into your busy life.
+                </li>
+                <li class="list-group-item">
+                    <i class="fas fa-trophy text-logo-primary"></i>
+                    <strong>Guaranteed Results:</strong> Achieve your goals faster with professional guidance.
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="text-center mt-5">
+        <h3>Meet Our Instructors</h3>
+        <p>Our certified personal trainers are here to guide and motivate you.</p>
+        <a href="/home/OurInstructors" class="btn btn-primary btn-lg mt-3 roundedwithshadow">
+            View Instructors <i class="fas fa-arrow-right"></i>
+        </a>
+    </div>
+
+    <div class="mt-5">
+        <h3 class="text-center">What Our Clients Say</h3>
+        <div class="carousel slide mt-3" id="testimonialsCarousel" data-ride="carousel">
+            <div class="carousel-inner">
+                <div class="carousel-item active">
+                    <blockquote class="blockquote text-center">
+                        <p class="mb-0">"The personalized attention made all the difference in achieving my fitness goals!"</p>
+                        <footer class="blockquote-footer">Alex Johnson</footer>
+                    </blockquote>
+                </div>
+                <div class="carousel-item">
+                    <blockquote class="blockquote text-center">
+                        <p class="mb-0">"My trainer pushed me to new heights while keeping it fun and engaging."</p>
+                        <footer class="blockquote-footer">Emily Carter</footer>
+                    </blockquote>
+                </div>
+                <div class="carousel-item">
+                    <blockquote class="blockquote text-center">
+                        <p class="mb-0">"I’ve never felt more confident or stronger in my life!"</p>
+                        <footer class="blockquote-footer">Michael Brown</footer>
+                    </blockquote>
+                </div>
+            </div>
+            <a class="carousel-control-prev" href="#testimonialsCarousel" role="button" data-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="sr-only">Previous</span>
+            </a>
+            <a class="carousel-control-next" href="#testimonialsCarousel" role="button" data-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="sr-only">Next</span>
+            </a>
+        </div>
+    </div>
+    @if(this.User.Identity.IsAuthenticated)
+    {
+        <div class="text-center mt-5">
+            <a href="/PersonalClasses/UpcomingPersonalClasses" class="btn btn-primary btn-lg mt-3 roundedwithshadow">
+                Book Your Personal Class Now <i class="fas fa-calendar-alt"></i>
+            </a>
+        </div>
+    }
+    else
+    {
+        <div class="text-center mt-5">
+            <a href="/Account/Login" class="btn btn-primary btn-lg mt-3 roundedwithshadow">
+                Log in to Book Your Personal Class <i class="fas fa-calendar-alt"></i>
+            </a>
+        </div>
+    }
+    <div class="text-center">
+        <a href="~/Home/index" class="btn btn-primary btn-lg mt-3 roundedwithshadow"><i class="fas fa-home"></i> Return Home</a>
+    </div>
+</div>
+
