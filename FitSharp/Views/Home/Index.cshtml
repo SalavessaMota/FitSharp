@@ -1,4 +1,5 @@
-﻿@model IEnumerable<FitSharp.Data.Entities.Instructor>
+﻿@model FitSharp.Models.HomeIndexViewModel
+
 <!-- Video Background -->
 <video id="bgVideo" autoplay loop muted preload="auto" style="width: 100%; height: 100vh; object-fit: cover;">
     <source src="https://aircinelmvc.blob.core.windows.net/resources/backgroundvideofitsharp2.mp4" type="video/mp4">
@@ -24,11 +25,10 @@
                 <a href="/Account/Register" class="btn btn-primary btn-lg mt-3 mb-5">Join Us</a>
             }
         </div>
-        
     </div>
 
     <!-- Features Section -->
-    <div class=" wider-container text-center mt-5">
+    <div class="wider-container text-center mt-5">
         <div class="row mb-5">
             <div class="col-md-4">
                 <i class="fas fa-dumbbell fa-3x text-logo-primary mb-3"></i>
@@ -48,30 +48,83 @@
         </div>
     </div>
 
-    <!-- Our Instructors Section -->
-    <div class=" wider-container mt-5 text-center">
-        <h2 class="display-4 mb-4 text-logo-primary">Meet Our Expert Instructors</h2>
-        <div class="row">
-            @* Exemplos de Instrutores (substituir com conteúdo dinâmico no futuro) *@
-            @foreach (var instructor in Model.Take(3))
-            {
-                <div class="col-md-4 mb-4">
-                    <div class="card h-100">
-                        <img src="@instructor.User.ImageFullPath" class="card-img-top" alt="@instructor.User.FullName" style="height: 286px; object-fit: cover;">
-                        <div class="card-body">
-                            <h4 class="card-title">@instructor.User.FullName</h4>
-                            <h5 class="text-muted">@instructor.Speciality</h5>
-                            <p class="card-text">@instructor.Description</p>
+    <!-- Our Gyms Section -->
+    <div class="wider-container mt-5 text-center">
+        <h2 class="display-4 mb-4 text-logo-primary">Explore Our Gyms</h2>
+        <div id="gymsCarousel" class="carousel slide" data-ride="carousel" data-interval="5000">
+            <div class="carousel-inner">
+                @for (int i = 0; i < Model.Gyms.Count(); i += 3)
+                {
+                    <div class="carousel-item @(i == 0 ? "active" : "")">
+                        <div class="row">
+                            @foreach (var gym in Model.Gyms.Skip(i).Take(3))
+                            {
+                                <div class="col-md-4 mb-4">
+                                    <div class="card h-100">
+                                        <img src="@gym.ImageFullPath" class="card-img-top" alt="@gym.Name" style="height: 286px; object-fit: cover;">
+                                        <div class="card-body">
+                                            <h4 class="card-title">@gym.Name</h4>
+                                            <p class="text-muted">@gym.Address</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
                         </div>
                     </div>
-                </div>
-            }
+                }
+            </div>
+            <a class="carousel-control-prev" href="#gymsCarousel" role="button" data-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="sr-only">Previous</span>
+            </a>
+            <a class="carousel-control-next" href="#gymsCarousel" role="button" data-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="sr-only">Next</span>
+            </a>
+        </div>
+        <a href="/home/OurGyms" class="btn btn-primary btn-lg mt-3 mb-5">View All Gyms</a>
+    </div>
+
+    <!-- Our Instructors Section -->
+    <div class="wider-container mt-5 text-center">
+        <h2 class="display-4 mb-4 text-logo-primary">Meet Our Expert Instructors</h2>
+        <div id="instructorsCarousel" class="carousel slide" data-ride="carousel" data-interval="5000">
+            <div class="carousel-inner">
+                @for (int i = 0; i < Model.Instructors.Count(); i += 3)
+                {
+                    <div class="carousel-item @(i == 0 ? "active" : "")">
+                        <div class="row">
+                            @foreach (var instructor in Model.Instructors.Skip(i).Take(3))
+                            {
+                                <div class="col-md-4 mb-4">
+                                    <div class="card h-100">
+                                        <img src="@instructor.User.ImageFullPath" class="card-img-top" alt="@instructor.User.FullName" style="height: 286px; object-fit: cover;">
+                                        <div class="card-body">
+                                            <h4 class="card-title">@instructor.User.FullName</h4>
+                                            <h5 class="text-muted">@instructor.Speciality</h5>
+                                            <p class="card-text">@instructor.Description</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                }
+            </div>
+            <a class="carousel-control-prev" href="#instructorsCarousel" role="button" data-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="sr-only">Previous</span>
+            </a>
+            <a class="carousel-control-next" href="#instructorsCarousel" role="button" data-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="sr-only">Next</span>
+            </a>
         </div>
         <a href="/home/OurInstructors" class="btn btn-primary btn-lg mt-3 mb-5">View All Instructors</a>
     </div>
 
     <!-- Popular Classes Section -->
-    <div class=" wider-container mt-5 text-center">
+    <div class="wider-container mt-5 text-center">
         <h2 class="display-4 mb-4 text-logo-primary">Popular Classes</h2>
         <div class="row">
             <div class="col-md-6 mb-4">
@@ -151,11 +204,10 @@
         </div>
     </div>
 
-
     <!-- Testimonials Section -->
     <div class="container mt-5">
         <h2 class="display-4 mb-4 text-center text-logo-primary">What Our Favorite Customers Say</h2>
-        <div class="carousel slide" id="trainersCarousel" data-ride="carousel">
+        <div class="carousel slide" id="trainersCarousel" data-ride="carousel" data-interval="5000">
             <div class="carousel-inner">
                 <div class="carousel-item active">
                     <blockquote class="blockquote text-center">
@@ -187,4 +239,5 @@
         </div>
     </div>
 </div>
+
 
