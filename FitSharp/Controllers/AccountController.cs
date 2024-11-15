@@ -312,16 +312,18 @@ namespace FitSharp.Controllers
                     var result = await _userHelper.ChangePasswordAsync(user, model.OldPassword, model.NewPassword);
                     if (result.Succeeded)
                     {
+                        _flashMessage.Confirmation("Password changed successfully.");
                         return this.RedirectToAction("ChangeUser");
                     }
                     else
                     {
                         this.ModelState.AddModelError(string.Empty, result.Errors.FirstOrDefault().Description);
+                        _flashMessage.Danger(result.Errors.FirstOrDefault().Description);
                     }
                 }
                 else
                 {
-                    this.ModelState.AddModelError(string.Empty, "User not found.");
+                    _flashMessage.Danger("User not found.");
                 }
             }
 

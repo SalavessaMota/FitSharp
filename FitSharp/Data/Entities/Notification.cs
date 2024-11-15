@@ -29,5 +29,3 @@ namespace FitSharp.Data.Entities
         public bool IsRead { get; set; }
     }
 }
-
-//TODO: Implement payment methods;

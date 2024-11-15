@@ -16,7 +16,16 @@ namespace FitSharp.Data
 
         Task<Customer> GetCustomerByUserName(string userName);
 
+        Task<Employee> GetEmployeeByUserName(string userName);
+
+        IQueryable<Customer> GetAllCustomersWithAllRelatedData();
+
         IEnumerable<Instructor> GetAllInstructorsWithAllRelatedData();
+
+        IEnumerable<Employee> GetAllEmployeesWithAllRelatedData();
+
+        IEnumerable<Admin> GetAllAdminsWithAllRelatedData();
+
         Instructor GetInstructorWithAllRelatedDataByInstructorId(int instructorId);
 
         Task AddCustomerAsync(Customer customer);
@@ -24,8 +33,6 @@ namespace FitSharp.Data
         Task AddEmployeeAsync(Employee employee);
 
         Task AddAdminAsync(Admin admin);
-
-        IQueryable<Customer> GetAllCustomersWithAllRelatedData();
 
         Task<User> GetUserByIdAsync(string userId);
 
@@ -50,9 +57,5 @@ namespace FitSharp.Data
         string DetermineUserType(User user);
 
         Task UpdateCustomerAsync(Customer customer);
-
-        Task<Notification> GetNotificationByIdAsync(int id);
-
-        IQueryable<Notification> GetNotifications(string userId, string roleName);
     }
 }

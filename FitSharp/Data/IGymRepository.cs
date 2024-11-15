@@ -7,8 +7,6 @@ namespace FitSharp.Data
 {
     public interface IGymRepository : IGenericRepository<Gym>
     {
-        Task<IEnumerable<Gym>> GetGymsWithRoomsAndEquipmentsAsync();
-
         Task<Gym> GetGymWithRoomsAsync(int id);
 
         Task<Gym> GetGymWithEquipmentsAsync(int id);
@@ -39,6 +37,10 @@ namespace FitSharp.Data
 
         IEnumerable<SelectListItem> GetComboRoomsByInstructorName(string instructorName);
 
-        Task<IEnumerable<Gym>> GetAllGymsWithAllRelatedDataAsync();
+        Task<IEnumerable<Gym>> GetGymsWithAllRelatedDataAsync();
+
+        Task<IEnumerable<Equipment>> GetEquipments();
+
+        Task<IEnumerable<Equipment>> GetGymEquipments(int? gymId);
     }
 }
