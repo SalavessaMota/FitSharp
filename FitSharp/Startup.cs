@@ -68,6 +68,7 @@ namespace FitSharp
             services.AddScoped<IUserHelper, UserHelper>();
             services.AddScoped<IMailHelper, MailHelper>();
             services.AddScoped<IBlobHelper, BlobHelper>();
+            services.AddTransient<IPaymentHelper, PaymentHelper>();
 
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<ICountryRepository, CountryRepository>();

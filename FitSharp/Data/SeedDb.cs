@@ -75,6 +75,45 @@ namespace FitSharp.Data
                 await _context.SaveChangesAsync();
             }
 
+            // MEMBERSHIPS SEEDING
+            if (!_context.Memberships.Any())
+            {
+                _context.Memberships.Add(new Membership
+                {
+                    Name = "Basic",
+                    Price = 40.00m,
+                    NumberOfClasses = 8,
+                    Description = "Basic Plan: Access to 8 classes per month and unlimited use of gym equipment."
+                });
+
+                _context.Memberships.Add(new Membership
+                {
+                    Name = "Premium",
+                    Price = 70.00m,
+                    NumberOfClasses = 16,
+                    Description = "Premium Plan: Access to 16 classes per month and unlimited use of gym equipment, ideal for a more intense routine."
+                });
+
+                _context.Memberships.Add(new Membership
+                {
+                    Name = "Ultimate",
+                    Price = 90.00m,
+                    NumberOfClasses = 999999999,
+                    Description = "Ultimate Plan: Unlimited classes and unlimited use of gym equipment, perfect for clients seeking maximum flexibility and personalization."
+                });
+
+                _context.Memberships.Add(new Membership
+                {
+                    Name = "Trial",
+                    Price = 0.00m,
+                    NumberOfClasses = 2,
+                    Description = "Trial Membership: Access to 2 classes over a 1-month period."
+
+                });
+
+                await _context.SaveChangesAsync();
+            }
+
             // ADMIN SEEDING
             var adminUser = await _userRepository.GetUserByEmailAsync("nunosalavessa@hotmail.com");
 
@@ -162,7 +201,6 @@ namespace FitSharp.Data
 
             // EMPLOYEE SEEDING
             var employeeUser = await _userRepository.GetUserByEmailAsync("ritamiguens@yopmail.com");
-
             if (employeeUser == null)
             {
                 employeeUser = new User
@@ -206,7 +244,6 @@ namespace FitSharp.Data
 
             // CUSTOMER SEEDING
             var customerUser = await _userRepository.GetUserByEmailAsync("customerfitsharp@yopmail.com");
-
             if (customerUser == null)
             {
                 customerUser = new User
@@ -234,7 +271,12 @@ namespace FitSharp.Data
 
                 var customer = new Customer
                 {
-                    User = customerUser
+                    User = customerUser,
+                    MembershipIsActive = true,
+                    MembershipBeginDate = DateTime.Now,
+                    MembershipEndDate = DateTime.Now.AddMonths(1),
+                    ClassesRemaining = 2,
+                    MembershipId = 1
                 };
 
                 _context.Customers.Add(customer);
@@ -255,44 +297,6 @@ namespace FitSharp.Data
                     Name = "Personal Training",
                     Description = "One to one training with a personal trainer"
                 });
-                await _context.SaveChangesAsync();
-            }
-
-            // MEMBERSHIPS SEEDING
-            if (!_context.Memberships.Any())
-            {
-                _context.Memberships.Add(new Membership
-                {
-                    Name = "Basic",
-                    Price = 40.00m,
-                    NumberOfClasses = 8,
-                    Description = "Basic Plan: Access to 8 classes per month and unlimited use of gym equipment."
-                });
-
-                _context.Memberships.Add(new Membership
-                {
-                    Name = "Premium",
-                    Price = 70.00m,
-                    NumberOfClasses = 16,
-                    Description = "Premium Plan: Access to 16 classes per month and unlimited use of gym equipment, ideal for a more intense routine."
-                });
-
-                _context.Memberships.Add(new Membership
-                {
-                    Name = "Ultimate",
-                    Price = 90.00m,
-                    NumberOfClasses = 999999999,
-                    Description = "Ultimate Plan: Unlimited classes and unlimited use of gym equipment, perfect for clients seeking maximum flexibility and personalization."
-                });
-
-                _context.Memberships.Add(new Membership
-                {
-                    Name = "Trial",
-                    Price = 0.00m,
-                    NumberOfClasses = 2,
-                    Description = "Trial Membership: Access to 2 classes over a 1-week period."
-                });
-
                 await _context.SaveChangesAsync();
             }
         }

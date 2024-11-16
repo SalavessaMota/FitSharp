@@ -78,7 +78,6 @@ namespace FitSharp.Controllers
                 if (result.Succeeded)
                 {
                     var user = await _userRepository.GetUserByEmailAsync(model.Username);
-
                     if (!user.IsActive)
                     {
                         await _userHelper.LogoutAsync();
@@ -184,7 +183,7 @@ namespace FitSharp.Controllers
                     MembershipBeginDate = DateTime.Now,
                     MembershipEndDate = DateTime.Now.AddMonths(1),
                     ClassesRemaining = 2,
-                    MembershipId = 4
+                    MembershipId = 1
                 };
 
                 await _userRepository.AddCustomerAsync(customer);

@@ -296,7 +296,16 @@ public class AdminController : Controller
                 var result = await _userRepository.AddUserAsync(user, "Fitsharp1!");
                 await _userHelper.AddUserToRoleAsync(user, "Customer");
 
-                var customer = new Customer { User = user };
+                var customer = new Customer
+                {
+                    User = user,
+                    MembershipIsActive = true,
+                    MembershipBeginDate = DateTime.Now,
+                    MembershipEndDate = DateTime.Now.AddMonths(1),
+                    ClassesRemaining = 2,
+                    MembershipId = 1
+                };
+
                 await _userRepository.AddCustomerAsync(customer);
 
                 var token = await _userHelper.GenerateEmailConfirmationTokenAsync(user);
