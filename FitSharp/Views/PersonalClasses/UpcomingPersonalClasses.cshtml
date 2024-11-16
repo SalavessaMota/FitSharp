@@ -48,11 +48,11 @@
                                 <td>@Html.DisplayFor(modelItem => item.StartTime)</td>
                                 <td>@Html.DisplayFor(modelItem => item.EndTime)</td>
                                 <td>
-                                    @if (item.EndTime > DateTime.Now)
+                                    @if (item.EndTime > DateTime.Now && this.User.IsInRole("Customer"))
                                     {
                                         <a asp-action="SignUp" asp-route-id="@item.Id" class="btn btn-warning"><i class="fas fa-user-plus"></i></a>
                                     }
-                                    else if (item.Customer?.User.UserName == User.Identity.Name)
+                                    else if (item.Customer?.User.UserName == User.Identity.Name && this.User.IsInRole("Customer"))
                                     {
                                         <a asp-action="CancelSignUp" asp-route-id="@item.Id" class="btn btn-danger"><i class="fas fa-user-minus"></i></a>
                                     }

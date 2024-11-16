@@ -61,7 +61,7 @@
                                                 <i class="far fa-edit ml-0"></i> Edit Review
                                             </a>
                                         }
-                                        else
+                                        else if(item.StartTime < DateTime.Now)
                                         {
                                             <a asp-controller="Reviews" asp-action="WriteReview" asp-route-instructorId="@item.Instructor.Id" class="btn btn-link">
                                                 <i class="far fa-edit ml-0"></i> Write Review

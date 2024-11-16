@@ -5,17 +5,11 @@
 
 <div class="col-12 col-lg-4 offset-lg-4">
     <div class="transparent-card text-center">
-        @if (Model.MembershipId == null || Model.ClassesRemaining == 0)
+        @if (Model.MembershipId == null)
         {
             <h3>Membership Required</h3>
             <p class="lead text-muted">You need to purchase a membership to access any FitSharp gym worldwide. Enjoy your workout wherever you are!</p>
             <a href="~/Memberships/AvailableMemberships" class="btn btn-primary btn-lg mt-3 roundedwithshadow"><i class="fas fa-credit-card"></i> Purchase Membership</a>
-        }
-        else if (Model.ClassesRemaining == 0)
-        {
-            <h3>No Classes Remaining</h3>
-            <p class="lead text-muted">You have no classes remaining. Purchase more classes to access any FitSharp gym worldwide. Enjoy your workout wherever you are!</p>
-            <a href="~/Memberships/AvailableMemberships" class="btn btn-primary btn-lg mt-3 roundedwithshadow"><i class="fas fa-credit-card"></i> Purchase Classes</a>
         }
         else
         {

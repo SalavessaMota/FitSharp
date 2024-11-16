@@ -74,10 +74,20 @@ namespace FitSharp.Controllers
             if (ModelState.IsValid)
             {
                 var result = await _userHelper.LoginAsync(model);
+
                 if (result.Succeeded)
                 {
                     var user = await _userRepository.GetUserByEmailAsync(model.Username);
 
+                    // Verificar se o utilizador existe
+                    if (user == null)
+                    {
+                        await _userHelper.LogoutAsync();
+                        _flashMessage.Danger("The user does not exist. Please check your credentials.");
+                        return View(model);
+                    }
+
+                    // Verificar se o utilizador está ativo
                     if (!user.IsActive)
                     {
                         await _userHelper.LogoutAsync();
@@ -85,16 +95,18 @@ namespace FitSharp.Controllers
                         return View(model);
                     }
 
+                    // Redirecionar para a URL de retorno, se disponível
                     if (this.Request.Query.Keys.Contains("ReturnUrl"))
                     {
                         return Redirect(this.Request.Query["ReturnUrl"].First());
                     }
 
+                    // Verificar a role "Customer" e a validade da subscrição
                     if (await _userHelper.IsUserInRoleAsync(user, "Customer"))
                     {
-                        //await CheckMembershipStatus();
                         var customer = await _userRepository.GetCustomerByUserName(user.UserName);
-                        if (customer.MembershipIsActive == true && customer.MembershipEndDate <= DateTime.Now)
+
+                        if (customer != null && customer.MembershipIsActive && customer.MembershipEndDate <= DateTime.Now)
                         {
                             customer.MembershipIsActive = false;
                             customer.MembershipId = null;
@@ -108,11 +120,11 @@ namespace FitSharp.Controllers
                 }
             }
 
-            //this.ModelState.AddModelError(string.Empty, "Failed to login");
-            _flashMessage.Danger("Failed to login");
-
+            // Mensagem de erro para credenciais inválidas
+            _flashMessage.Danger("Failed to login. Please check your username and password.");
             return View(model);
         }
+
 
         public async Task<IActionResult> Logout()
         {
@@ -183,7 +195,7 @@ namespace FitSharp.Controllers
                     MembershipBeginDate = DateTime.Now,
                     MembershipEndDate = DateTime.Now.AddMonths(1),
                     ClassesRemaining = 2,
-                    MembershipId = 4
+                    MembershipId = 1
                 };
 
                 await _userRepository.AddCustomerAsync(customer);

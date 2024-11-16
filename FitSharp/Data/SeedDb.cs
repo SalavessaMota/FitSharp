@@ -204,60 +204,6 @@ namespace FitSharp.Data
                 await _userHelper.AddUserToRoleAsync(employeeUser, "Employee");
             }
 
-            // CUSTOMER SEEDING
-            var customerUser = await _userRepository.GetUserByEmailAsync("customerfitsharp@yopmail.com");
-
-            if (customerUser == null)
-            {
-                customerUser = new User
-                {
-                    FirstName = "Customer",
-                    LastName = "Inicial",
-                    Email = "customerfitsharp@yopmail.com",
-                    UserName = "customerfitsharp@yopmail.com",
-                    PhoneNumber = "212343555",
-                    Address = "Rua Jau 33",
-                    CityId = lisboa.Id,
-                    City = lisboa,
-                    IsActive = true
-                };
-
-                var result = await _userRepository.AddUserAsync(customerUser, "123123");
-                if (result != IdentityResult.Success)
-                {
-                    throw new InvalidOperationException("Could not create the Customer user in seeder");
-                }
-
-                await _userHelper.AddUserToRoleAsync(customerUser, "Customer");
-                var token = await _userHelper.GenerateEmailConfirmationTokenAsync(customerUser);
-                await _userHelper.ConfirmEmailAsync(customerUser, token);
-
-                var customer = new Customer
-                {
-                    User = customerUser
-                };
-
-                _context.Customers.Add(customer);
-                await _context.SaveChangesAsync();
-            }
-
-            var isCustomerInRole = await _userHelper.IsUserInRoleAsync(customerUser, "Customer");
-            if (!isCustomerInRole)
-            {
-                await _userHelper.AddUserToRoleAsync(customerUser, "Customer");
-            }
-
-            // CLASSTYPES SEEDING
-            if (!_context.ClassTypes.Any())
-            {
-                _context.ClassTypes.Add(new ClassType
-                {
-                    Name = "Personal Training",
-                    Description = "One to one training with a personal trainer"
-                });
-                await _context.SaveChangesAsync();
-            }
-
             // MEMBERSHIPS SEEDING
             if (!_context.Memberships.Any())
             {
@@ -295,6 +241,66 @@ namespace FitSharp.Data
 
                 await _context.SaveChangesAsync();
             }
+
+            // CUSTOMER SEEDING
+            var customerUser = await _userRepository.GetUserByEmailAsync("customerfitsharp@yopmail.com");
+
+            if (customerUser == null)
+            {
+                customerUser = new User
+                {
+                    FirstName = "Customer",
+                    LastName = "Inicial",
+                    Email = "customerfitsharp@yopmail.com",
+                    UserName = "customerfitsharp@yopmail.com",
+                    PhoneNumber = "212343555",
+                    Address = "Rua Jau 33",
+                    CityId = lisboa.Id,
+                    City = lisboa,
+                    IsActive = true
+                };
+
+                var result = await _userRepository.AddUserAsync(customerUser, "123123");
+                if (result != IdentityResult.Success)
+                {
+                    throw new InvalidOperationException("Could not create the Customer user in seeder");
+                }
+
+                await _userHelper.AddUserToRoleAsync(customerUser, "Customer");
+                var token = await _userHelper.GenerateEmailConfirmationTokenAsync(customerUser);
+                await _userHelper.ConfirmEmailAsync(customerUser, token);
+
+                var customer = new Customer
+                {
+                    User = customerUser,
+                    MembershipIsActive = true,
+                    MembershipBeginDate = DateTime.Now,
+                    MembershipEndDate = DateTime.Now.AddMonths(1),
+                    ClassesRemaining = 2,
+                    MembershipId = 1
+                };
+
+                _context.Customers.Add(customer);
+                await _context.SaveChangesAsync();
+            }
+
+            var isCustomerInRole = await _userHelper.IsUserInRoleAsync(customerUser, "Customer");
+            if (!isCustomerInRole)
+            {
+                await _userHelper.AddUserToRoleAsync(customerUser, "Customer");
+            }
+
+            // CLASSTYPES SEEDING
+            if (!_context.ClassTypes.Any())
+            {
+                _context.ClassTypes.Add(new ClassType
+                {
+                    Name = "Personal Training",
+                    Description = "One to one training with a personal trainer"
+                });
+                await _context.SaveChangesAsync();
+            }
+
         }
     }
 }
