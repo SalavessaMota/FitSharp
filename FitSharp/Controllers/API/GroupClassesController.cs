@@ -24,7 +24,6 @@ namespace FitSharp.Controllers.API
         public IActionResult GetAvailableGroupClasses()
         {
             var groupClasses = _groupClassRepository.GetAllGroupClassesWithRelatedData()
-                .Where(gc => !gc.Customers.Any()) // Alterar a lógica se necessário
                 .Select(gc => new
                 {
                     id = gc.Id,

@@ -41,6 +41,12 @@
                             </a>
                         </li>
 
+                        <li class="nav-item">
+                            <a class="nav-link d-flex align-items-center" asp-controller="Memberships" asp-action="AvailableMemberships">
+                                <i class="fas fa-money-check-alt"></i> <span class="nav-itemText">Memberships</span>
+                            </a>
+                        </li>
+
                         @if (this.User.Identity.IsAuthenticated && this.User.IsInRole("Admin")) // If user is admin
                         {
                             <li class="nav-item dropdown">
@@ -130,12 +136,12 @@
                                 </ul>
                             </li>
 
-                            <!-- Link "Memberships" -->
+                            @* <!-- Link "Memberships" -->
                             <li class="nav-item">
                                 <a class="nav-link d-flex align-items-center" asp-controller="Memberships" asp-action="AvailableMemberships">
                                     <i class="fas fa-money-check-alt"></i> <span class="nav-itemText">Memberships</span>
                                 </a>
-                            </li>
+                            </li> *@
 
                             <!-- Link "QRCode" -->
                             <li class="nav-item">
