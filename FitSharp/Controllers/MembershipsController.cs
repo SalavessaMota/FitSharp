@@ -1,9 +1,11 @@
-﻿using FitSharp.Data;
+﻿using Braintree;
+using FitSharp.Data;
 using FitSharp.Data.Entities;
 using FitSharp.Helpers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Vereyon.Web;
 
@@ -14,20 +16,23 @@ namespace FitSharp.Controllers
         private readonly IMembershipRepository _membershipRepository;
         private readonly IUserRepository _userRepository;
         private readonly IFlashMessage _flashMessage;
+        private readonly IPaymentHelper _paymentHelper;
 
         public MembershipsController(
             IMembershipRepository membershipRepository,
             IUserRepository userRepository,
-            IFlashMessage flashMessage)
+            IFlashMessage flashMessage,
+            IPaymentHelper paymentHelper)
         {
             _membershipRepository = membershipRepository;
             _userRepository = userRepository;
             _flashMessage = flashMessage;
+            _paymentHelper = paymentHelper;
         }
 
         public IActionResult Index()
         {
-            return View(_membershipRepository.GetAll());
+            return View(_membershipRepository.GetAll().OrderBy(m => m.Price));
         }
 
         public IActionResult Create()
@@ -108,7 +113,7 @@ namespace FitSharp.Controllers
                 if (ex.InnerException != null && ex.InnerException.Message.Contains("DELETE"))
                 {
                     ViewBag.ErrorTitle = $"The membership {membership.Name} is probably being used!!";
-                    ViewBag.ErrorMessage = $"{membership.Name}  can't be deleted because it is being used.</br></br>";
+                    ViewBag.ErrorMessage = $"{membership.Name} can't be deleted because it is being used.</br></br>";
                 }
 
                 return View("Error");
@@ -118,25 +123,55 @@ namespace FitSharp.Controllers
         public async Task<IActionResult> AvailableMemberships()
         {
             var memberships = await _membershipRepository.GetAll().ToListAsync();
-
             return View(memberships);
         }
 
-        [HttpPost]
-        public async Task<IActionResult> PurchaseMembership(int membershipId)
+        [Authorize(Roles = "Customer")]
+        public async Task<IActionResult> PurchaseMembership(int? id)
         {
-            var userName = User.Identity.Name;
-            var customer = await _userRepository.GetCustomerByUserName(userName);
-
-            if (customer == null)
+            if (id == null)
             {
-                return NotFound();
+                return RedirectToAction("MembershipNotFound");
             }
 
-            var membership = await _membershipRepository.GetByIdAsync(membershipId);
+            var membership = await _membershipRepository.GetByIdAsync(id.Value);
             if (membership == null)
             {
-                return NotFound();
+                return RedirectToAction("MembershipNotFound");
+            }
+
+            var gateway = _paymentHelper.GetGateway();
+            var clientToken = gateway.ClientToken.Generate();
+            ViewBag.ClientToken = clientToken;
+            return View(membership); 
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> PurchaseMembership(Membership model) 
+        {
+            var membership = await _membershipRepository.GetByIdAsync(model.Id);
+            var gateway = _paymentHelper.GetGateway();
+            var request = new TransactionRequest
+            {
+                Amount = Convert.ToDecimal(model.Price),
+                PaymentMethodNonce = model.Nonce,
+                Options = new TransactionOptionsRequest
+                {
+                    SubmitForSettlement = true
+                }
+            };
+
+            Result<Transaction> result = gateway.Transaction.Sale(request);
+            if (!result.IsSuccess())
+            {
+                _flashMessage.Danger("Could not accept payment.");
+                return RedirectToAction("AvailableMemberships");
+            }
+
+            var customer = await _userRepository.GetCustomerByUserName(User.Identity.Name);
+            if (customer == null)
+            {
+                RedirectToAction("UserNotFound", "Admin");
             }
 
             customer.MembershipId = membership.Id;
@@ -144,12 +179,10 @@ namespace FitSharp.Controllers
             customer.MembershipEndDate = DateTime.Now.AddMonths(1);
             customer.ClassesRemaining = membership.NumberOfClasses;
             customer.MembershipIsActive = true;
-
             await _userRepository.UpdateCustomerAsync(customer);
 
-            _flashMessage.Confirmation("Membership purchased successfully!");
-
-            return RedirectToAction("AvailableMemberships", "MemberShips");
+            _flashMessage.Confirmation("Payment accepted successfully!");
+            return RedirectToAction("AvailableMemberships");
         }
     }
 }

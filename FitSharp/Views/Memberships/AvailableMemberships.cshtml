@@ -4,16 +4,15 @@
 }
 
 @inject FitSharp.Data.IUserRepository _userRepository
+@inject FitSharp.Helpers.IUserHelper _userHelper
 
 @{
     FitSharp.Data.Entities.Customer customer = null;
-    bool hasRemainingTime = false;
     bool isAuthenticated = User.Identity.IsAuthenticated;
 
     if (isAuthenticated)
     {
         customer = await _userRepository.GetCustomerByUserName(User.Identity.Name);
-        hasRemainingTime = customer?.MembershipEndDate > DateTime.Now;
     }
 }
 
@@ -60,19 +59,16 @@
                         <td>@membership.Name</td>
                         <td>@(membership.NumberOfClasses == 999999999 ? "Unlimited" : membership.NumberOfClasses.ToString())</td>
                         <td>@membership.Description</td>
-                        <td>@membership.Price</td>
+                        <td>@membership.Price€</td>
                         <td>
-                            @if (isAuthenticated)
-                            {
-                                <form asp-action="PurchaseMembership" method="post" id="purchaseForm-@membership.Id">
-                                    <input type="hidden" name="membershipId" value="@membership.Id" />
-                                    <button type="submit" class="btn btn-primary purchase-button" data-membership-id="@membership.Id">Purchase</button>
-                                </form>
-                            }
-                            else
-                            {
-                                <button class="btn btn-primary trial-info-button">Purchase</button>
-                            }
+                        @if (isAuthenticated)
+                        {
+                            <a asp-action="PurchaseMembership" asp-route-id="@membership.Id" id="purchaseForm-@membership.Id" class="btn btn-primary purchase-button">Purchase</a>
+                        }
+                        else
+                        {
+                            <button class="btn btn-primary trial-info-button">Purchase</button>
+                        }
                         </td>
                     </tr>
                 }
@@ -102,57 +98,17 @@
     </div>
 </div>
 
-<!-- Modal for Users with Remaining Membership Time -->
-<div class="modal fade" id="remainingTimeModal" tabindex="-1" role="dialog" aria-labelledby="remainingTimeModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Remaining Membership Time</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                You still have time left on your current membership. Are you sure you want to purchase a new one?
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                <button type="button" id="confirmNewPurchaseButton" class="btn btn-primary">Confirm Purchase</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-@section Scripts {
+@section Scripts { 
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
     <script>
         document.addEventListener("DOMContentLoaded", function () {
             const isAuthenticated = '@isAuthenticated'.toLowerCase() === 'true';
-            const hasRemainingTime = '@hasRemainingTime'.toLowerCase() === 'true';
 
             document.querySelectorAll('.trial-info-button').forEach(button => {
                 button.addEventListener('click', function () {
                     $('#trialInfoModal').modal('show');
-                });
-            });
-
-            const purchaseButtons = document.querySelectorAll('.purchase-button');
-            purchaseButtons.forEach(function (button) {
-                button.addEventListener('click', function (event) {
-                    event.preventDefault();
-                    const membershipId = button.getAttribute('data-membership-id');
-
-                    if (hasRemainingTime) {
-                        $('#remainingTimeModal').modal('show');
-
-                        $('#confirmNewPurchaseButton').off('click').on('click', function () {
-                            document.getElementById('purchaseForm-' + membershipId).submit();
-                        });
-                    } else {
-                        document.getElementById('purchaseForm-' + membershipId).submit();
-                    }
                 });
             });
 

@@ -17,5 +17,7 @@ namespace FitSharp.Data.Entities
         public string Description { get; set; }
 
         public ICollection<Customer> Customers { get; set; }
+
+        public string Nonce { get; set; }
     }
 }
