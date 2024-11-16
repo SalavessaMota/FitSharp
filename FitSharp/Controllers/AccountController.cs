@@ -3,7 +3,6 @@ using FitSharp.Data.Entities;
 using FitSharp.Entities;
 using FitSharp.Helpers;
 using FitSharp.Models;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -91,7 +90,7 @@ namespace FitSharp.Controllers
                         return Redirect(this.Request.Query["ReturnUrl"].First());
                     }
 
-                    if(await _userHelper.IsUserInRoleAsync(user, "Customer"))
+                    if (await _userHelper.IsUserInRoleAsync(user, "Customer"))
                     {
                         //await CheckMembershipStatus();
                         var customer = await _userRepository.GetCustomerByUserName(user.UserName);
@@ -126,7 +125,7 @@ namespace FitSharp.Controllers
             if (this.User.Identity.IsAuthenticated)
             {
                 return RedirectToAction("Index", "Home");
-            }                
+            }
 
             var model = new RegisterNewUserViewModel
             {
@@ -177,8 +176,8 @@ namespace FitSharp.Controllers
                 }
                 await _userHelper.AddUserToRoleAsync(user, "Customer");
 
-                var customer = new Customer 
-                { 
+                var customer = new Customer
+                {
                     User = user,
                     MembershipIsActive = true,
                     MembershipBeginDate = DateTime.Now,
@@ -302,7 +301,7 @@ namespace FitSharp.Controllers
 
         public IActionResult ChangePassword()
         {
-            if(!this.User.Identity.IsAuthenticated)
+            if (!this.User.Identity.IsAuthenticated)
             {
                 return RedirectToAction("Login");
             }
@@ -412,10 +411,9 @@ namespace FitSharp.Controllers
             return View();
         }
 
-        
         public IActionResult RecoverPassword()
         {
-            if(this.User.Identity.IsAuthenticated)
+            if (this.User.Identity.IsAuthenticated)
             {
                 return RedirectToAction("Index", "Home");
             }
@@ -440,9 +438,9 @@ namespace FitSharp.Controllers
                 var link = this.Url.Action(
                     "SetPassword",
                     "Account",
-                    new 
-                    { 
-                        token = myToken, 
+                    new
+                    {
+                        token = myToken,
                         userid = user.Id
                     }, protocol: HttpContext.Request.Scheme);
 
@@ -468,7 +466,7 @@ namespace FitSharp.Controllers
         }
 
         public async Task<IActionResult> SetPassword(string token, string userId)
-        {     
+        {
             if (this.User.Identity.IsAuthenticated)
             {
                 await _userHelper.LogoutAsync();
@@ -505,10 +503,8 @@ namespace FitSharp.Controllers
 
             this.ViewBag.Message = "User not found.";
 
-
             return View(model);
         }
-
 
         public async Task<IActionResult> GenerateQRCode(string userName)
         {
@@ -554,7 +550,6 @@ namespace FitSharp.Controllers
 
             return View(customer);
         }
-
 
         public IActionResult NotAuthorized()
         {

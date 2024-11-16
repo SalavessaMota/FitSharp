@@ -1,0 +1,242 @@
+﻿@{
+    ViewData["Title"] = "CombinedClassesCalendar";
+}
+
+<link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.css" rel="stylesheet" />
+
+<div class="text-center transparent-card">
+    <h1>Available Classes</h1>
+
+    <!-- Legend -->
+    <div class="d-flex justify-content-center mb-3">
+        <div class="d-flex align-items-center mr-4">
+            <div style="width: 20px; height: 20px; background-color: #B70D00; margin-right: 10px; border-radius: 3px;"></div>
+            <span>Personal Classes</span>
+        </div>
+        <div class="d-flex align-items-center">
+            <div style="width: 20px; height: 20px; background-color: #808080; margin-right: 10px; border-radius: 3px;"></div>
+            <span>Group Classes</span>
+        </div>
+    </div>
+
+    <!-- Calendar -->
+    <div id="calendar" class="mb-3" style="overflow: auto; background-color: white;"></div>
+</div>
+
+<!-- Modal for Personal Class Details -->
+<div class="modal fade" id="personalClassModal" tabindex="-1" role="dialog" aria-labelledby="personalClassModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="personalClassModalLabel">Personal Class Details</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="color: white;">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p><strong>Class Type:</strong> <span id="personalClassType"></span></p>
+                <p><strong>Instructor:</strong> <span id="personalInstructor"></span></p>
+                <p><strong>Start Time:</strong> <span id="personalStartTime"></span></p>
+                <p><strong>End Time:</strong> <span id="personalEndTime"></span></p>
+                <p><strong>Instructor Score:</strong> <span id="personalInstructorScoreStars"></span><span class="text-muted" id="personalInstructorScoreText"></span></p>
+            </div>
+            <div class="modal-footer">
+                @if (User.Identity.IsAuthenticated)
+                {
+                    <button type="button" id="personalEnrollButton" class="btn btn-primary">Enroll in Class</button>
+                }
+                else
+                {
+                    <a href="/Account/Login" class="btn btn-primary">Login to Enroll</a>
+                    <a href="/Account/Register" class="btn btn-secondary">Register</a>
+                }
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal for Group Class Details -->
+<div class="modal fade" id="groupClassModal" tabindex="-1" role="dialog" aria-labelledby="groupClassModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="groupClassModalLabel">Group Class Details</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="color: white;">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p><strong>Class Type:</strong> <span id="groupClassType"></span></p>
+                <p><strong>Instructor:</strong> <span id="groupInstructor"></span></p>
+                <p><strong>Start Time:</strong> <span id="groupStartTime"></span></p>
+                <p><strong>End Time:</strong> <span id="groupEndTime"></span></p>
+                <p><strong>Instructor Score:</strong> <span id="groupInstructorScoreStars"></span><span class="text-muted" id="groupInstructorScoreText"></span></p>
+            </div>
+            <div class="modal-footer">
+                @if (User.Identity.IsAuthenticated)
+                {
+                    <button type="button" id="groupEnrollButton" class="btn btn-primary">Enroll in Class</button>
+                }
+                else
+                {
+                    <a href="/Account/Login" class="btn btn-primary">Login to Enroll</a>
+                    <a href="/Account/Register" class="btn btn-secondary">Register</a>
+                }
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @* <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.4/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script> *@
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var calendarEl = document.getElementById('calendar');
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'timeGridWeek',
+                slotMinTime: '06:00:00',
+                slotMaxTime: '23:00:00',
+                height: 'auto',
+                locale: 'pt',
+                headerToolbar: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'dayGridMonth,timeGridWeek,timeGridDay'
+                },
+                events: function (fetchInfo, successCallback, failureCallback) {
+                    Promise.all([
+                        fetch('/api/PersonalClasses/Available').then(response => response.json()),
+                        fetch('/api/GroupClasses/Available').then(response => response.json())
+                    ])
+                        .then(([personalClasses, groupClasses]) => {
+                            const events = [
+                                ...personalClasses.map(pc => ({
+                                    id: pc.id,
+                                    title: `Personal: ${pc.title}`,
+                                    start: pc.start,
+                                    end: pc.end,
+                                    instructor: pc.instructor,
+                                    classtype: 'Personal', // Set explicitly
+                                    instructorscore: pc.instructorscore,
+                                    classNames: ['personal-class']
+                                })),
+                                ...groupClasses.map(gc => ({
+                                    id: gc.id,
+                                    title: `Group: ${gc.title}`,
+                                    start: gc.start,
+                                    end: gc.end,
+                                    instructor: gc.instructor,
+                                    classtype: 'Group', // Set explicitly
+                                    instructorscore: gc.instructorscore,
+                                    classNames: ['group-class']
+                                }))
+                            ];
+                            successCallback(events);
+                        })
+                        .catch(error => {
+                            console.error('Error fetching classes:', error);
+                            failureCallback(error);
+                        });
+                },
+                eventClick: function (info) {
+                    const start = new Date(info.event.start).toLocaleString();
+                    const end = new Date(info.event.end).toLocaleString();
+
+                    if (info.event.extendedProps.classtype === 'Personal') {
+                        document.getElementById('personalClassType').textContent = info.event.title.replace('Personal: ', '');
+                        document.getElementById('personalInstructor').textContent = info.event.extendedProps.instructor;
+                        document.getElementById('personalStartTime').textContent = start;
+                        document.getElementById('personalEndTime').textContent = end;
+
+                        renderStars('personalInstructorScoreStars', 'personalInstructorScoreText', info.event.extendedProps.instructorscore);
+
+                        $('#personalClassModal').modal('show');
+
+                        // Configura o botão de inscrição
+                        const enrollButton = document.getElementById('personalEnrollButton');
+                        if (enrollButton) {
+                            enrollButton.dataset.eventId = info.event.id;
+                            enrollButton.onclick = function () {
+                                enrollInClass('/api/PersonalClasses/Enroll', info.event.id);
+                            };
+                        }
+
+                    } else if (info.event.extendedProps.classtype === 'Group') {
+                        document.getElementById('groupClassType').textContent = info.event.title.replace('Group: ', '');
+                        document.getElementById('groupInstructor').textContent = info.event.extendedProps.instructor;
+                        document.getElementById('groupStartTime').textContent = start;
+                        document.getElementById('groupEndTime').textContent = end;
+
+                        renderStars('groupInstructorScoreStars', 'groupInstructorScoreText', info.event.extendedProps.instructorscore);
+
+                        $('#groupClassModal').modal('show');
+
+                        // Configura o botão de inscrição
+                        const enrollButton = document.getElementById('groupEnrollButton');
+                        if (enrollButton) {
+                            enrollButton.dataset.eventId = info.event.id;
+                            enrollButton.onclick = function () {
+                                enrollInClass('/api/GroupClasses/Enroll', info.event.id);
+                            };
+                        }
+                    }
+                }
+            });
+
+            calendar.render();
+
+            // Função para renderizar as estrelas
+            function renderStars(starsContainerId, scoreTextId, score) {
+                const fullStars = Math.floor(score);
+                const halfStar = score % 1 !== 0;
+                const starsContainer = document.getElementById(starsContainerId);
+                const scoreText = document.getElementById(scoreTextId);
+
+                // Limpar estrelas anteriores
+                starsContainer.innerHTML = '';
+                scoreText.textContent = ` (${score.toFixed(1)})`;
+
+                // Adicionar estrelas inteiras
+                for (let i = 0; i < fullStars; i++) {
+                    const starIcon = document.createElement('i');
+                    starIcon.classList.add('fas', 'fa-star', 'text-warning');
+                    starsContainer.appendChild(starIcon);
+                }
+
+                // Adicionar meia estrela, se aplicável
+                if (halfStar) {
+                    const halfStarIcon = document.createElement('i');
+                    halfStarIcon.classList.add('fas', 'fa-star-half-alt', 'text-warning');
+                    starsContainer.appendChild(halfStarIcon);
+                }
+            }
+
+            // Função de inscrição genérica
+            function enrollInClass(url, eventId) {
+                fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({ eventId: eventId })
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        alert(data.message);
+                        if (data.success) {
+                            $('#personalClassModal').modal('hide');
+                            $('#groupClassModal').modal('hide');
+                            calendar.refetchEvents(); // Atualiza o calendário
+                        }
+                    })
+                    .catch(error => console.error('Error enrolling in class:', error));
+            }
+        });
+    </script>
+}

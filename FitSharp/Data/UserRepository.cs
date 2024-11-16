@@ -107,7 +107,6 @@ namespace FitSharp.Data
             await _context.SaveChangesAsync();
         }
 
-
         public async Task<User> GetUserByIdAsync(string userId)
         {
             return await _userManager.FindByIdAsync(userId);
@@ -138,7 +137,6 @@ namespace FitSharp.Data
                 .FirstAsync(c => c.Id == customerId);
             //.FirstOrDefault(c => c.Id == customerId);
         }
-
 
         public async Task<object> GetEntityByUserIdAsync(string id)
         {
@@ -228,12 +226,15 @@ namespace FitSharp.Data
                     // Adicionar à tabela Admins
                     await _context.Admins.AddAsync(new Admin { User = user });
                     break;
+
                 case "Employee":
                     await _context.Employees.AddAsync(new Employee { User = user });
                     break;
+
                 case "Instructor":
                     await _context.Instructors.AddAsync(new Instructor { User = user });
                     break;
+
                 case "Customer":
                     await _context.Customers.AddAsync(new Customer { User = user });
                     break;

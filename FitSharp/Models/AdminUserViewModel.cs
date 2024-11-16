@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace FitSharp.Models
 {
@@ -25,7 +24,5 @@ namespace FitSharp.Models
         public bool EmailConfirmed { get; set; }
 
         public string ImageFullPath { get; set; }
-
-
     }
 }

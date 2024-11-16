@@ -10,7 +10,7 @@ using Vereyon.Web;
 
 namespace FitSharp.Controllers
 {
-    [Authorize(Roles = "Employee")]
+    [Authorize(Roles = "Admin")]
     public class ClassTypesController : Controller
     {
         private readonly IClassTypeRepository _ClassTypeRepository;

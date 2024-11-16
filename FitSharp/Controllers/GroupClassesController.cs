@@ -2,7 +2,6 @@
 using FitSharp.Data.Entities;
 using FitSharp.Helpers;
 using FitSharp.Models;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -36,9 +35,9 @@ namespace FitSharp.Controllers
             _flashMessage = flashMessage;
         }
 
-        public async Task<IActionResult> Index(string filter)
+        public IActionResult Index(string filter)
         {
-            var classes = await _groupClassRepository.GetGroupClassesWithAllRelatedDataAsync();
+            var classes = _groupClassRepository.GetAllGroupClassesWithRelatedData();
 
             switch (filter)
             {
@@ -72,7 +71,7 @@ namespace FitSharp.Controllers
                 Rooms = _gymRepository.GetComboRoomsByInstructorName(User.Identity.Name),
                 ClassTypes = _classTypeRepository.GetComboClassTypes(),
                 StartTime = DateTime.Now,
-                EndTime = DateTime.Now.AddHours(1) 
+                EndTime = DateTime.Now.AddHours(1)
             };
 
             return View(model);
@@ -169,13 +168,13 @@ namespace FitSharp.Controllers
                 groupClass.EndTime = model.StartTime.AddHours(1);
                 groupClass.Informations = model.Informations;
 
-                if(groupClass.EndTime < DateTime.Now)
+                if (groupClass.EndTime < DateTime.Now)
                 {
                     _flashMessage.Danger("You can't edit a class that has already happened.");
                     return View(model);
                 }
 
-                if(groupClass.StartTime < DateTime.Now)
+                if (groupClass.StartTime < DateTime.Now)
                 {
                     _flashMessage.Danger("You can't edit a class that has already started.");
                     return View(model);
@@ -258,10 +257,9 @@ namespace FitSharp.Controllers
             return View(classes.ToList());
         }
 
-
-        public async Task<IActionResult> UpcomingGroupClasses()
+        public IActionResult UpcomingGroupClasses()
         {
-            var classes = await _groupClassRepository.GetGroupClassesWithAllRelatedDataAsync();
+            var classes = _groupClassRepository.GetAllGroupClassesWithRelatedData();
 
             var upcomingGroupClasses = classes.Where(c => c.EndTime > DateTime.Now);
 
@@ -334,6 +332,5 @@ namespace FitSharp.Controllers
             _flashMessage.Confirmation("You have successfully canceled your sign up for the class.");
             return RedirectToAction(nameof(UpcomingGroupClasses));
         }
-
     }
 }

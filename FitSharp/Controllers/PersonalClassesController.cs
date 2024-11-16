@@ -162,7 +162,6 @@ namespace FitSharp.Controllers
             return View(model);
         }
 
-
         public IActionResult Details(int id)
         {
             var personalClass = _personalClassesRepository.GetAllPersonalClassesWithRelatedData()

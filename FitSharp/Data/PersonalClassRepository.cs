@@ -35,6 +35,8 @@ namespace FitSharp.Data
                 .Include(p => p.ClassType)
                 .Include(p => p.Instructor)
                 .ThenInclude(i => i.User)
+                .Include(p => p.Instructor)
+                .ThenInclude(i => i.Reviews)
                 .Include(p => p.Customer)
                 .ThenInclude(c => c.User);
         }
@@ -54,7 +56,5 @@ namespace FitSharp.Data
                     .ThenInclude(c => c.User)
                 .Where(p => p.Customer.User.UserName == name);
         }
-
-
     }
 }

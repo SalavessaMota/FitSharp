@@ -450,7 +450,7 @@ namespace FitSharp.Controllers
 
                 gym.Name = model.Name;
                 gym.Address = model.Address;
-                gym.CityId = model.CityId;                
+                gym.CityId = model.CityId;
 
                 if (model.ImageFile != null && model.ImageFile.Length > 0)
                 {

@@ -1,6 +1,5 @@
 ﻿using FitSharp.Data.Entities;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -28,17 +27,18 @@ namespace FitSharp.Data
                 .FirstOrDefaultAsync(g => g.Id == id);
         }
 
-        public async Task<IEnumerable<GroupClass>> GetGroupClassesWithAllRelatedDataAsync()
+        public IQueryable<GroupClass> GetAllGroupClassesWithRelatedData()
         {
-            return await _context.GroupClasses
+            return _context.GroupClasses
                 .Include(g => g.Room)
                 .ThenInclude(r => r.Gym)
                 .Include(g => g.ClassType)
                 .Include(g => g.Instructor)
                 .ThenInclude(i => i.User)
+                .Include(g => g.Instructor)
+                .ThenInclude(i => i.Reviews)
                 .Include(g => g.Customers)
-                .ThenInclude(c => c.User)
-                .ToListAsync();
+                .ThenInclude(c => c.User);
         }
 
         public IQueryable<GroupClass> GetAllGroupClassesWithRelatedDataByUserName(string userName)
