@@ -28,7 +28,7 @@ namespace FitSharp.Controllers
             var gyms = await _gymsRepository.GetGymsWithAllRelatedDataAsync();
             var instructors = _userRepository.GetAllInstructorsWithAllRelatedData();
 
-            if(gyms == null || instructors == null)
+            if (gyms == null || instructors == null)
             {
                 return NotFound();
             }
@@ -61,7 +61,7 @@ namespace FitSharp.Controllers
         public IActionResult OurInstructors()
         {
             var instructors = _userRepository.GetAllInstructorsWithAllRelatedData();
-            if(instructors == null)
+            if (instructors == null)
             {
                 return NotFound();
             }
@@ -72,7 +72,7 @@ namespace FitSharp.Controllers
         public async Task<IActionResult> OurGyms()
         {
             var gyms = await _gymsRepository.GetGymsWithAllRelatedDataAsync();
-            if(gyms == null)
+            if (gyms == null)
             {
                 return NotFound();
             }
@@ -94,7 +94,12 @@ namespace FitSharp.Controllers
 
         public IActionResult GroupClassesInfo()
         {
-           return View();
+            return View();
+        }
+
+        public IActionResult CombinedClassesCalendar()
+        {
+            return View();
         }
     }
 }

@@ -1,6 +1,5 @@
 ﻿using FitSharp.Data.Entities;
 using Microsoft.EntityFrameworkCore;
-using MimeKit.Cryptography;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -27,13 +26,13 @@ namespace FitSharp.Data
 
         public async Task<IEnumerable<Review>> GetAllReviewsWithRelatedDataByInstructorId(int id)
         {
-           return await _context.Reviews
-                .Include(r => r.Customer)
-                .ThenInclude(c => c.User)
-                .Include(r => r.Instructor)
-                .ThenInclude(i => i.User)
-                .Where(r => r.InstructorId == id)
-                .ToListAsync();
+            return await _context.Reviews
+                 .Include(r => r.Customer)
+                 .ThenInclude(c => c.User)
+                 .Include(r => r.Instructor)
+                 .ThenInclude(i => i.User)
+                 .Where(r => r.InstructorId == id)
+                 .ToListAsync();
         }
 
         public async Task AddReviewAsync(Review review)
@@ -56,8 +55,6 @@ namespace FitSharp.Data
             await _context.Reviews.AddAsync(review);
             await _context.SaveChangesAsync();
         }
-
-        
 
         public async Task<IEnumerable<Review>> GetReviewsByInstructorId(int instructorId)
         {
@@ -83,7 +80,7 @@ namespace FitSharp.Data
                 .FirstOrDefaultAsync();
         }
 
-        public async Task<IEnumerable<Review>> GetReviewsWithAllRelatedDataAsync ()
+        public async Task<IEnumerable<Review>> GetReviewsWithAllRelatedDataAsync()
         {
             return await _context.Reviews
                 .Include(r => r.Customer)

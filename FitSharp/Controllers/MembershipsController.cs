@@ -1,7 +1,6 @@
 ﻿using FitSharp.Data;
 using FitSharp.Data.Entities;
 using FitSharp.Helpers;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -116,15 +115,12 @@ namespace FitSharp.Controllers
             }
         }
 
-
         public async Task<IActionResult> AvailableMemberships()
         {
             var memberships = await _membershipRepository.GetAll().ToListAsync();
 
             return View(memberships);
         }
-
-
 
         [HttpPost]
         public async Task<IActionResult> PurchaseMembership(int membershipId)
@@ -155,7 +151,5 @@ namespace FitSharp.Controllers
 
             return RedirectToAction("AvailableMemberships", "MemberShips");
         }
-
-
     }
 }

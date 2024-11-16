@@ -162,7 +162,6 @@ namespace FitSharp.Controllers
             return View(model);
         }
 
-
         public IActionResult Details(int id)
         {
             var personalClass = _personalClassesRepository.GetAllPersonalClassesWithRelatedData()
@@ -357,11 +356,6 @@ namespace FitSharp.Controllers
 
             _flashMessage.Confirmation("You have successfully signed up for the personal class.");
             return RedirectToAction(nameof(UpcomingPersonalClasses));
-        }
-
-        public IActionResult CustomerPersonalClassesCalendar()
-        {
-            return View(); 
         }
     }
 }

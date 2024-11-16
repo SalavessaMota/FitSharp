@@ -110,6 +110,22 @@ a {
         transform: scale(0.98);
     }
 
+.nav-itemText {
+    color: #333333; /* Cor neutra */
+    transition: color 0.3s ease, transform 0.3s ease;
+    margin-left: 5px;
+}
+
+    .nav-itemText:hover {
+        color: #B70D00; /* Cor vermelha ao passar o mouse */
+        transform: scale(1.05);
+    }
+
+    .nav-itemText:active {
+        color: #960C00; /* Cor ao clicar */
+        transform: scale(0.98);
+    }
+
 /* Efeito de hover para o logo */
 .navbar-brand {
     transition: transform 0.3s ease;
@@ -187,7 +203,7 @@ body {
 
 /* Cards e Containers */
 .transparent-card {
-    background-color: rgba(235, 235, 235, 0.7); /* Tom cinza claro com transparência */
+    background-color: rgba(235, 235, 235, 0.8); /* Tom cinza claro com transparência */
     border-radius: 15px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
     padding: 20px;
@@ -229,24 +245,53 @@ video#bgVideo {
 }
 
 /*calendar*/
-.custom-event {
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-    background-color: #B70D00;
-    color: white !important; /* Define a cor do texto como branca e usa !important */
+.personal-class {
+    background-color: #B70D00 !important;
+    color: white;
 }
 
-    .custom-event:hover {
-        transform: scale(1.05); /* Aumenta o tamanho do evento em 5% */
-        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2); /* Adiciona uma sombra */
-        background-color: #960C00; /* Muda a cor de fundo no hover */
-        cursor: pointer;
-    }
+.group-class {
+    background-color: #808080 !important;
+    color: white;
+}
+
+/* Hover nos Eventos */
+
+.personal-class:hover {
+    background-color: #960C00 !important;
+    transform: scale(1.05); /* Aumenta o tamanho em 5% */
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2); /* Adiciona uma sombra */
+    cursor: pointer;
+}
+
+.group-class:hover {
+    background-color: #5A5A5A !important; /* Tom mais escuro do cinza */
+    transform: scale(1.05); /* Aumenta o tamanho em 5% */
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2); /* Adiciona uma sombra */
+    cursor: pointer;
+}
 
 /* Força a cor do título do evento para branco em todas as visualizações */
 .fc-event-title,
 .fc-daygrid-event .fc-event-title,
 .fc-timegrid-event .fc-event-title,
-.fc-daygrid-event .custom-event .fc-event-title,
-.fc-timegrid-event .custom-event .fc-event-title {
+.fc-daygrid-event .fc-event-title,
+.fc-timegrid-event .fc-event-title {
     color: white !important;
+}
+
+.fc-daygrid-event-dot {
+    background-color: #B70D00 !important;
+}
+
+.fc-event-time {
+    color: white !important;
+}
+}
+
+.modal-header {
+    background-color: #B70D00;
+    color: white;
 }

@@ -7,7 +7,7 @@ using System;
 using System.Threading.Tasks;
 
 namespace FitSharp.Controllers
-{    
+{
     public class ReviewsController : Controller
     {
         private readonly IReviewRepository _reviewRepository;
@@ -27,7 +27,6 @@ namespace FitSharp.Controllers
             var reviews = await _reviewRepository.GetReviewsWithAllRelatedDataAsync();
             return View(reviews);
         }
-
 
         public async Task<IActionResult> WriteReview(int instructorId)
         {
@@ -64,7 +63,6 @@ namespace FitSharp.Controllers
             }
 
             await _reviewRepository.AddReviewAsync(review);
-
 
             return RedirectToAction("CustomerPersonalClasses", "PersonalClasses", new { username = User.Identity.Name });
         }
@@ -104,7 +102,7 @@ namespace FitSharp.Controllers
 
         public async Task<IActionResult> Details(int? id)
         {
-            if(id == null)
+            if (id == null)
             {
                 return new NotFoundViewResult("ReviewNotFound");
             }
@@ -119,7 +117,7 @@ namespace FitSharp.Controllers
         }
 
         public async Task<IActionResult> InstructorReviews(int? id)
-        
+
         {
             if (id == null)
             {

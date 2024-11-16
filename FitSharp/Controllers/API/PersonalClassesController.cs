@@ -1,12 +1,8 @@
 ﻿using FitSharp.Data;
-using FitSharp.Data.Entities;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System;
 using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
 
 namespace FitSharp.Controllers.API
 {
@@ -26,21 +22,19 @@ namespace FitSharp.Controllers.API
             _userRepository = userRepository;
         }
 
-
         [HttpGet]
         [AllowAnonymous]
         [Route("Available")]
         public IActionResult GetAvailablePersonalClasses()
         {
             var personalClasses = _personalClassRepository.GetAllPersonalClassesWithRelatedData()
-                .Where(pc => pc.CustomerId == null)
                 .Select(pc => new
                 {
                     id = pc.Id,
                     title = pc.Instructor.Speciality,
                     classtype = pc.Instructor.Speciality,
-                    start = pc.StartTime.ToString("yyyy-MM-ddTHH:mm:ss"),
-                    end = pc.EndTime.ToString("yyyy-MM-ddTHH:mm:ss"),
+                    start = pc.StartTime.ToString("yyyy-MM-ddTHH:mm"),
+                    end = pc.EndTime.ToString("yyyy-MM-ddTHH:mm"),
                     instructor = pc.Instructor.User.FullName,
                     instructorscore = pc.Instructor.Rating
                 })
@@ -64,7 +58,6 @@ namespace FitSharp.Controllers.API
         //    var entity = await _userRepository.GetEntityByUserIdAsync(userId);
         //    if (entity is Customer customer)
         //    {
-                
         //    }
         //    if (customer == null)
         //    {

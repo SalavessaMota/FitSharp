@@ -20,7 +20,6 @@ namespace FitSharp.Data.Entities
 
         public bool MembershipIsActive { get; set; }
 
-
         // Relação com GroupClass
         public virtual ICollection<GroupClass> GroupClasses { get; set; } = new List<GroupClass>();
 

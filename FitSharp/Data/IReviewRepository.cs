@@ -1,6 +1,5 @@
 ﻿using FitSharp.Data.Entities;
 using System.Collections.Generic;
-using System.Data.SqlTypes;
 using System.Threading.Tasks;
 
 namespace FitSharp.Data

@@ -486,7 +486,6 @@ public class AdminController : Controller
         // Caso para Admin
         //return View(model);
 
-
         //switch (model.UserType)
         //{
         //    case "Customer":
@@ -525,7 +524,6 @@ public class AdminController : Controller
         return View(model);
     }
 
-
     [HttpPost]
     public async Task<IActionResult> EditUser(AdminEditUserViewModel model, string id)
     {
@@ -541,7 +539,7 @@ public class AdminController : Controller
         user.CityId = model.CityId;
         user.PhoneNumber = model.PhoneNumber;
 
-        //if(model.UserType == "Customer") 
+        //if(model.UserType == "Customer")
         //{
         //    //var customer = await _userRepository.GetCustomerByUserIdAsync(user.Id);
         //    var customer = await _userRepository.GetEntityByUserIdAsync(user.Id) as Customer;
@@ -551,7 +549,6 @@ public class AdminController : Controller
         //        await _userRepository.UpdateCustomerAsync(customer);
         //    }
         //}
-
 
         // Atualizar campos específicos por tipo
         //switch (model.UserType)
@@ -669,7 +666,6 @@ public class AdminController : Controller
         return View(adminUserViewModel);
     }
 
-
     [HttpPost]
     public async Task<IActionResult> DisableUser(string id, string adminPassword)
     {
@@ -702,7 +698,6 @@ public class AdminController : Controller
 
             // Verificar e remover o usuário da tabela específica
             await _userRepository.RemoveFromSpecificTableAsync(user);
-
 
             TempData["Success"] = "User has been successfully deactivated.";
             return RedirectToAction(nameof(Index));
@@ -820,8 +815,6 @@ public class AdminController : Controller
 
         return response.IsSuccess;
     }
-
-
 
     public IActionResult UserNotFound()
     {

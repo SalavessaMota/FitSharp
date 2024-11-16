@@ -101,7 +101,6 @@ namespace fitsharpMVC.Controllers.API
             return BadRequest();
         }
 
-
         [Authorize]
         [HttpGet("getuserimage")]
         public async Task<IActionResult> UserProfileImage()
@@ -140,8 +139,8 @@ namespace fitsharpMVC.Controllers.API
             var link = this.Url.Action(
                 "SetPassword",
                 "Account",
-                new 
-                { 
+                new
+                {
                     token = myToken,
                     email = model.Email
                 }, protocol: HttpContext.Request.Scheme);
@@ -262,7 +261,6 @@ namespace fitsharpMVC.Controllers.API
 
             return Ok(new { Message = "User registered successfully. Please confirm your email." });
         }
-
 
         [HttpPost("uploadImage")]
         [AllowAnonymous]

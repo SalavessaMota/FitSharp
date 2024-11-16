@@ -24,8 +24,8 @@
 
     @if (customer != null && customer.Membership != null)
     {
-        <div class="current-membership mb-4">
-            <h3>Your Current Membership</h3>
+        <div class="current-membership mb-4 transparent-card">
+            <h3 class="text-logo-primary">Your Current Membership</h3>
             <p><strong>Name:</strong> @customer.Membership.Name</p>
             <p><strong>Description:</strong> @customer.Membership.Description</p>
             <p><strong>Classes Remaining:</strong> @(customer.ClassesRemaining > 1000 ? "Unlimited" : customer.ClassesRemaining.ToString())</p>
@@ -35,12 +35,12 @@
     }
     else if (isAuthenticated)
     {
-        <div class="no-membership mb-4">
+        <div class="no-membership mb-4 transparent-card">
             <p>You do not have an active membership.</p>
         </div>
     }
 
-    <h2>Available Memberships</h2>
+    <h2 class="text-logo-primary">Available Memberships</h2>
     <table class="table">
         <thead>
             <tr>

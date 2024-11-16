@@ -1,11 +1,9 @@
 ﻿using FitSharp.Data.Entities;
-using FitSharp.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace FitSharp.Models
 {
@@ -31,7 +29,6 @@ namespace FitSharp.Models
 
         [MaxLength(20, ErrorMessage = "The field {0} only can contain {1} characters length.")]
         public string PhoneNumber { get; set; }
-
 
         [Display(Name = "City")]
         [Range(1, int.MaxValue, ErrorMessage = "You must select a city.")]

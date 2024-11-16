@@ -56,7 +56,5 @@ namespace FitSharp.Data
                     .ThenInclude(c => c.User)
                 .Where(p => p.Customer.User.UserName == name);
         }
-
-
     }
 }

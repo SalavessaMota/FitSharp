@@ -21,14 +21,12 @@ namespace FitSharp.Data.Entities
         [Display(Name = "Number of Rooms")]
         public int NumberOfRooms => Rooms == null ? 0 : Rooms.Count;
 
-        
         public ICollection<Equipment> Equipments { get; set; } = new List<Equipment>();
 
         [Display(Name = "Number of Equipments")]
         public int NumberOfEquipments => Equipments == null ? 0 : Equipments.Count;
 
         public ICollection<Employee> Employees { get; set; } = new List<Employee>();
-
 
         [Display(Name = "Image")]
         public Guid ImageId { get; set; }
