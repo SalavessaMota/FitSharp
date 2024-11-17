@@ -17,6 +17,7 @@
                         <!-- Primeira linha: Títulos das colunas com ordenação -->
                         <tr>
                             <th>Class</th>
+                            <th>Gym</th>
                             <th>Room</th>
                             <th>Instructor</th>
                             <th>Start Time</th>
@@ -26,6 +27,7 @@
                         <!-- Segunda linha: Campos de pesquisa por coluna -->
                         <tr>
                             <th><input type="text" placeholder="Search Class" class="form-control" /></th>
+                            <th><input type="text" placeholder="Search Gym" class="form-control" /></th>
                             <th><input type="text" placeholder="Search Room" class="form-control" /></th>
                             <th><input type="text" placeholder="Search Instructor" class="form-control" /></th>
                             <th><input type="text" placeholder="Search Start Time" class="form-control" /></th>
@@ -38,6 +40,7 @@
                         {
                             <tr>
                                 <td>@Html.DisplayFor(modelItem => item.Name)</td>
+                                <td>@Html.DisplayFor(modelItem => item.Room.Gym.Name)</td>
                                 <td>@Html.DisplayFor(modelItem => item.Room.Name)</td>
                                 <td>
                                     @Html.DisplayFor(modelItem => item.Instructor.User.FullName)

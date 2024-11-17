@@ -176,6 +176,7 @@ body {
     margin-bottom: 60px;
     background-color: #F5F5F5; /* Fundo suave */
     background-image: url('https://aircinelmvc.blob.core.windows.net/resources/backgroundimageFitsharp2.png');
+    cursor: url('https://aircinelmvc.blob.core.windows.net/resources/fitsharpCursor.png'), auto;
     background-size: cover;
     background-repeat: no-repeat;
     background-attachment: fixed;

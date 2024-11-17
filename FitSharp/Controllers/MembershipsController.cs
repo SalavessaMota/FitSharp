@@ -2,6 +2,7 @@
 using FitSharp.Data;
 using FitSharp.Data.Entities;
 using FitSharp.Helpers;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;

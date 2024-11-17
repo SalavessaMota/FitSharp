@@ -14,57 +14,56 @@
 }
 
 <div class="transparent-card">
-    <h2>Purchase Membership</h2>
-    <hr />
-    @if (ViewBag.SuccessMessage != null)
-    {
-            <div class="alert alert-success">
-            @ViewBag.SuccessMessage
-            </div>
-    }
-    @if (ViewBag.ErrorMessage != null)
-    {
-            <div class="alert alert-danger">
-            @ViewBag.ErrorMessage
-            </div>
-    }
-
-    <div>
-        <h4>Membership</h4>
+    <div class="transparent-card mb-3">
+        <h2 class="text-center">Purchase Membership</h2>
         <hr />
+        @if (ViewBag.SuccessMessage != null)
+        {
+            <div class="alert alert-success">
+                @ViewBag.SuccessMessage
+            </div>
+        }
+        @if (ViewBag.ErrorMessage != null)
+        {
+            <div class="alert alert-danger">
+                @ViewBag.ErrorMessage
+            </div>
+        }
 
-        @Html.HiddenFor(n => n.Id)
-        <dl class="row">
-            <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.Name)
-            </dt>
-            <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.Name)
-            </dd>
-            <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.Description)
-            </dt>
-            <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.Description)
-            </dd>
-            <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.NumberOfClasses)
-            </dt>
-            <dd class="col-sm-10">
-                @(Model.NumberOfClasses == 999999999 ? "Unlimited" : Model.NumberOfClasses.ToString())
-            </dd>
-            <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.Price)
-            </dt>
-            <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.Price)€
-            </dd>
-        </dl>
-    </div>
+        <div>
+            @Html.HiddenFor(n => n.Id)
+            <dl class="row">
+                <dt class="col-sm-2">
+                    @Html.DisplayNameFor(model => model.Name)
+                </dt>
+                <dd class="col-sm-10">
+                    @Html.DisplayFor(model => model.Name)
+                </dd>
+                <dt class="col-sm-2">
+                    @Html.DisplayNameFor(model => model.Description)
+                </dt>
+                <dd class="col-sm-10">
+                    @Html.DisplayFor(model => model.Description)
+                </dd>
+                <dt class="col-sm-2">
+                    @Html.DisplayNameFor(model => model.NumberOfClasses)
+                </dt>
+                <dd class="col-sm-10">
+                    @(Model.NumberOfClasses == 999999999 ? "Unlimited" : Model.NumberOfClasses.ToString())
+                </dd>
+                <dt class="col-sm-2">
+                    @Html.DisplayNameFor(model => model.Price)
+                </dt>
+                <dd class="col-sm-10">
+                    @Html.DisplayFor(model => model.Price)€
+                </dd>
+            </dl>
+        </div>
+    </div>    
 
     @if (hasRemainingTime)
     {
-        <div>
+        <div class="transparent-card">
             <p class="text-logo-primary">You still have time left on your current membership. Purchasing a new one will replace your current one.</p>
         </div>
     }
@@ -82,9 +81,11 @@
             </section>
             @Html.HiddenFor(n => n.Nonce, new { @id = "nonce" })
             <hr />
-                <button class="btn btn-primary btn-lg mt-3 roundedwithshadow" type="submit">
-                Confirm payment - @Model.Price €
-            </button>
+            <div class="text-center">
+                    <button class="btn btn-primary btn-lg mt-3 roundedwithshadow" type="submit">
+                        Confirm payment - @Model.Price €
+                    </button>
+            </div>            
         </form>
     </div>
     </div>

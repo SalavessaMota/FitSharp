@@ -199,14 +199,13 @@
                                     @if (this.User.Identity.IsAuthenticated && this.User.IsInRole("Customer"))
                                     {
                                         <li>
-                                            <a class="dropdown-item" asp-area="" asp-controller="PersonalClasses" asp-action="CustomerPersonalClasses" asp-route-username="@User.Identity.Name" asp-route-filter="all">
-                                                <i class="fas fa-history"></i> Your Personal Classes
+                                            <a class="dropdown-item" asp-area="" asp-controller="GroupClasses" asp-action="CustomerGroupClasses" asp-route-username="@User.Identity.Name" asp-route-filter="all">
+                                                <i class="fas fa-users"></i> Your Group Classes
                                             </a>
                                         </li>
-
                                         <li>
-                                            <a class="dropdown-item" asp-area="" asp-controller="GroupClasses" asp-action="CustomerGroupClasses" asp-route-username="@User.Identity.Name" asp-route-filter="all">
-                                                <i class="fas fa-history"></i> Your Group Classes
+                                            <a class="dropdown-item" asp-area="" asp-controller="PersonalClasses" asp-action="CustomerPersonalClasses" asp-route-username="@User.Identity.Name" asp-route-filter="all">
+                                                <i class="fas fa-chalkboard-teacher"></i> Your Personal Classes
                                             </a>
                                         </li>
                                     }
