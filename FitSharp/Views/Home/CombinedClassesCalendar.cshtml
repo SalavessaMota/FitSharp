@@ -7,8 +7,10 @@
 
 @{
     bool hasRemainingTime = false;
+    bool hasRemainingClasses = false;
     var customer = await _userRepository.GetCustomerByUserName(User.Identity.Name);
     hasRemainingTime = customer?.MembershipEndDate > DateTime.Now;
+    hasRemainingClasses = customer?.ClassesRemaining > 0;
 }
 
 
@@ -52,12 +54,24 @@
                 <p><strong>Instructor:</strong> <span id="personalInstructor"></span></p>
                 <p><strong>Start Time:</strong> <span id="personalStartTime"></span></p>
                 <p><strong>End Time:</strong> <span id="personalEndTime"></span></p>
-                <p><strong>Instructor Score:</strong> <span id="personalInstructorScoreStars"></span><span class="text-muted" id="personalInstructorScoreText"></span></p>
+                <p>
+                    <strong>Instructor Score:</strong> <span id="personalInstructorScoreStars"></span>
+                    <span class="text-muted" id="personalInstructorScoreText"></span>
+                </p>
             </div>
             <div class="modal-footer">
-                @if (User.Identity.IsAuthenticated && hasRemainingTime)
+                @if (User.Identity.IsAuthenticated)
                 {
-                    <button type="button" id="personalEnrollButton" class="btn btn-primary">Enroll in Class</button>
+                    if (hasRemainingTime && hasRemainingClasses)
+                    {
+                        <button type="button" id="personalEnrollButton" class="btn btn-primary">Enroll in Class</button>
+                    }
+                    else
+                    {
+                        <p class="text-logo-primary">
+                            You need to have an active membership and remaining classes to enroll in classes.
+                        </p>
+                    }
                 }
                 else
                 {
@@ -69,6 +83,7 @@
         </div>
     </div>
 </div>
+
 
 <!-- Modal for Group Class Details -->
 <div class="modal fade" id="groupClassModal" tabindex="-1" role="dialog" aria-labelledby="groupClassModalLabel" aria-hidden="true">
@@ -85,12 +100,25 @@
                 <p><strong>Instructor:</strong> <span id="groupInstructor"></span></p>
                 <p><strong>Start Time:</strong> <span id="groupStartTime"></span></p>
                 <p><strong>End Time:</strong> <span id="groupEndTime"></span></p>
-                <p><strong>Instructor Score:</strong> <span id="groupInstructorScoreStars"></span><span class="text-muted" id="groupInstructorScoreText"></span></p>
+                <p>
+                    <strong>Instructor Score:</strong>
+                    <span id="groupInstructorScoreStars"></span>
+                    <span class="text-muted" id="groupInstructorScoreText"></span>
+                </p>
             </div>
             <div class="modal-footer">
-                @if (User.Identity.IsAuthenticated && hasRemainingTime)
+                @if (User.Identity.IsAuthenticated)
                 {
-                    <button type="button" id="groupEnrollButton" class="btn btn-primary">Enroll in Class</button>
+                    if (hasRemainingTime && hasRemainingClasses)
+                    {
+                        <button type="button" id="groupEnrollButton" class="btn btn-primary">Enroll in Class</button>
+                    }
+                    else
+                    {
+                        <p class="text-logo-primary">
+                            You need to have an active membership and remaining classes to enroll in classes.
+                        </p>
+                    }
                 }
                 else
                 {
@@ -102,6 +130,7 @@
         </div>
     </div>
 </div>
+
 
 @section Scripts {
     @* <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.4/dist/jquery.min.js"></script>
@@ -261,7 +290,6 @@
                         alert('An error occurred while trying to enroll in the class.');
                     });
             }
-
         });
     </script>
 }
