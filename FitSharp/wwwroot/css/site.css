@@ -11,6 +11,7 @@
 
 a.navbar-brand {
     white-space: normal;
+ 
     text-align: center;
     word-break: break-all;
 }
@@ -239,3 +240,25 @@ table.dataTable td {
     word-break: break-word;  Permite quebra entre palavras 
     white-space: normal;  Permite que o texto quebre para uma nova linha 
 }*/
+
+/*dataTables_wrapper .dataTables_paginate .paginate_button.current,
+.dataTables_wrapper .dataTables_paginate .paginate_button.current:hover {
+    background-color: #B70D00 !important;*/ /* Fundo vermelho escuro */
+    /*color: white !important;*/ /* Texto em branco */
+    /*border: none;*/ /* Remover borda */
+/*}*/
+
+/* Estilo para os outros botões de paginação */
+/*.dataTables_wrapper .dataTables_paginate .paginate_button {
+    background-color: #f0f0f0;*/ /* Fundo cinza claro */
+    /*color: #333;*/ /* Texto cinza escuro */
+    /*border: none;
+    margin: 0 2px;*/ /* Espaçamento entre botões */
+/*}*/
+
+    /* Estilo ao passar o mouse nos outros botões de paginação */
+    /*.dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+        background-color: #B70D00 !important;*/ /* Fundo vermelho escuro no hover */
+        /*color: white !important;
+    }*/
+ 
