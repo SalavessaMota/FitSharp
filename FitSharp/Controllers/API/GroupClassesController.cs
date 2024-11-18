@@ -1,7 +1,9 @@
 ﻿using FitSharp.Data;
+using FitSharp.Data.Dtos;
 using FitSharp.Data.Entities;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Linq;
@@ -12,7 +14,7 @@ namespace FitSharp.Controllers.API
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class GroupClassesController : Controller
     {
         private readonly IGroupClassRepository _groupClassRepository;
@@ -26,101 +28,100 @@ namespace FitSharp.Controllers.API
             _userRepository = userRepository;
         }
 
-        [HttpGet]
-        [Route("Available")]
-        public async Task<IActionResult> GetAvailableGroupClasses()
-        {
-            // Obter o ID do usuário autenticado
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (userId == null)
-            {
-                return Unauthorized(new { success = false, message = "User not authenticated." });
-            }
 
-            // Buscar o Customer associado ao usuário autenticado
-            var entity = await _userRepository.GetEntityByUserIdAsync(userId);
-            Customer customer = entity as Customer;
-            if (customer == null)
-            {
-                return NotFound(new { success = false, message = "Customer not found." });
-            }
-            // Buscar aulas disponíveis, excluindo aquelas em que o Customer já está inscrito
+        [HttpGet("Available")]
+        [AllowAnonymous]
+        public async Task<JsonResult> GetAvailableGroupClassesAPI()
+        {
             var groupClasses = _groupClassRepository
                 .GetAllGroupClassesWithRelatedData()
-                .Where(gc => gc.StartTime > DateTime.Now && !gc.Customers.Any(c => c.Id == customer.Id))
-                .Select(gc => new
+                .Where(gc => gc.EndTime > DateTime.Now)
+                .Select(gc => new GroupClassDto
                 {
-                    id = gc.Id,
-                    title = gc.Instructor.Speciality,
-                    gym = gc.Room.Gym.Name,
-                    classtype = gc.Instructor.Speciality,
-                    start = gc.StartTime.ToString("yyyy-MM-ddTHH:mm"),
-                    end = gc.EndTime.ToString("yyyy-MM-ddTHH:mm"),
-                    instructor = gc.Instructor.User.FullName,
-                    instructorscore = gc.Instructor.Rating
+                    Id = gc.Id,
+                    Title = gc.Instructor.Speciality,
+                    Gym = gc.Room.Gym.Name,
+                    ClassType = gc.Instructor.Speciality,
+                    Start = gc.StartTime.ToString("yyyy-MM-ddTHH:mm"),
+                    End = gc.EndTime.ToString("yyyy-MM-ddTHH:mm"),
+                    Instructor = gc.Instructor.User.FullName,
+                    InstructorScore = gc.Instructor.Rating
                 })
                 .ToList();
 
-            return Ok(groupClasses);
+            return new JsonResult(groupClasses);
         }
+
 
 
 
         [HttpPost]
         [Route("Enroll")]
         [Authorize(Roles = "Customer")]
-        public async Task<IActionResult> Enroll([FromBody] int groupClassId)
+        public async Task<JsonResult> Enroll([FromBody] int groupClassId)
         {
-            // Obter o ID do usuário autenticado
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (userId == null)
             {
-                return BadRequest("User not found");
+                return new JsonResult(new { success = false, message = "User not found." })
+                {
+                    StatusCode = StatusCodes.Status401Unauthorized
+                };
             }
 
-            // Obter o usuário autenticado
             var user = await _userRepository.GetUserByIdAsync(userId);
             if (user == null)
             {
-                return BadRequest("User not found");
+                return new JsonResult(new { success = false, message = "User not found." })
+                {
+                    StatusCode = StatusCodes.Status404NotFound
+                };
             }
 
             var entity = await _userRepository.GetEntityByUserIdAsync(userId);
             Customer customer = entity as Customer; // Faz a conversão explícita para Customer
             if (customer == null)
             {
-                return BadRequest("Customer not found");
+                return new JsonResult(new { success = false, message = "Customer not found." })
+                {
+                    StatusCode = StatusCodes.Status404NotFound
+                };
             }
 
-            if(customer.ClassesRemaining <= 0)
+            if (customer.ClassesRemaining <= 0)
             {
-                return BadRequest(new { success = false, message = "You have no classes remaining." });
+                return new JsonResult(new { success = false, message = "You have no classes remaining." })
+                {
+                    StatusCode = StatusCodes.Status400BadRequest
+                };
             }
 
-            // Obter a aula em questão
             var groupClass = await _groupClassRepository.GetByIdAsync(groupClassId);
             if (groupClass == null)
             {
-                return BadRequest("Group class not found");
+                return new JsonResult(new { success = false, message = "Group class not found." })
+                {
+                    StatusCode = StatusCodes.Status404NotFound
+                };
             }
 
-            // Verificar se o usuário já está inscrito na aula
             if (groupClass.Customers.Any(c => c.Id == customer.Id))
             {
-                return BadRequest("User already enrolled in this group class");
+                return new JsonResult(new { success = false, message = "User already enrolled in this group class." })
+                {
+                    StatusCode = StatusCodes.Status400BadRequest
+                };
             }
 
-            
             customer.ClassesRemaining--;
             await _userRepository.UpdateCustomerAsync(customer);
 
-            // Inscrever o usuário na aula
             groupClass.Customers.Add(customer);
-
             await _groupClassRepository.UpdateAsync(groupClass);
 
-            return Ok(new { success = true, message = "Successfully enrolled in the class!" });
+            return new JsonResult(new { success = true, message = "Successfully enrolled in the class!" });
         }
+
 
     }
 }

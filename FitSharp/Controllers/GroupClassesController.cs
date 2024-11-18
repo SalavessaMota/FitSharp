@@ -2,12 +2,14 @@
 using FitSharp.Data.Entities;
 using FitSharp.Helpers;
 using FitSharp.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Vereyon.Web;
 
@@ -331,6 +333,93 @@ namespace FitSharp.Controllers
 
             _flashMessage.Confirmation("You have successfully canceled your sign up for the class.");
             return RedirectToAction(nameof(CustomerGroupClasses));
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAvailableGroupClasses()
+        {
+            // Obter o ID do usuário autenticado
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (userId == null)
+            {
+                return Unauthorized(new { success = false, message = "User not authenticated." });
+            }
+
+            // Buscar o Customer associado ao usuário autenticado
+            var entity = await _userRepository.GetEntityByUserIdAsync(userId);
+            Customer customer = entity as Customer;
+            if (customer == null)
+            {
+                return NotFound(new { success = false, message = "Customer not found." });
+            }
+            // Buscar aulas disponíveis, excluindo aquelas em que o Customer já está inscrito
+            var groupClasses = _groupClassRepository
+                .GetAllGroupClassesWithRelatedData()
+                .Where(gc => gc.EndTime > DateTime.Now && !gc.Customers.Any(c => c.Id == customer.Id))
+                .Select(gc => new
+                {
+                    id = gc.Id,
+                    title = gc.Instructor.Speciality,
+                    gym = gc.Room.Gym.Name,
+                    classtype = gc.Instructor.Speciality,
+                    start = gc.StartTime.ToString("yyyy-MM-ddTHH:mm"),
+                    end = gc.EndTime.ToString("yyyy-MM-ddTHH:mm"),
+                    instructor = gc.Instructor.User.FullName,
+                    instructorscore = gc.Instructor.Rating
+                })
+                .ToList();
+
+            return Ok(groupClasses);
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Customer")]
+        public async Task<IActionResult> Enroll([FromBody] int groupClassId)
+        {
+            // Obter o ID do usuário autenticado
+            var userEmail = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var user = await _userRepository.GetUserByEmailAsync(userEmail);
+
+            if (user == null)
+            {
+                return Unauthorized(new { Message = "User not found." });
+            }
+
+            var entity = await _userRepository.GetEntityByUserIdAsync(user.Id);
+            Customer customer = entity as Customer; // Faz a conversão explícita para Customer
+            if (customer == null)
+            {
+                return BadRequest("Customer not found");
+            }
+
+            if (customer.ClassesRemaining <= 0)
+            {
+                return BadRequest(new { success = false, message = "You have no classes remaining." });
+            }
+
+            // Obter a aula em questão
+            var groupClass = await _groupClassRepository.GetByIdAsync(groupClassId);
+            if (groupClass == null)
+            {
+                return BadRequest("Group class not found");
+            }
+
+            // Verificar se o usuário já está inscrito na aula
+            if (groupClass.Customers.Any(c => c.Id == customer.Id))
+            {
+                return BadRequest("User already enrolled in this group class");
+            }
+
+
+            customer.ClassesRemaining--;
+            await _userRepository.UpdateCustomerAsync(customer);
+
+            // Inscrever o usuário na aula
+            groupClass.Customers.Add(customer);
+
+            await _groupClassRepository.UpdateAsync(groupClass);
+
+            return Ok(new { success = true, message = "Successfully enrolled in the class!" });
         }
     }
 }

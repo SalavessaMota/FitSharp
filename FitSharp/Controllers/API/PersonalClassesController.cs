@@ -1,4 +1,5 @@
 ﻿using FitSharp.Data;
+using FitSharp.Data.Dtos;
 using FitSharp.Data.Entities;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -12,7 +13,7 @@ namespace FitSharp.Controllers.API
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class PersonalClassesController : Controller
     {
         private readonly IPersonalClassRepository _personalClassRepository;
@@ -29,25 +30,25 @@ namespace FitSharp.Controllers.API
         [HttpGet]
         [AllowAnonymous]
         [Route("Available")]
-        public IActionResult GetAvailablePersonalClasses()
+        public JsonResult GetAvailablePersonalClassesAPI()
         {
             var personalClasses = _personalClassRepository
                 .GetAllPersonalClassesWithRelatedData()
-                .Where(pc => pc.StartTime > DateTime.Now && pc.CustomerId == null)
-                .Select(pc => new
+                .Where(pc => pc.EndTime > DateTime.Now && pc.CustomerId == null)
+                .Select(pc => new PersonalClassDto
                 {
-                    id = pc.Id,
-                    title = pc.Instructor.Speciality,
-                    gym = pc.Room.Gym.Name,
-                    classtype = pc.Instructor.Speciality,
-                    start = pc.StartTime.ToString("yyyy-MM-ddTHH:mm"),
-                    end = pc.EndTime.ToString("yyyy-MM-ddTHH:mm"),
-                    instructor = pc.Instructor.User.FullName,
-                    instructorscore = pc.Instructor.Rating
+                    Id = pc.Id,
+                    Title = pc.Instructor.Speciality,
+                    Gym = pc.Room.Gym.Name,
+                    ClassType = pc.Instructor.Speciality,
+                    Start = pc.StartTime.ToString("yyyy-MM-ddTHH:mm"),
+                    End = pc.EndTime.ToString("yyyy-MM-ddTHH:mm"),
+                    Instructor = pc.Instructor.User.FullName,
+                    InstructorScore = pc.Instructor.Rating
                 })
                 .ToList();
 
-            return Ok(personalClasses);
+            return new JsonResult(personalClasses);
         }
 
         [HttpPost]

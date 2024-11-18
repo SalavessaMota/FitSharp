@@ -2,6 +2,7 @@
 using FitSharp.Data.Entities;
 using FitSharp.Helpers;
 using FitSharp.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -382,6 +383,28 @@ namespace FitSharp.Controllers
 
             _flashMessage.Confirmation("You have successfully cancelled your sign up for the personal class.");
             return RedirectToAction(nameof(CustomerPersonalClasses), new { username = this.User.Identity.Name, filter = "all" });
+        }
+
+        [HttpGet]
+        public IActionResult GetAvailablePersonalClasses()
+        {
+            var personalClasses = _personalClassesRepository
+                .GetAllPersonalClassesWithRelatedData()
+                .Where(pc => pc.EndTime > DateTime.Now && pc.CustomerId == null)
+                .Select(pc => new
+                {
+                    id = pc.Id,
+                    title = pc.Instructor.Speciality,
+                    gym = pc.Room.Gym.Name,
+                    classtype = pc.Instructor.Speciality,
+                    start = pc.StartTime.ToString("yyyy-MM-ddTHH:mm"),
+                    end = pc.EndTime.ToString("yyyy-MM-ddTHH:mm"),
+                    instructor = pc.Instructor.User.FullName,
+                    instructorscore = pc.Instructor.Rating
+                })
+                .ToList();
+
+            return Ok(personalClasses);
         }
     }
 }

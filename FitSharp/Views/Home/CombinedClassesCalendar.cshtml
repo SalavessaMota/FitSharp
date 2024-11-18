@@ -155,8 +155,8 @@
                 },
                 events: function (fetchInfo, successCallback, failureCallback) {
                     Promise.all([
-                        fetch('/api/PersonalClasses/Available').then(response => response.json()),
-                        fetch('/api/GroupClasses/Available').then(response => response.json())
+                        fetch('/PersonalClasses/GetAvailablePersonalClasses').then(response => response.json()),
+                        fetch('/GroupClasses/GetAvailableGroupClasses').then(response => response.json())
                     ])
                         .then(([personalClasses, groupClasses]) => {
                             const events = [
@@ -232,7 +232,7 @@
                         if (enrollButton) {
                             enrollButton.dataset.eventId = info.event.id;
                             enrollButton.onclick = function () {
-                                enrollInClass('/api/GroupClasses/Enroll', info.event.id);
+                                enrollInClass('/GroupClasses/Enroll', info.event.id);
                             };
                         }
                     }
