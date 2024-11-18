@@ -47,6 +47,15 @@
                             </a>
                         </li>
 
+                        @if (!this.User.Identity.IsAuthenticated)
+                        {
+                            <li>
+                                <a class="nav-link d-flex align-items-center" asp-area="" asp-controller="Home" asp-action="CombinedClassesCalendar">
+                                    <i class="fas fa-calendar-alt"></i> <span class="nav-itemText">Classes Calendar</span>
+                                </a>
+                            </li>
+                        }                        
+
                         @if (this.User.Identity.IsAuthenticated && this.User.IsInRole("Admin")) // If user is admin
                         {
                             <li class="nav-item dropdown">

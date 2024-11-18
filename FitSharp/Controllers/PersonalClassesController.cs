@@ -335,7 +335,6 @@ namespace FitSharp.Controllers
             if (personalClass.CustomerId != null)
             {
                 _flashMessage.Danger("This personal class is already booked.");
-                return RedirectToAction(nameof(UpcomingPersonalClasses));
             }
 
             var customer = await _userRepository.GetCustomerByUserName(this.User.Identity.Name);
@@ -343,7 +342,6 @@ namespace FitSharp.Controllers
             if (customer.ClassesRemaining <= 0 || !customer.MembershipIsActive)
             {
                 _flashMessage.Danger("You don't have any available classes remaining in your membership.");
-                return RedirectToAction(nameof(UpcomingPersonalClasses));
             }
 
             personalClass.CustomerId = customer.Id;
@@ -355,7 +353,35 @@ namespace FitSharp.Controllers
             await _userRepository.UpdateCustomerAsync(customer);
 
             _flashMessage.Confirmation("You have successfully signed up for the personal class.");
-            return RedirectToAction(nameof(UpcomingPersonalClasses));
+            return RedirectToAction(nameof(CustomerPersonalClasses), new { username = this.User.Identity.Name, filter = "all" });
+        }
+
+        public async Task<IActionResult> CancelSignUp(int id)
+        {
+            var personalClass = await _personalClassesRepository.GetPersonalClassWithAllRelatedData(id);
+
+            if (personalClass == null)
+            {
+                return new NotFoundViewResult("PersonalClassNotFound");
+            }
+
+            var customer = await _userRepository.GetCustomerByUserName(this.User.Identity.Name);
+
+            if (personalClass.CustomerId != customer.Id)
+            {
+                _flashMessage.Danger("You are not signed up for this personal class.");
+            }
+
+            personalClass.CustomerId = null;
+            personalClass.Customer = null;
+            await _personalClassesRepository.UpdateAsync(personalClass);
+
+            customer.PersonalClasses.Remove(personalClass);
+            customer.ClassesRemaining++;
+            await _userRepository.UpdateCustomerAsync(customer);
+
+            _flashMessage.Confirmation("You have successfully cancelled your sign up for the personal class.");
+            return RedirectToAction(nameof(CustomerPersonalClasses), new { username = this.User.Identity.Name, filter = "all" });
         }
     }
 }

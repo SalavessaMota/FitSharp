@@ -280,19 +280,19 @@ namespace FitSharp.Controllers
             if (customer.ClassesRemaining <= 0 || !customer.MembershipIsActive)
             {
                 _flashMessage.Danger("You don't have any available classes remaining in your membership.");
-                return RedirectToAction(nameof(UpcomingGroupClasses));
+                return RedirectToAction(nameof(CustomerGroupClasses));
             }
 
             if (groupClass.AvailableSpots <= 0)
             {
                 _flashMessage.Danger("There are no available spots for this class.");
-                return RedirectToAction(nameof(UpcomingGroupClasses));
+                return RedirectToAction(nameof(CustomerGroupClasses));
             }
 
             if (groupClass.Customers.Any(c => c.User.UserName == customer.User.UserName))
             {
                 _flashMessage.Danger("You are already signed up for this class.");
-                return RedirectToAction(nameof(UpcomingGroupClasses));
+                return RedirectToAction(nameof(CustomerGroupClasses));
             }
 
             groupClass.Customers.Add(customer);
@@ -303,7 +303,7 @@ namespace FitSharp.Controllers
             await _userRepository.UpdateCustomerAsync(customer);
 
             _flashMessage.Confirmation("You have successfully signed up for the class.");
-            return RedirectToAction(nameof(UpcomingGroupClasses));
+            return RedirectToAction(nameof(CustomerGroupClasses));
         }
 
         public async Task<IActionResult> CancelSignUp(int id)
@@ -320,7 +320,7 @@ namespace FitSharp.Controllers
             if (!groupClass.Customers.Any(c => c.User.UserName == customer.User.UserName))
             {
                 _flashMessage.Danger("You are not signed up for this class.");
-                return RedirectToAction(nameof(UpcomingGroupClasses));
+                return RedirectToAction(nameof(CustomerGroupClasses));
             }
 
             groupClass.Customers.Remove(customer);
@@ -330,7 +330,7 @@ namespace FitSharp.Controllers
             await _userRepository.UpdateCustomerAsync(customer);
 
             _flashMessage.Confirmation("You have successfully canceled your sign up for the class.");
-            return RedirectToAction(nameof(UpcomingGroupClasses));
+            return RedirectToAction(nameof(CustomerGroupClasses));
         }
     }
 }

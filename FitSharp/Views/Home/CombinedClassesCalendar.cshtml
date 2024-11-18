@@ -2,6 +2,16 @@
     ViewData["Title"] = "CombinedClassesCalendar";
 }
 
+@inject FitSharp.Data.IUserRepository _userRepository
+@inject FitSharp.Helpers.IUserHelper _userHelper
+
+@{
+    bool hasRemainingTime = false;
+    var customer = await _userRepository.GetCustomerByUserName(User.Identity.Name);
+    hasRemainingTime = customer?.MembershipEndDate > DateTime.Now;
+}
+
+
 <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.css" rel="stylesheet" />
 
 <div class="text-center transparent-card">
@@ -45,7 +55,7 @@
                 <p><strong>Instructor Score:</strong> <span id="personalInstructorScoreStars"></span><span class="text-muted" id="personalInstructorScoreText"></span></p>
             </div>
             <div class="modal-footer">
-                @if (User.Identity.IsAuthenticated)
+                @if (User.Identity.IsAuthenticated && hasRemainingTime)
                 {
                     <button type="button" id="personalEnrollButton" class="btn btn-primary">Enroll in Class</button>
                 }
@@ -78,7 +88,7 @@
                 <p><strong>Instructor Score:</strong> <span id="groupInstructorScoreStars"></span><span class="text-muted" id="groupInstructorScoreText"></span></p>
             </div>
             <div class="modal-footer">
-                @if (User.Identity.IsAuthenticated)
+                @if (User.Identity.IsAuthenticated && hasRemainingTime)
                 {
                     <button type="button" id="groupEnrollButton" class="btn btn-primary">Enroll in Class</button>
                 }
@@ -221,16 +231,23 @@
             }
 
             // Função de inscrição genérica
-            function enrollInClass(url, eventId) {
+            function enrollInClass(url, classId) {
+                const token = localStorage.getItem('authToken');
                 fetch(url, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'Accept': 'application/json'
+                        'Accept': 'application/json',
+                        'Authorization': `Bearer ${token}`
                     },
-                    body: JSON.stringify({ eventId: eventId })
+                    body: JSON.stringify(classId) // Envia apenas o ID diretamente no corpo
                 })
-                    .then(response => response.json())
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! status: ${response.status}`);
+                        }
+                        return response.json();
+                    })
                     .then(data => {
                         alert(data.message);
                         if (data.success) {
@@ -239,8 +256,12 @@
                             calendar.refetchEvents(); // Atualiza o calendário
                         }
                     })
-                    .catch(error => console.error('Error enrolling in class:', error));
+                    .catch(error => {
+                        console.error('Error enrolling in class:', error);
+                        alert('An error occurred while trying to enroll in the class.');
+                    });
             }
+
         });
     </script>
 }

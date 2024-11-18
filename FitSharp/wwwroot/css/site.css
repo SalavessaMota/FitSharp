@@ -79,11 +79,11 @@ a {
     transition: color 0.3s ease, transform 0.3s ease;
 }
 
-    .navbar-nav .nav-link:hover,
-    .navbar-nav .nav-link:hover * {
-        color: #B70D00; /* Cor vermelha ao passar o mouse */
-        transform: scale(1.05);
-    }
+.navbar-nav .nav-link:hover,
+.navbar-nav .nav-link:hover * {
+    color: #B70D00; /* Cor vermelha ao passar o mouse */
+    transform: scale(1.05);
+}
 
     /* Efeito de hover para os ícones FontAwesome na navbar */
     .navbar-nav .nav-link i {
@@ -110,7 +110,7 @@ a {
         transform: scale(0.98);
     }
 
-.nav-itemText {
+.nav-itemText  .dropdown-item{
     color: #333333; /* Cor neutra */
     transition: color 0.3s ease, transform 0.3s ease;
     margin-left: 5px;
@@ -122,6 +122,23 @@ a {
     }
 
     .nav-itemText:active {
+        color: #960C00; /* Cor ao clicar */
+        transform: scale(0.98);
+    }
+
+
+/* Efeito de hover para os itens do dropdown */
+.dropdown-item {
+    color: #333333; /* Cor neutra */
+    transition: color 0.3s ease, transform 0.3s ease;
+}
+
+    .dropdown-item:hover {
+        color: #B70D00; /* Cor vermelha ao passar o mouse */
+        transform: scale(1.05);
+    }
+
+    .dropdown-item:active {
         color: #960C00; /* Cor ao clicar */
         transform: scale(0.98);
     }
@@ -176,7 +193,7 @@ body {
     margin-bottom: 60px;
     background-color: #F5F5F5; /* Fundo suave */
     background-image: url('https://aircinelmvc.blob.core.windows.net/resources/backgroundimageFitsharp2.png');
-    cursor: url('https://aircinelmvc.blob.core.windows.net/resources/fitsharpCursor.png'), auto;
+    cursor: url('https://aircinelmvc.blob.core.windows.net/resources/fitsharpCursor.cur'), auto !important;
     background-size: cover;
     background-repeat: no-repeat;
     background-attachment: fixed;
