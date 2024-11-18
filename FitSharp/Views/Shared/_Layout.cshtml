@@ -43,18 +43,9 @@
 
                         <li class="nav-item">
                             <a class="nav-link d-flex align-items-center" asp-controller="Memberships" asp-action="AvailableMemberships">
-                                <i class="fas fa-money-check-alt"></i> <span class="nav-itemText">Memberships</span>
+                                <i class="fas fa-money-check-alt mr-1"></i> <span class="nav-itemText"> Memberships</span>
                             </a>
-                        </li>
-
-                        @if (!this.User.Identity.IsAuthenticated)
-                        {
-                            <li>
-                                <a class="nav-link d-flex align-items-center" asp-area="" asp-controller="Home" asp-action="CombinedClassesCalendar">
-                                    <i class="fas fa-calendar-alt"></i> <span class="nav-itemText">Classes Calendar</span>
-                                </a>
-                            </li>
-                        }                        
+                        </li>                   
 
                         @if (this.User.Identity.IsAuthenticated && this.User.IsInRole("Admin")) // If user is admin
                         {
@@ -72,7 +63,7 @@
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link d-flex align-items-center" asp-controller="" asp-action="CustomersInformations">
-                                    <i class="fas fa-users"></i> <span class="nav-itemText">Our Customers</span>
+                                    <i class="fas fa-users mr-1"></i> <span class="nav-itemText"> Our Customers</span>
                                 </a>
                             </li>
 
@@ -114,7 +105,7 @@
 
                             <li class="nav-item">
                                 <a class="nav-link d-flex align-items-center" asp-controller="" asp-action="CustomersInformations">
-                                    <i class="fas fa-users"></i> <span class="nav-itemText">Our Customers</span>
+                                    <i class="fas fa-users mr-1"></i> <span class="nav-itemText">Our Customers</span>
                                 </a>
                             </li>
                         }
@@ -124,7 +115,7 @@
                             <!-- Dropdown "Classes" -->
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="navbarDropdownClasses" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    <i class="fas fa-chalkboard-teacher fa-lg"></i> <span class="nav-itemText">Classes</span>
+                                    <i class="fas fa-chalkboard-teacher fa-lg mr-1"></i> <span class="nav-itemText">Classes</span>
                                 </a>
                                 <ul class="dropdown-menu" aria-labelledby="navbarDropdownClasses">
                                     <li>
@@ -145,17 +136,10 @@
                                 </ul>
                             </li>
 
-                            @* <!-- Link "Memberships" -->
-                            <li class="nav-item">
-                                <a class="nav-link d-flex align-items-center" asp-controller="Memberships" asp-action="AvailableMemberships">
-                                    <i class="fas fa-money-check-alt"></i> <span class="nav-itemText">Memberships</span>
-                                </a>
-                            </li> *@
-
                             <!-- Link "QRCode" -->
                             <li class="nav-item">
                                 <a class="nav-link d-flex align-items-center" asp-controller="Account" asp-action="DisplayQRCode" asp-route-userName="@User.Identity.Name">
-                                    <i class="fas fa-qrcode fa-lg"></i> <span class="nav-itemText">QR code</span>
+                                    <i class="fas fa-qrcode fa-lg mr-1"></i> <span class="nav-itemText">QR code</span>
                                 </a>
                             </li>
                         }

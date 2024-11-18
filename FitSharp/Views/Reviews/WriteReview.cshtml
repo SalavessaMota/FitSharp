@@ -14,18 +14,27 @@
             <input type="hidden" asp-for="InstructorId" />
             <input type="hidden" asp-for="CustomerId" />
 
+            <!-- Avaliação por Estrelas -->
             <div class="form-group">
-                <label asp-for="Stars" class="control-label"></label>
-                <input asp-for="Stars" class="form-control" />
+                <label class="control-label">Rating</label>
+                <div id="starRating" class="d-flex align-items-center">
+                    @for (int i = 1; i <= 5; i++)
+                    {
+                        <i class="fas fa-star text-shadow star-rating" data-value="@i" style="cursor: pointer; font-size: 24px;"></i>
+                    }
+                </div>
+                <input type="hidden" asp-for="Stars" id="starInput" />
                 <span asp-validation-for="Stars" class="text-danger"></span>
             </div>
 
+            <!-- Descrição -->
             <div class="form-group">
                 <label asp-for="Description" class="control-label"></label>
                 <textarea asp-for="Description" class="form-control" rows="4"></textarea>
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
 
+            <!-- Botões -->
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary roundedwithshadow" />
                 <a asp-controller="PersonalClasses" asp-action="CustomerPersonalClasses" class="btn btn-success roundedwithshadow">Back to List</a>
@@ -35,9 +44,25 @@
 </div>
 
 @section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const stars = document.querySelectorAll(".star-rating");
+            const starInput = document.getElementById("starInput");
+
+            stars.forEach(star => {
+                star.addEventListener("click", function () {
+                    const value = this.getAttribute("data-value");
+                    starInput.value = value;
+
+                    // Atualiza as classes para destacar as estrelas selecionadas
+                    stars.forEach(s => {
+                        s.classList.remove("text-warning");
+                        if (s.getAttribute("data-value") <= value) {
+                            s.classList.add("text-warning");
+                        }
+                    });
+                });
+            });
+        });
+    </script>
 }
-
-

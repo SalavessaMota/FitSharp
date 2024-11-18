@@ -101,5 +101,10 @@ namespace FitSharp.Controllers
         {
             return View();
         }
+
+        public IActionResult StaffClassesCalendar()
+        {
+           return View();
+        }
     }
 }

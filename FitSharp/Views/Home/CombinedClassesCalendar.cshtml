@@ -62,7 +62,7 @@
             <div class="modal-footer">
                 @if (User.Identity.IsAuthenticated)
                 {
-                    if (hasRemainingTime && hasRemainingClasses)
+                    if (hasRemainingTime && hasRemainingClasses && this.User.IsInRole("Customer"))
                     {
                         <button type="button" id="personalEnrollButton" class="btn btn-primary">Enroll in Class</button>
                     }

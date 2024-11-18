@@ -32,7 +32,7 @@
             <p><strong>Membership End Date:</strong> @customer.MembershipEndDate.ToString("dd/MM/yyyy")</p>
         </div>
     }
-    else if (isAuthenticated)
+    else if (isAuthenticated && !(this.User.IsInRole("Admin") || this.User.IsInRole("Instructor") || this.User.IsInRole("Employee")))
     {
         <div class="no-membership mb-4 transparent-card">
             <p>You do not have an active membership.</p>
@@ -61,7 +61,7 @@
                         <td>@membership.Description</td>
                         <td>@membership.Price€</td>
                         <td>
-                        @if (isAuthenticated)
+                        @if (isAuthenticated && User.IsInRole("Customer"))
                         {
                             <a asp-action="PurchaseMembership" asp-route-id="@membership.Id" id="purchaseForm-@membership.Id" class="btn btn-primary purchase-button">Purchase</a>
                         }
