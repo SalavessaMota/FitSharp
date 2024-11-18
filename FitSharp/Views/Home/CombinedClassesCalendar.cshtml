@@ -51,6 +51,7 @@
             </div>
             <div class="modal-body">
                 <p><strong>Class Type:</strong> <span id="personalClassType"></span></p>
+                <p><strong>Gym:</strong> <span id="personalGym"></span></p>
                 <p><strong>Instructor:</strong> <span id="personalInstructor"></span></p>
                 <p><strong>Start Time:</strong> <span id="personalStartTime"></span></p>
                 <p><strong>End Time:</strong> <span id="personalEndTime"></span></p>
@@ -97,6 +98,7 @@
             </div>
             <div class="modal-body">
                 <p><strong>Class Type:</strong> <span id="groupClassType"></span></p>
+                <p><strong>Gym:</strong> <span id="groupGym"></span></p>
                 <p><strong>Instructor:</strong> <span id="groupInstructor"></span></p>
                 <p><strong>Start Time:</strong> <span id="groupStartTime"></span></p>
                 <p><strong>End Time:</strong> <span id="groupEndTime"></span></p>
@@ -161,6 +163,7 @@
                                 ...personalClasses.map(pc => ({
                                     id: pc.id,
                                     title: `Personal: ${pc.title}`,
+                                    gym: pc.gym,
                                     start: pc.start,
                                     end: pc.end,
                                     instructor: pc.instructor,
@@ -171,6 +174,7 @@
                                 ...groupClasses.map(gc => ({
                                     id: gc.id,
                                     title: `Group: ${gc.title}`,
+                                    gym: gc.gym,
                                     start: gc.start,
                                     end: gc.end,
                                     instructor: gc.instructor,
@@ -192,6 +196,7 @@
 
                     if (info.event.extendedProps.classtype === 'Personal') {
                         document.getElementById('personalClassType').textContent = info.event.title.replace('Personal: ', '');
+                        document.getElementById('personalGym').textContent = info.event.extendedProps.gym || "Not specified";
                         document.getElementById('personalInstructor').textContent = info.event.extendedProps.instructor;
                         document.getElementById('personalStartTime').textContent = start;
                         document.getElementById('personalEndTime').textContent = end;
@@ -211,9 +216,12 @@
 
                     } else if (info.event.extendedProps.classtype === 'Group') {
                         document.getElementById('groupClassType').textContent = info.event.title.replace('Group: ', '');
+                        document.getElementById('groupGym').textContent = info.event.extendedProps.gym || "Not specified";
                         document.getElementById('groupInstructor').textContent = info.event.extendedProps.instructor;
                         document.getElementById('groupStartTime').textContent = start;
                         document.getElementById('groupEndTime').textContent = end;
+                        console.log('Extended Props:', info.event.extendedProps);
+                        console.log('Gym:', info.event.extendedProps.gym);
 
                         renderStars('groupInstructorScoreStars', 'groupInstructorScoreText', info.event.extendedProps.instructorscore);
 

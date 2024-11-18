@@ -38,6 +38,7 @@ namespace FitSharp.Controllers.API
                 {
                     id = pc.Id,
                     title = pc.Instructor.Speciality,
+                    gym = pc.Room.Gym.Name,
                     classtype = pc.Instructor.Speciality,
                     start = pc.StartTime.ToString("yyyy-MM-ddTHH:mm"),
                     end = pc.EndTime.ToString("yyyy-MM-ddTHH:mm"),

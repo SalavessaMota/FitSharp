@@ -15,6 +15,10 @@ namespace FitSharp.Models
         [Range(1, int.MaxValue, ErrorMessage = "You must select a city.")]
         public int CityId { get; set; }
 
+        [Display(Name = "Country")]
+        [Range(1, int.MaxValue, ErrorMessage = "You must select a country.")]
+        public int CountryId { get; set; }
+
         public IEnumerable<SelectListItem> Cities { get; set; }
 
         public IEnumerable<SelectListItem> Countries { get; set; }
