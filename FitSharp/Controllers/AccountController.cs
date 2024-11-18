@@ -563,6 +563,77 @@ namespace FitSharp.Controllers
             return View(customer);
         }
 
+
+        [HttpGet]
+        public async Task<IActionResult> DownloadQRCodePdf(string userName)
+        {
+            var customer = await _userRepository.GetCustomerByUserName(userName);
+
+            if (customer == null)
+            {
+                return new NotFoundViewResult("UserNotFound");
+            }
+
+            var qrData = $"Name: {customer.User.FullName}\n" +
+                         $"Membership ID: {customer.MembershipId}\n" +
+                         $"Classes Remaining: {customer.ClassesRemaining}\n" +
+                         $"Membership Start: {customer.MembershipBeginDate.ToShortDateString()}\n" +
+                         $"Membership End: {customer.MembershipEndDate.ToShortDateString()}\n" +
+                         $"Membership Active: {(customer.MembershipIsActive ? "Yes" : "No")}";
+
+            using (var qrGenerator = new QRCodeGenerator())
+            {
+                var qrCodeData = qrGenerator.CreateQrCode(qrData, QRCodeGenerator.ECCLevel.Q);
+                var qrCode = new QRCode(qrCodeData);
+
+                using (var qrCodeImage = qrCode.GetGraphic(20))
+                {
+                    using (var document = new Syncfusion.Pdf.PdfDocument())
+                    {
+                        var page = document.Pages.Add();
+
+                        using (var memoryStream = new MemoryStream())
+                        {
+                            qrCodeImage.Save(memoryStream, ImageFormat.Png);
+                            memoryStream.Position = 0;
+
+                            var image = new Syncfusion.Pdf.Graphics.PdfBitmap(memoryStream);
+                            var graphics = page.Graphics;
+
+                            var maxWidth = page.Graphics.ClientSize.Width * 0.5;
+                            var maxHeight = page.Graphics.ClientSize.Height * 0.5;
+
+                            var aspectRatio = image.Width / (float)image.Height;
+                            var width = Math.Min(maxWidth, image.Width);
+                            var height = width / aspectRatio;
+
+                            var x = (float)(page.Graphics.ClientSize.Width - width) / 2;
+                            var y = (float)(page.Graphics.ClientSize.Height - height) / 2;
+
+                            graphics.DrawImage(image, new Syncfusion.Drawing.RectangleF(x, y, (float)width, (float)height));
+                        }
+
+                        page.Graphics.DrawString(
+                            $"QR Code for {customer.User.FullName}",
+                            new Syncfusion.Pdf.Graphics.PdfStandardFont(Syncfusion.Pdf.Graphics.PdfFontFamily.Helvetica, 24),
+                            Syncfusion.Pdf.Graphics.PdfBrushes.Black,
+                            new Syncfusion.Drawing.PointF(50, 50)
+                        );
+
+                        using (var pdfStream = new MemoryStream())
+                        {
+                            document.Save(pdfStream);
+                            pdfStream.Position = 0;
+
+                            return File(pdfStream.ToArray(), "application/pdf", "QRCode.pdf");
+                        }
+                    }
+                }
+            }
+        }
+
+
+
         public IActionResult NotAuthorized()
         {
             return View();
