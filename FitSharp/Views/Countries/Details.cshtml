@@ -28,7 +28,7 @@
     <div>
         <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning"><i class="far fa-edit"></i></a>
         <a asp-action="AddCity" asp-route-id="@Model.Id" class="btn btn-info">Add city</a>
-        <a asp-action="Index" class="btn btn-success">Back to List</a>
+        <a asp-action="Index" style="background-color: #808080"  class="btn btn-success">Back to List</a>
     </div>
 
     <br />
@@ -90,7 +90,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-danger" id="btnYesDelete">Delete</button>
-                <button type="button" class="btn btn-success" id="btnNoDelete">No</button>
+                <button type="button" style="background-color: #808080" class="btn btn-success" id="btnNoDelete">No</button>
             </div>
         </div>
     </div>

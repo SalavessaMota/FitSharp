@@ -70,11 +70,11 @@
     <div>
         @if(this.User.Identity.IsAuthenticated && this.User.IsInRole("Instructor"))
         {
-            <a asp-action="Index" class="btn btn-success roundedwithshadow">Back to List</a>
+            <a asp-action="Index" style="background-color: #808080" class="btn btn-success roundedwithshadow">Back to List</a>
         }
         else if (this.User.Identity.IsAuthenticated && this.User.IsInRole("Customer"))
         {
-            <a asp-action="CustomerPersonalClasses" asp-route-username="@User.Identity.Name" class="btn btn-success roundedwithshadow">Back to List</a>
+            <a asp-action="CustomerPersonalClasses" asp-route-username="@User.Identity.Name" style="background-color: #808080" class="btn btn-success roundedwithshadow">Back to List</a>
 
         }
     </div>
