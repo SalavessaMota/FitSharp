@@ -32,11 +32,22 @@
                     <thead>
                         <tr>
                             <th>Class</th>
+                            <th>Gym</th>
                             <th>Room</th>
                             <th>Instructor</th>
                             <th>Start Time</th>
                             <th>End Time</th>
                             <th>Available Spots</th>
+                            <th></th>
+                        </tr>
+                        <tr>
+                            <th><input type="text" placeholder="Search Class" class="form-control" /></th>
+                            <th><input type="text" placeholder="Search Gym" class="form-control" /></th>
+                            <th><input type="text" placeholder="Search Room" class="form-control" /></th>
+                            <th><input type="text" placeholder="Search Instructor" class="form-control" /></th>
+                            <th><input type="text" placeholder="Search Start Time" class="form-control" /></th>
+                            <th><input type="text" placeholder="Search End Time" class="form-control" /></th>
+                            <th><input type="text" placeholder="Search Spots" class="form-control" /></th>
                             <th></th>
                         </tr>
                     </thead>
@@ -47,6 +58,7 @@
                             {
                                 <tr>
                                     <td>@Html.DisplayFor(modelItem => item.Name)</td>
+                                    <td>@Html.DisplayFor(modelItem => item.Room.Gym.Name)</td>
                                     <td>@Html.DisplayFor(modelItem => item.Room.Name)</td>
                                     <td>
                                         @Html.DisplayFor(modelItem => item.Instructor.User.FullName)
@@ -62,7 +74,7 @@
                                                 <i class="far fa-edit ml-0"></i> Edit Review
                                             </a>
                                         }
-                                        else if(item.StartTime < DateTime.Now)
+                                        else if (item.StartTime < DateTime.Now)
                                         {
                                             <a asp-controller="Reviews" asp-action="WriteReview" asp-route-instructorId="@item.Instructor.Id" class="btn btn-link">
                                                 <i class="far fa-edit ml-0"></i> Write Review
@@ -83,7 +95,7 @@
                                             {
                                                 <a asp-action="CancelSignUp" asp-route-id="@item.Id" class="btn btn-danger"><i class="fas fa-user-minus"></i></a>
                                             }
-                                        }                                        
+                                        }
                                     </td>
                                 </tr>
                             }
@@ -91,7 +103,7 @@
                         else
                         {
                             <tr>
-                                <td colspan="6" class="text-center">No group classes found for this customer.</td>
+                                <td colspan="8" class="text-center">No group classes found for this customer.</td>
                             </tr>
                         }
                     </tbody>
@@ -118,7 +130,6 @@
                 var userName = '@User.Identity.Name';
                 window.location.href = '@Url.Action("CustomerGroupClasses")' + '?filter=' + selectedFilter + '&username=' + userName;
             });
-
 
             // Inicializar DataTable com pesquisa individual por coluna
             var table = $('#MyTable').DataTable({

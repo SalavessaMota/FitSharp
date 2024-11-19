@@ -65,9 +65,13 @@
                         {
                             <a asp-action="PurchaseMembership" asp-route-id="@membership.Id" id="purchaseForm-@membership.Id" class="btn btn-primary purchase-button">Purchase</a>
                         }
-                        else
+                        else if (!(User.IsInRole("Admin") || User.IsInRole("Employee") || User.IsInRole("Instructor")))
                         {
                             <button class="btn btn-primary trial-info-button">Purchase</button>
+                        }
+                        else
+                        {
+                            
                         }
                         </td>
                     </tr>
