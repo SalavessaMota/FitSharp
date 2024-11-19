@@ -324,25 +324,25 @@ namespace FitSharp.Controllers
             return View(futureAvailableclasses);
         }
 
-        public async Task<IActionResult> Signup(int id)
+        public async Task<IActionResult> SignUp(int id)
         {
             var personalClass = await _personalClassesRepository.GetPersonalClassWithAllRelatedData(id);
 
             if (personalClass == null)
             {
-                return new NotFoundViewResult("PersonalClassNotFound");
+                return Json(new { success = false, message = "Personal class not found." });
             }
 
             if (personalClass.CustomerId != null)
             {
-                _flashMessage.Danger("This personal class is already booked.");
+                return Json(new { success = false, message = "This personal class is already booked." });
             }
 
             var customer = await _userRepository.GetCustomerByUserName(this.User.Identity.Name);
 
             if (customer.ClassesRemaining <= 0 || !customer.MembershipIsActive)
             {
-                _flashMessage.Danger("You don't have any available classes remaining in your membership.");
+                return Json(new { success = false, message = "You don't have any available classes remaining in your membership." });
             }
 
             personalClass.CustomerId = customer.Id;
@@ -353,9 +353,9 @@ namespace FitSharp.Controllers
             customer.ClassesRemaining--;
             await _userRepository.UpdateCustomerAsync(customer);
 
-            _flashMessage.Confirmation("You have successfully signed up for the personal class.");
-            return RedirectToAction(nameof(CustomerPersonalClasses), new { username = this.User.Identity.Name, filter = "all" });
+            return Json(new { success = true, message = "You have successfully signed up for the personal class." });
         }
+
 
         public async Task<IActionResult> CancelSignUp(int id)
         {

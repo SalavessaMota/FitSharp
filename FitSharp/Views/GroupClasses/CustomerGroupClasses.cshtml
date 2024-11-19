@@ -73,14 +73,17 @@
                                     <td>@Html.DisplayFor(modelItem => item.EndTime)</td>
                                     <td>@item.AvailableSpots</td>
                                     <td>
-                                        @if (item.EndTime > DateTime.Now && !item.Customers.Any(c => c.User.UserName == User.Identity.Name))
+                                        @if (item.EndTime > DateTime.Now)
                                         {
-                                            <a asp-action="SignUp" asp-route-id="@item.Id" class="btn btn-warning"><i class="fas fa-user-plus"></i></a>
-                                        }
-                                        @if (item.Customers.Any(c => c.User.UserName == User.Identity.Name))
-                                        {
-                                            <a asp-action="CancelSignUp" asp-route-id="@item.Id" class="btn btn-danger"><i class="fas fa-user-minus"></i></a>
-                                        }
+                                            @if (!item.Customers.Any(c => c.User.UserName == User.Identity.Name))
+                                            {
+                                                <a asp-action="SignUp" asp-route-id="@item.Id" class="btn btn-warning"><i class="fas fa-user-plus"></i></a>
+                                            }
+                                            @if (item.Customers.Any(c => c.User.UserName == User.Identity.Name))
+                                            {
+                                                <a asp-action="CancelSignUp" asp-route-id="@item.Id" class="btn btn-danger"><i class="fas fa-user-minus"></i></a>
+                                            }
+                                        }                                        
                                     </td>
                                 </tr>
                             }

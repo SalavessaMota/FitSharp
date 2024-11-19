@@ -268,33 +268,31 @@ namespace FitSharp.Controllers
             return View(upcomingGroupClasses);
         }
 
+
         public async Task<IActionResult> SignUp(int id)
         {
             var groupClass = await _groupClassRepository.GetGroupClassWithAllRelatedDataAsync(id);
 
             if (groupClass == null)
             {
-                return new NotFoundViewResult("GroupClassNotFound");
+                return Json(new { success = false, message = "Class not found." });
             }
 
             var customer = await _userRepository.GetCustomerByUserName(User.Identity.Name);
 
             if (customer.ClassesRemaining <= 0 || !customer.MembershipIsActive)
             {
-                _flashMessage.Danger("You don't have any available classes remaining in your membership.");
-                return RedirectToAction(nameof(CustomerGroupClasses));
+                return Json(new { success = false, message = "You don't have any available classes remaining in your membership." });
             }
 
             if (groupClass.AvailableSpots <= 0)
             {
-                _flashMessage.Danger("There are no available spots for this class.");
-                return RedirectToAction(nameof(CustomerGroupClasses));
+                return Json(new { success = false, message = "There are no available spots for this class." });
             }
 
             if (groupClass.Customers.Any(c => c.User.UserName == customer.User.UserName))
             {
-                _flashMessage.Danger("You are already signed up for this class.");
-                return RedirectToAction(nameof(CustomerGroupClasses));
+                return Json(new { success = false, message = "You are already signed up for this class." });
             }
 
             groupClass.Customers.Add(customer);
@@ -304,8 +302,7 @@ namespace FitSharp.Controllers
             customer.ClassesRemaining--;
             await _userRepository.UpdateCustomerAsync(customer);
 
-            _flashMessage.Confirmation("You have successfully signed up for the class.");
-            return RedirectToAction(nameof(CustomerGroupClasses));
+            return Json(new { success = true, message = "You have successfully signed up for the class." });
         }
 
         public async Task<IActionResult> CancelSignUp(int id)

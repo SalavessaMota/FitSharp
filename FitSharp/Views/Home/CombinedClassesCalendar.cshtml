@@ -31,6 +31,8 @@
         </div>
     </div>
 
+    <div id="flashMessageContainer" class="alert d-none" role="alert"></div>
+
     <!-- Calendar -->
     <div id="calendar" class="mb-3" style="overflow: auto; background-color: white;"></div>
 
@@ -210,7 +212,7 @@
                         if (enrollButton) {
                             enrollButton.dataset.eventId = info.event.id;
                             enrollButton.onclick = function () {
-                                enrollInClass('/api/PersonalClasses/Enroll', info.event.id);
+                                enrollInClass('/PersonalClasses/SignUp', info.event.id);
                             };
                         }
 
@@ -232,7 +234,7 @@
                         if (enrollButton) {
                             enrollButton.dataset.eventId = info.event.id;
                             enrollButton.onclick = function () {
-                                enrollInClass('/GroupClasses/Enroll', info.event.id);
+                                enrollInClass('/GroupClasses/SignUp', info.event.id);
                             };
                         }
                     }
@@ -267,17 +269,13 @@
                 }
             }
 
-            // Função de inscrição genérica
             function enrollInClass(url, classId) {
-                const token = localStorage.getItem('authToken');
-                fetch(url, {
-                    method: 'POST',
+                fetch(`${url}/${classId}`, {
+                    method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',
                         'Accept': 'application/json',
-                        'Authorization': `Bearer ${token}`
-                    },
-                    body: JSON.stringify(classId) // Envia apenas o ID diretamente no corpo
+                    }
                 })
                     .then(response => {
                         if (!response.ok) {
@@ -286,18 +284,45 @@
                         return response.json();
                     })
                     .then(data => {
-                        alert(data.message);
                         if (data.success) {
+                            // Mostra a flash message
+                            showFlashMessage('success', data.message);
+
+                            // Fecha o modal
                             $('#personalClassModal').modal('hide');
                             $('#groupClassModal').modal('hide');
-                            calendar.refetchEvents(); // Atualiza o calendário
+
+                            // Atualiza o calendário
+                            calendar.refetchEvents();
+                        } else {
+                            // Mostra uma mensagem de erro
+                            showFlashMessage('danger', data.message);
                         }
                     })
                     .catch(error => {
                         console.error('Error enrolling in class:', error);
-                        alert('An error occurred while trying to enroll in the class.');
+                        showFlashMessage('danger', 'An unexpected error occurred while trying to enroll in the class.');
                     });
             }
+
+            // Função para exibir a flash message
+            function showFlashMessage(type, message) {
+                const flashMessageContainer = document.getElementById('flashMessageContainer');
+
+                // Define a classe com base no tipo (success, danger, etc.)
+                flashMessageContainer.className = `alert alert-${type}`;
+                flashMessageContainer.textContent = message;
+
+                // Exibe a mensagem
+                flashMessageContainer.classList.remove('d-none');
+
+                // Remove a mensagem após 5 segundos
+                setTimeout(() => {
+                    flashMessageContainer.classList.add('d-none');
+                }, 5000);
+            }
+
+
         });
     </script>
 }
