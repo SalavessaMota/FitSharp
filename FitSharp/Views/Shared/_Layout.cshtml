@@ -60,7 +60,8 @@
                                     <li><a class="dropdown-item" asp-area="" asp-controller="Gyms" asp-action=""><i class="fas fa-building"></i> Gyms</a></li>
                                     <li><a class="dropdown-item" asp-area="" asp-controller="ClassTypes" asp-action=""><i class="fas fa-chalkboard-teacher"></i> Class Types</a></li>
                                     <li><a class="dropdown-item" asp-area="" asp-controller="Memberships" asp-action=""><i class="fas fa-money-check-alt"></i> Memberships</a></li>
-                                    <li><a class="dropdown-item" asp-area="" asp-controller="Reviews" asp-action=""><i class="fas fa-pencil-alt"></i> Instructors Reviews</a></li>
+                                    <li><a class="dropdown-item" asp-area="" asp-controller="InstructorReviews" asp-action=""><i class="fas fa-pencil-alt"></i> Instructor Reviews</a></li>
+                                    <li><a class="dropdown-item" asp-area="" asp-controller="GymReviews" asp-action=""><i class="fas fa-pencil-alt"></i> Gym Reviews</a></li>
                                     <li><a class="dropdown-item" asp-area="" asp-controller="Gyms" asp-action="Equipments"><i class="fas fa-dumbbell"></i> Equipments</a></li>
                                 </ul>
                             </li>
@@ -115,15 +116,15 @@
 
                         @if (this.User.Identity.IsAuthenticated && this.User.IsInRole("Customer"))
                         {
-                            <!-- Dropdown "Classes" -->
+                            <!-- Dropdown "Available Classes" -->
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="navbarDropdownClasses" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    <i class="fas fa-chalkboard-teacher fa-lg mr-1"></i> <span class="nav-itemText">Classes</span>
+                                    <i class="fas fa-chalkboard mr-1"></i><span class="nav-itemText"> Available Classes</span>
                                 </a>
                                 <ul class="dropdown-menu" aria-labelledby="navbarDropdownClasses">
                                     <li>
                                         <a class="dropdown-item" asp-area="" asp-controller="Home" asp-action="CombinedClassesCalendar">
-                                            <i class="fas fa-calendar-alt"></i> Classes Calendar
+                                            <i class="fas fa-calendar-alt"></i> Calendar
                                         </a>
                                     </li>
                                     <li>
@@ -139,10 +140,29 @@
                                 </ul>
                             </li>
 
+                            <!-- Dropdown "Classes Calendar" -->
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="navbarDropdownClasses" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <i class="fas fa-chalkboard-teacher fa-lg mr-1"></i> <span class="nav-itemText"> Your Classes</span>
+                                </a>
+                                <ul class="dropdown-menu" aria-labelledby="navbarDropdownClasses">
+                                    <li>
+                                        <a class="dropdown-item" asp-area="" asp-controller="GroupClasses" asp-action="CustomerGroupClasses" asp-route-username="@User.Identity.Name" asp-route-filter="all">
+                                            <i class="fas fa-users"></i> Group Classes
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" asp-area="" asp-controller="PersonalClasses" asp-action="CustomerPersonalClasses" asp-route-username="@User.Identity.Name" asp-route-filter="all">
+                                            <i class="fas fa-chalkboard-teacher"></i> Personal Classes
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+
                             <!-- Link "QRCode" -->
                             <li class="nav-item">
                                 <a class="nav-link d-flex align-items-center" asp-controller="Account" asp-action="DisplayQRCode" asp-route-userName="@User.Identity.Name">
-                                    <i class="fas fa-qrcode fa-lg mr-1"></i> <span class="nav-itemText">QR code</span>
+                                    <i class="fas fa-qrcode fa-lg mr-1"></i> <span class="nav-itemText">QR Code</span>
                                 </a>
                             </li>
                         }
@@ -192,21 +212,6 @@
                                         </a>
                                     </li>
 
-                                    @if (this.User.Identity.IsAuthenticated && this.User.IsInRole("Customer"))
-                                    {
-                                        <li>
-                                            <a class="dropdown-item" asp-area="" asp-controller="GroupClasses" asp-action="CustomerGroupClasses" asp-route-username="@User.Identity.Name" asp-route-filter="all">
-                                                <i class="fas fa-users"></i> Your Group Classes
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a class="dropdown-item" asp-area="" asp-controller="PersonalClasses" asp-action="CustomerPersonalClasses" asp-route-username="@User.Identity.Name" asp-route-filter="all">
-                                                <i class="fas fa-chalkboard-teacher"></i> Your Personal Classes
-                                            </a>
-                                        </li>
-                                    }
-
-
                                     <li>
                                         <a class="dropdown-item" asp-area="" asp-controller="Account" asp-action="Logout">
                                             <i class="fas fa-sign-out-alt"></i> Logout
@@ -220,7 +225,7 @@
                             <!-- Login Link for unauthenticated users -->
                             <li class="nav-item">
                                 <a class="nav-link d-flex align-items-center" asp-area="" asp-controller="Account" asp-action="Login">
-                                    <i class="fas fa-sign-in-alt mr-2 fa-lg"></i>
+                                    <i class="fas fa-sign-in-alt mr-2 fa-lg"></i> Sign in
                                 </a>
                             </li>
                         }

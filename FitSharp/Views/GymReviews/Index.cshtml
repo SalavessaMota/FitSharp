@@ -1,0 +1,135 @@
+﻿@model IEnumerable<FitSharp.Data.Entities.GymReview>
+@{
+    ViewData["Title"] = "Index";
+}
+
+<link rel="stylesheet" href="https://cdn.datatables.net/1.10.25/css/dataTables.bootstrap4.min.css" />
+
+<div class="row">
+    <div class="col-12">
+        <div class="card transparent-card">
+            <div class="card-header">
+                <h3 class="card-title">Reviews</h3>
+            </div>
+            <div class="card-body">
+                <table class="table table-hover table-striped" id="MyTable">
+                    <thead>
+                        <!-- Primeira linha: Títulos das colunas com ordenação -->
+                        <tr>
+                            <th>Customer</th>
+                            <th>Gym</th>
+                            <th>Stars</th>
+                            <th>Description</th>
+                            <th>Actions</th>
+                        </tr>
+                        <!-- Segunda linha: Campos de pesquisa por coluna -->
+                        <tr>
+                            <th><input type="text" placeholder="Search Customer" class="form-control" /></th>
+                            <th><input type="text" placeholder="Search Gym" class="form-control" /></th>
+                            <th><input type="text" placeholder="Search Stars" class="form-control" /></th>
+                            <th><input type="text" placeholder="Search Description" class="form-control" /></th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@Html.DisplayFor(modelItem => item.Customer.User.FullName)</td>
+                                <td>@Html.DisplayFor(modelItem => item.Gym.Name)</td>
+                                <td>@Html.DisplayFor(modelItem => item.Stars)</td>
+                                <td>
+                                    @{
+                                        var truncatedDescription = item.Description.Length > 50
+                                        ? item.Description.Substring(0, 50) + "..."
+                                        : item.Description;
+                                    }
+                                    @truncatedDescription
+                                </td>
+                                <td>
+                                    @* <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning"><i class="far fa-edit"></i></a> *@
+                                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info"><i class="fas fa-list"></i></a>
+                                    @* <a href="#" data-id="@item.Id" class="btn btn-danger btnDelete"><i class="fas fa-trash"></i></a> *@
+                                </td>
+                            </tr>
+
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <div class="text-center">
+                <a href="~/Home/index" class="btn btn-primary btn-lg mt-3 roundedwithshadow"><i class="fas fa-home"></i> Return Home</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="deleteDialog" class="modal fade">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Delete</h4>
+                <button type="button" class="close" data-dismiss="modal"><i class="fa fa-window-close"></i></button>
+            </div>
+            <div class="modal-body">
+                <p>Do you want to delete this review?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" id="btnYesDelete">Delete</button>
+                <button type="button" class="btn btn-success" id="btnNoDelete">No</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+
+    <script src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.25/js/dataTables.bootstrap4.min.js"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            // Aplica o filtro imediatamente ao mudar a seleção no dropdown
+            $('#classFilter').change(function () {
+                var selectedFilter = $(this).val();
+                window.location.href = '@Url.Action("Index")' + '?filter=' + selectedFilter;
+            });
+
+            // Configuração do diálogo de delete
+            var id = 0;
+            $('a.btnDelete').click(function () {
+                id = $(this).data('id');
+                $("#deleteDialog").modal('show');
+                return false;
+            });
+
+            $("#btnNoDelete").click(function () {
+                $("#deleteDialog").modal('hide');
+                return false;
+            });
+
+            $("#btnYesDelete").click(function () {
+                window.location.href = '/GymReviews/Delete/' + id;
+            });
+
+            // Inicializar DataTable com pesquisa individual por coluna
+            var table = $('#MyTable').DataTable({
+                orderCellsTop: true,
+                initComplete: function () {
+                    var api = this.api();
+
+                    // Aplicar o filtro para cada coluna com base na segunda linha do thead
+                    api.columns().every(function () {
+                        var column = this;
+                        $('input', $('thead tr:eq(1) th').eq(column.index())).on('keyup change clear', function () {
+                            if (column.search() !== this.value) {
+                                column.search(this.value).draw();
+                            }
+                        });
+                    });
+                }
+            });
+        });
+    </script>
+}

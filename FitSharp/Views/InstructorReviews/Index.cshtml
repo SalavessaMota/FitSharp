@@ -1,10 +1,9 @@
-﻿@model IEnumerable<FitSharp.Data.Entities.Review>
+﻿@model IEnumerable<FitSharp.Data.Entities.InstructorReview>
 @{
     ViewData["Title"] = "Index";
 }
 
 <link rel="stylesheet" href="https://cdn.datatables.net/1.10.25/css/dataTables.bootstrap4.min.css" />
-
 
 <div class="row">
     <div class="col-12">
@@ -111,7 +110,7 @@
             });
 
             $("#btnYesDelete").click(function () {
-                window.location.href = '/Reviews/Delete/' + id;
+                window.location.href = '/InstructorReviews/Delete/' + id;
             });
 
             // Inicializar DataTable com pesquisa individual por coluna

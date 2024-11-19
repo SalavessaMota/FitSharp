@@ -1,9 +1,9 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
+using System;
 
 namespace FitSharp.Data.Entities
 {
-    public class Review : IEntity
+    public class GymReview : IEntity
     {
         public int Id { get; set; }
 
@@ -17,11 +17,12 @@ namespace FitSharp.Data.Entities
         public DateTime ReviewDate { get; set; } = DateTime.Now;
 
         [Required(ErrorMessage = "The field {0} is mandatory.")]
-        public int InstructorId { get; set; }
+        public int GymId { get; set; }
 
-        public Instructor Instructor { get; set; }
+        public Gym Gym { get; set; }
 
         [Required(ErrorMessage = "The field {0} is mandatory.")]
+
         public int CustomerId { get; set; }
 
         public Customer Customer { get; set; }

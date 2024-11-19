@@ -85,7 +85,7 @@ namespace FitSharp.Controllers
         {
             if (ModelState.IsValid)
             {
-                var instructor = _userRepository.GetInstructorByUserName(User.Identity.Name);
+                var instructor = await _userRepository.GetInstructorByUserName(User.Identity.Name);
 
                 var groupClass = new GroupClass
                 {

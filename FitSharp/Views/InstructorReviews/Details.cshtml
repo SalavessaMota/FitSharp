@@ -1,0 +1,50 @@
+﻿@model FitSharp.Data.Entities.InstructorReview
+@{
+    ViewData["Title"] = "Details";
+}
+
+<link rel="stylesheet" href="https://cdn.datatables.net/1.10.25/css/dataTables.bootstrap4.min.css" />
+
+<br />
+
+<div class="transparent-card">
+    <h1>Review</h1>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Customer.User.FullName)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Customer.User.FullName)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Instructor.User.FullName)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Instructor.User.FullName)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Stars)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Stars)
+        </dd>
+        <dt class="mb-0">
+            @Html.DisplayNameFor(model => model.Description)
+        </dt>
+        <dd style="white-space: word-wrap: break-word;">
+            @Html.DisplayFor(model => model.Description)
+        </dd>
+    </dl>
+    <div>
+        <a asp-action="Index" class="btn btn-success">Back to List</a>
+    </div>
+
+    <br />    
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

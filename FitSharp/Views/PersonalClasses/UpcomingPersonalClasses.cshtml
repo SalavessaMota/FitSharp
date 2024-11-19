@@ -44,9 +44,6 @@
                                 <td>@Html.DisplayFor(modelItem => item.Room.Name)</td>
                                 <td>
                                     @Html.DisplayFor(modelItem => item.Instructor.User.FullName)
-                                    
-
-                                    @* <a asp-controller="Reviews" asp-action="WriteReview" asp-route-instructorId="@item.Instructor.Id" class="btn btn-link"><i class="far fa-edit ml-0"></i>Review</a> *@
                                 </td>
                                 <td>@Html.DisplayFor(modelItem => item.StartTime)</td>
                                 <td>@Html.DisplayFor(modelItem => item.EndTime)</td>

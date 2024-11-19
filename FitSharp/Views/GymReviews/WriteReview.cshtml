@@ -1,17 +1,17 @@
-﻿@model FitSharp.Data.Entities.Review
+﻿@model FitSharp.Data.Entities.GymReview
 @{
-    ViewData["Title"] = "WriteReview";
+    ViewData["Title"] = "Write Gym Review";
 }
 
 <div class="row">
     <div class="col-md-6 offset-md-3 transparent-card">
 
-        <h4>Write Review</h4>
+        <h4>Write Gym Review</h4>
         <hr />
 
         <form asp-action="WriteReview">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="InstructorId" />
+            <input type="hidden" asp-for="GymId" />
             <input type="hidden" asp-for="CustomerId" />
 
             <!-- Avaliação por Estrelas -->

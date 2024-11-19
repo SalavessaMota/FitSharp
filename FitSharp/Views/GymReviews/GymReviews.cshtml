@@ -1,6 +1,6 @@
-﻿@model IEnumerable<FitSharp.Data.Entities.Review>
+﻿@model IEnumerable<FitSharp.Data.Entities.GymReview>
 @{
-    ViewData["Title"] = "InstructorReviews";
+    ViewData["Title"] = "GymReviews";
 }
 
 <link rel="stylesheet" href="https://cdn.datatables.net/1.10.25/css/dataTables.bootstrap4.min.css" />
@@ -10,7 +10,7 @@
     <div class="col-12">
         <div class="card transparent-card">
             <div class="card-header">
-                <h3 class="card-title">Instructor Reviews</h3>
+                <h3 class="card-title">Gym Reviews</h3>
             </div>
             <div class="card-body">
                 <table class="table table-hover table-striped" id="MyTable">
@@ -18,7 +18,7 @@
                         <!-- Primeira linha: Títulos das colunas com ordenação -->
                         <tr>
                             <th>Customer</th>
-                            <th>Instructor</th>
+                            <th>Gym</th>
                             <th>Stars</th>
                             <th>Description</th>
                             <th>Actions</th>
@@ -26,7 +26,7 @@
                         <!-- Segunda linha: Campos de pesquisa por coluna -->
                         <tr>
                             <th><input type="text" placeholder="Search Customer" class="form-control" /></th>
-                            <th><input type="text" placeholder="Search Instructor" class="form-control" /></th>
+                            <th><input type="text" placeholder="Search Gym" class="form-control" /></th>
                             <th><input type="text" placeholder="Search Stars" class="form-control" /></th>
                             <th><input type="text" placeholder="Search Description" class="form-control" /></th>
                             <th></th>
@@ -37,7 +37,7 @@
                         {
                             <tr>
                                 <td>@Html.DisplayFor(modelItem => item.Customer.User.FullName)</td>
-                                <td>@Html.DisplayFor(modelItem => item.Instructor.User.FullName)</td>
+                                <td>@Html.DisplayFor(modelItem => item.Gym.Name)</td>
                                 <td>@Html.DisplayFor(modelItem => item.Stars)</td>
                                 <td>
                                     @{
@@ -109,7 +109,7 @@
             });
 
             $("#btnYesDelete").click(function () {
-                window.location.href = '/Reviews/Delete/' + id;
+                window.location.href = '/GymReviews/Delete/' + id;
             });
 
             // Inicializar DataTable com pesquisa individual por coluna

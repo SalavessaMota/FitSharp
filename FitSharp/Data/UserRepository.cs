@@ -181,21 +181,21 @@ namespace FitSharp.Data
             return null;
         }
 
-        public Instructor GetInstructorWithAllRelatedDataByInstructorId(int instructorId)
+        public async Task<Instructor> GetInstructorWithAllRelatedDataByInstructorId(int instructorId)
         {
-            return _context.Instructors
+            return await _context.Instructors
                 .Include(i => i.User)
                 .Include(i => i.Gym)
                 .Include(i => i.Reviews)
                 .ThenInclude(r => r.Customer)
-                .FirstOrDefault(i => i.Id == instructorId);
+                .FirstAsync(i => i.Id == instructorId);
         }
 
-        public Instructor GetInstructorByUserName(string instructorName)
+        public async Task<Instructor> GetInstructorByUserName(string instructorName)
         {
-            return _context.Instructors
+            return await _context.Instructors
                 .Include(i => i.User)
-                .FirstOrDefault(i => i.User.UserName == instructorName);
+                .FirstAsync(i => i.User.UserName == instructorName);
         }
 
         public IEnumerable<SelectListItem> GetComboInstructors()

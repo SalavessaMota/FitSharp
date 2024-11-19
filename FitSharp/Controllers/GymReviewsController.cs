@@ -8,27 +8,30 @@ using System.Threading.Tasks;
 
 namespace FitSharp.Controllers
 {
-    public class ReviewsController : Controller
+    public class GymReviewsController : Controller
     {
-        private readonly IReviewRepository _reviewRepository;
+        private readonly IGymReviewRepository _gymReviewRepository;
         private readonly IUserRepository _userRepository;
+        private readonly IGymRepository _gymRepository;
 
-        public ReviewsController(
-            IReviewRepository reviewRepository,
-            IUserRepository userRepository)
+        public GymReviewsController(
+            IGymReviewRepository gymReviewRepository,
+            IUserRepository userRepository,
+            IGymRepository gymRepository)
         {
-            _reviewRepository = reviewRepository;
+            _gymReviewRepository = gymReviewRepository;
             _userRepository = userRepository;
+            _gymRepository = gymRepository;
         }
 
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Index()
         {
-            var reviews = await _reviewRepository.GetReviewsWithAllRelatedDataAsync();
+            var reviews = await _gymReviewRepository.GetReviewsWithAllRelatedDataAsync();
             return View(reviews);
         }
 
-        public async Task<IActionResult> WriteReview(int instructorId)
+        public async Task<IActionResult> WriteReview(int gymId)
         {
             var customer = await _userRepository.GetCustomerByUserName(this.User.Identity.Name);
             if (customer == null)
@@ -36,16 +39,16 @@ namespace FitSharp.Controllers
                 return NotFound();
             }
 
-            var instructor = _userRepository.GetInstructorWithAllRelatedDataByInstructorId(instructorId);
-            if (instructor == null)
+            var gym = await _gymRepository.GetGymWithAllRelatedDataAsync(gymId);
+            if (gym == null)
             {
                 return NotFound();
             }
 
-            var review = new Review
+            var review = new GymReview
             {
-                InstructorId = instructorId,
-                Instructor = instructor,
+                GymId = gymId,
+                Gym = gym,
                 CustomerId = customer.Id,
                 Customer = customer,
                 ReviewDate = DateTime.Now
@@ -55,15 +58,14 @@ namespace FitSharp.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> WriteReview(Review review)
+        public async Task<IActionResult> WriteReview(GymReview review)
         {
             if (!ModelState.IsValid)
             {
                 return View(review);
             }
 
-            await _reviewRepository.AddReviewAsync(review);
-
+            await _gymReviewRepository.AddReviewAsync(review);
             return RedirectToAction("CustomerPersonalClasses", "PersonalClasses", new { username = User.Identity.Name });
         }
 
@@ -74,7 +76,7 @@ namespace FitSharp.Controllers
                 return new NotFoundViewResult("ReviewNotFound");
             }
 
-            var review = await _reviewRepository.GetByIdAsync(id.Value);
+            var review = await _gymReviewRepository.GetByIdAsync(id.Value);
             if (review == null)
             {
                 return new NotFoundViewResult("ReviewNotFound");
@@ -85,11 +87,11 @@ namespace FitSharp.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Review review)
+        public async Task<IActionResult> Edit(GymReview review)
         {
             if (ModelState.IsValid)
             {
-                await _reviewRepository.UpdateAsync(review);
+                await _gymReviewRepository.UpdateAsync(review);
 
                 // Obtém o username do utilizador relacionado com a review, caso não esteja no objeto `review`
                 var username = review.Customer?.User.UserName ?? User.Identity.Name;
@@ -107,7 +109,7 @@ namespace FitSharp.Controllers
                 return new NotFoundViewResult("ReviewNotFound");
             }
 
-            var review = await _reviewRepository.GetReviewWithAllRelatedDataByIdAsync(id.Value);
+            var review = await _gymReviewRepository.GetReviewWithAllRelatedDataByIdAsync(id.Value);
             if (review == null)
             {
                 return new NotFoundViewResult("ReviewNotFound");
@@ -116,8 +118,7 @@ namespace FitSharp.Controllers
             return View(review);
         }
 
-        public async Task<IActionResult> InstructorReviews(int? id)
-
+        public async Task<IActionResult> GymReviews(int? id)
         {
             if (id == null)
             {
@@ -125,8 +126,7 @@ namespace FitSharp.Controllers
                 return new NotFoundViewResult("ReviewNotFound");
             }
 
-            var reviews = await _reviewRepository.GetAllReviewsWithRelatedDataByInstructorId(id.Value);
-
+            var reviews = await _gymReviewRepository.GetAllReviewsWithRelatedDataByGymId(id.Value);
             return View(reviews);
         }
     }
