@@ -28,6 +28,7 @@ namespace FitSharp.Controllers
         private readonly ICountryRepository _countryRepository;
         private readonly IUserRepository _userRepository;
         private readonly IBlobHelper _blobHelper;
+        private readonly ISmsHelper _smsHelper;
         private readonly IFlashMessage _flashMessage;
 
         public AccountController(
@@ -37,6 +38,7 @@ namespace FitSharp.Controllers
             ICountryRepository countryRepository,
             IUserRepository userRepository,
             IBlobHelper blobHelper,
+            ISmsHelper smsHelper,
             IFlashMessage flashMessage)
         {
             _userHelper = userHelper;
@@ -45,6 +47,7 @@ namespace FitSharp.Controllers
             _countryRepository = countryRepository;
             _userRepository = userRepository;
             _blobHelper = blobHelper;
+            _smsHelper = smsHelper;
             _flashMessage = flashMessage;
         }
 
@@ -132,6 +135,28 @@ namespace FitSharp.Controllers
             return RedirectToAction("Index", "Home");
         }
 
+        [HttpGet]
+        public IActionResult ConfirmSms(string phoneNumber)
+        {
+            return View(new ConfirmSmsViewModel { PhoneNumber = phoneNumber });
+        }
+
+        [HttpPost]
+        public IActionResult ConfirmSms(ConfirmSmsViewModel model)
+        {
+            var storedCode = TempData["SmsConfirmationCode"]?.ToString();
+
+            if (storedCode == model.Code)
+            {
+                TempData.Remove("SmsConfirmationCode");
+                ViewBag.Message = "Your account has been successfully confirmed!";
+                return RedirectToAction("RegistrationSuccess");
+            }
+
+            ModelState.AddModelError(string.Empty, "Invalid confirmation code.");
+            return View(model);
+        }
+
         public async Task<IActionResult> Register()
         {
             if (this.User.Identity.IsAuthenticated)
@@ -186,6 +211,7 @@ namespace FitSharp.Controllers
                     ModelState.AddModelError(string.Empty, "The user couldn't be created.");
                     return View(model);
                 }
+
                 await _userHelper.AddUserToRoleAsync(user, "Customer");
 
                 var customer = new Customer
@@ -200,35 +226,64 @@ namespace FitSharp.Controllers
 
                 await _userRepository.AddCustomerAsync(customer);
 
-                string myToken = await _userHelper.GenerateEmailConfirmationTokenAsync(user);
-                string tokenLink = Url.Action("ConfirmEmail", "Account", new
+                // Verifica se o email é válido antes de enviar
+                if (!string.IsNullOrWhiteSpace(model.Username))
                 {
-                    userid = user.Id,
-                    token = myToken
-                }, protocol: HttpContext.Request.Scheme);
+                    string myToken = await _userHelper.GenerateEmailConfirmationTokenAsync(user);
+                    string tokenLink = Url.Action("ConfirmEmail", "Account", new
+                    {
+                        userid = user.Id,
+                        token = myToken
+                    }, protocol: HttpContext.Request.Scheme);
 
-                Response response = _mailHelper.SendEmail(model.Username, "FitSharp - Welcome to Your Fitness Journey",
-                                        $"<h1 style=\"color:#1E90FF;\">Welcome to FitSharp!</h1>" +
-                                        $"<p>Thank you for choosing FitSharp, your gateway to a healthier and empowered lifestyle.</p>" +
-                                        $"<p>We’re thrilled to have you as part of our global community. To complete your registration, please confirm your email address by clicking the link below:</p>" +
-                                        $"<p><a href = \"{tokenLink}\" style=\"color:#FFA500; font-weight:bold;\">Confirm Email</a></p>" +
-                                        $"<p>If you didn’t create this account, please disregard this email.</p>" +
-                                        $"<br>" +
-                                        $"<p>Your fitness journey awaits,</p>" +
-                                        $"<p>The FitSharp Team</p>" +
-                                        $"<p><small>This is an automated message. Please do not reply to this email.</small></p>");
+                    Response response = _mailHelper.SendEmail(model.Username, "FitSharp - Welcome to Your Fitness Journey",
+                        $"<h1 style=\"color:#1E90FF;\">Welcome to FitSharp!</h1>" +
+                        $"<p>Thank you for choosing FitSharp, your gateway to a healthier and empowered lifestyle.</p>" +
+                        $"<p>We’re thrilled to have you as part of our global community. To complete your registration, please confirm your email address by clicking the link below:</p>" +
+                        $"<p><a href = \"{tokenLink}\" style=\"color:#FFA500; font-weight:bold;\">Confirm Email</a></p>" +
+                        $"<p>If you didn’t create this account, please disregard this email.</p>" +
+                        $"<br>" +
+                        $"<p>Your fitness journey awaits,</p>" +
+                        $"<p>The FitSharp Team</p>" +
+                        $"<p><small>This is an automated message. Please do not reply to this email.</small></p>");
 
-                if (response.IsSuccess)
+                    if (!response.IsSuccess)
+                    {
+                        ModelState.AddModelError(string.Empty, "The email couldn't be sent.");
+                        return View(model);
+                    }
+                }
+                else
                 {
-                    ViewBag.Message = "The instructions to allow your account registration have been sent to your email.";
+                    ModelState.AddModelError(string.Empty, "The email address is invalid.");
                     return View(model);
                 }
 
-                ModelState.AddModelError(string.Empty, "The user couldn't be logged in.");
+                // Gerar código de confirmação para SMS
+                var confirmationCode = new Random().Next(100000, 999999).ToString();
+
+                // Armazenar o código temporariamente (por exemplo, no TempData)
+                TempData["SmsConfirmationCode"] = confirmationCode;
+
+                // Enviar SMS
+                try
+                {
+                    var smsMessage = $"Your FitSharp confirmation code is: {confirmationCode}";
+                    _smsHelper.SendSms(model.PhoneNumber, smsMessage); // Usa o SmsHelper para enviar o SMS
+                }
+                catch (Exception ex)
+                {
+                    ModelState.AddModelError(string.Empty, $"Error sending SMS: {ex.Message}");
+                    return View(model);
+                }
+
+                // Redirecionar para a página de confirmação de SMS
+                return RedirectToAction("ConfirmSms", new { phoneNumber = model.PhoneNumber });
             }
 
             return View(model);
         }
+
 
         // GET
         public async Task<IActionResult> ChangeUser()

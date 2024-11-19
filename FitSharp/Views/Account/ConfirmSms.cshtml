@@ -1,0 +1,18 @@
+﻿@model ConfirmSmsViewModel
+
+@{
+    ViewData["Title"] = "ConfirmSms";
+}
+
+<h2>Confirm Your Phone Number</h2>
+<p>A confirmation code has been sent to your phone. Please enter it below:</p>
+
+<form asp-action="ConfirmSms" method="post">
+    <input type="hidden" asp-for="PhoneNumber" />
+    <div class="form-group">
+        <label for="Code">Confirmation Code</label>
+        <input type="text" class="form-control" asp-for="Code" required />
+    </div>
+    <button type="submit" class="btn btn-primary">Confirm</button>
+</form>
+
