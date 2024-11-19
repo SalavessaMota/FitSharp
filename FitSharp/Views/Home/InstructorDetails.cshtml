@@ -1,0 +1,146 @@
+﻿@model FitSharp.Data.Entities.Instructor
+@{
+    ViewData["Title"] = "InstructorDetails";
+}
+
+<div class="container mt-5 transparent-card">
+    <div class="card shadow-lg border-0 rounded-lg">
+        <div class="card-header text-white" style="background-color: #B70D00;">
+            <h3 class="text-center mb-0">@Model.User.FullName</h3>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <!-- Profile Picture -->
+                <div class="col-md-4 text-center">
+                    <img src="@Model.User.ImageFullPath" alt="Instructor Image" class="img-fluid rounded-circle mb-3" style="max-width: 200px;">
+                    <h5>@Model.Speciality</h5>
+                </div>
+
+                <!-- Instructor Details -->
+                <div class="col-md-8">
+                    <h4>About @Model.User.FirstName</h4>
+                    <p>@Model.Description</p>
+
+                    <!-- Rating -->
+                    <h5>
+                        Rating:
+                        <span class="text-warning">
+                            @for (var i = 1; i <= 5; i++)
+                            {
+                                if (i <= Model.Rating)
+                                {
+                                    <i class="fas fa-star"></i>
+                                }
+                                else if (i - Model.Rating < 1)
+                                {
+                                    <i class="fas fa-star-half-alt"></i>
+                                }
+                                else
+                                {
+                                    <i class="far fa-star"></i>
+                                }
+                            }
+                        </span>
+                        <small>(Rating: @Model.Rating.ToString("0.0"))</small>
+                    </h5>
+
+                    <!-- Gym Details -->
+                    @if (Model.Gym != null)
+                    {
+                        <h5>Gym:</h5>
+                        <p>
+                            <strong>@Model.Gym.Name</strong><br />
+                            @Model.Gym.Address<br />
+                        </p>
+                    }
+                </div>
+            </div>
+
+            <!-- Classes -->
+            <div class="mt-4">
+                <h4>Classes by @Model.User.FirstName</h4>
+                <div class="row">
+                    @if (Model.GroupClasses != null && Model.GroupClasses.Any())
+                    {
+                        <div class="col-md-6">
+                            <h5>Group Classes</h5>
+                            <ul class="list-group">
+                                @foreach (var groupClass in Model.GroupClasses)
+                                {
+                                    <li class="list-group-item">
+                                        <strong>@groupClass.Name</strong><br />
+                                        <small>@groupClass.StartTime.ToString("f") - @groupClass.EndTime.ToString("f")</small>
+                                    </li>
+                                }
+                            </ul>
+                        </div>
+                    }
+
+                    @if (Model.PersonalClasses != null && Model.PersonalClasses.Any())
+                    {
+                        <div class="col-md-6">
+                            <h5>Personal Classes</h5>
+                            <ul class="list-group">
+                                @foreach (var personalClass in Model.PersonalClasses)
+                                {
+                                    <li class="list-group-item">
+                                        <strong>@personalClass.Name</strong><br />
+                                        <small>@personalClass.StartTime.ToString("f") - @personalClass.EndTime.ToString("f")</small>
+                                    </li>
+                                }
+                            </ul>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <!-- Reviews Section -->
+        <div class="card-footer bg-light">
+            <h4>What Clients Say</h4>
+            <div class="row">
+                @if (Model.Reviews != null && Model.Reviews.Any())
+                {
+                    @foreach (var review in Model.Reviews)
+                    {
+                        <div class="col-md-4 mb-3">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h6 class="card-title">
+                                        <i class="fas fa-user"></i> @review.Customer.User.FullName
+                                    </h6>
+                                    <p class="card-text">@review.Description</p>
+                                    <div class="text-warning">
+                                        @for (var i = 1; i <= 5; i++)
+                                        {
+                                            if (i <= review.Stars)
+                                            {
+                                                <i class="fas fa-star text-shadow"></i>
+                                            }
+                                            else
+                                            {
+                                                <i class="far fa-star text-shadow"></i>
+                                            }
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <p class="text-muted text-center">No reviews available for this instructor.</p>
+                }
+            </div>
+        </div>
+    </div>
+
+    <!-- Back Button -->
+    <div class="text-center mt-4">
+        <a href="~/Home/ourinstructors" class="btn btn-primary btn-lg rounded-pill">
+            <i class="fas fa-arrow-left"></i> Return to Instructors
+        </a>
+    </div>
+</div>
+

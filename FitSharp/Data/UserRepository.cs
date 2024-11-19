@@ -188,6 +188,7 @@ namespace FitSharp.Data
                 .Include(i => i.Gym)
                 .Include(i => i.Reviews)
                 .ThenInclude(r => r.Customer)
+                .ThenInclude(c => c.User)
                 .FirstOrDefault(i => i.Id == instructorId);
         }
 

@@ -25,7 +25,7 @@
             </div>
 
             <div class="card-header">
-                <h3 class="card-title">Group Classes</h3>
+                <h3 class="card-title">Your Group Classes</h3>
             </div>
             <div class="card-body">
                 <table class="table table-hover table-striped" id="MyTable">
@@ -89,11 +89,11 @@
                                         {
                                             @if (!item.Customers.Any(c => c.User.UserName == User.Identity.Name))
                                             {
-                                                <a asp-action="SignUp" asp-route-id="@item.Id" class="btn btn-warning"><i class="fas fa-user-plus"></i></a>
+                                                <a asp-action="SignUp" asp-route-id="@item.Id" asp-route-returnUrl="CustomerGroupClasses" asp-route-username="@User.Identity.Name" class="btn btn-warning"><i class="fas fa-user-plus"></i></a>
                                             }
                                             @if (item.Customers.Any(c => c.User.UserName == User.Identity.Name))
                                             {
-                                                <a asp-action="CancelSignUp" asp-route-id="@item.Id" class="btn btn-danger"><i class="fas fa-user-minus"></i></a>
+                                                <a asp-action="CancelSignUp" asp-route-id="@item.Id" asp-route-returnUrl="CustomerGroupClasses" asp-route-username="@User.Identity.Name" class="btn btn-danger"><i class="fas fa-user-minus"></i></a>
                                             }
                                         }
                                     </td>

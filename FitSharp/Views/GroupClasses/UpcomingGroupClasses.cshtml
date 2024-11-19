@@ -54,11 +54,11 @@
                                 <td>
                                     @if (item.EndTime > DateTime.Now && !item.Customers.Any(c => c.User.UserName == User.Identity.Name))
                                     {
-                                        <a asp-action="SignUp" asp-route-id="@item.Id" class="btn btn-warning"><i class="fas fa-user-plus"></i></a>
+                                        <a asp-action="SignUp" asp-route-id="@item.Id" asp-route-returnUrl="UpcomingGroupClasses" class="btn btn-warning"><i class="fas fa-user-plus"></i></a>
                                     }
                                     @if (item.Customers.Any(c => c.User.UserName == User.Identity.Name))
                                     {
-                                        <a asp-action="CancelSignUp" asp-route-id="@item.Id" class="btn btn-danger"><i class="fas fa-user-minus"></i></a>
+                                        <a asp-action="CancelSignUp" asp-route-id="@item.Id" asp-route-returnUrl="UpcomingGroupClasses" class="btn btn-danger"><i class="fas fa-user-minus"></i></a>
                                     }
                                 </td>
                             </tr>

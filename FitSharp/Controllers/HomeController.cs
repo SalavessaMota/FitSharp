@@ -12,15 +12,21 @@ namespace FitSharp.Controllers
         private readonly ILogger<HomeController> _logger;
         private readonly IGymRepository _gymsRepository;
         private readonly IUserRepository _userRepository;
+        private readonly IPersonalClassRepository _personalClassRepository;
+        private readonly IGroupClassRepository _groupClassRepository;
 
         public HomeController(
             ILogger<HomeController> logger,
             IGymRepository gymsRepository,
-            IUserRepository userRepository)
+            IUserRepository userRepository,
+            IPersonalClassRepository personalClassRepository,
+            IGroupClassRepository groupClassRepository)
         {
             _logger = logger;
             _gymsRepository = gymsRepository;
             _userRepository = userRepository;
+            _personalClassRepository = personalClassRepository;
+            _groupClassRepository = groupClassRepository;
         }
 
         public async Task<IActionResult> Index()
@@ -99,12 +105,22 @@ namespace FitSharp.Controllers
 
         public IActionResult CombinedClassesCalendar()
         {
+            ViewBag.PersonalClasses = _personalClassRepository.GetAllPersonalClassesWithRelatedData();
+            ViewBag.GroupClasses = _groupClassRepository.GetAllGroupClassesWithRelatedData();
             return View();
         }
 
-        public IActionResult StaffClassesCalendar()
+        public async Task<IActionResult> InstructorDetails(int id)
         {
-           return View();
+            // Busca o instrutor com todos os dados relacionados
+            var instructor = _userRepository.GetInstructorWithAllRelatedDataByInstructorId(id);
+
+            if (instructor == null)
+            {
+                return View("InstructorNotFound");
+            }
+
+            return View(instructor);
         }
     }
 }

@@ -269,7 +269,61 @@ namespace FitSharp.Controllers
         }
 
 
-        public async Task<IActionResult> SignUp(int id)
+        public async Task<IActionResult> SignUp(int id, string returnUrl)
+        {
+            // Obter a classe em grupo com todos os dados relacionados
+            var groupClass = await _groupClassRepository.GetGroupClassWithAllRelatedDataAsync(id);
+
+            // Verificar se a classe existe
+            if (groupClass == null)
+            {
+                _flashMessage.Danger("Class not found.");
+                return RedirectToAction(returnUrl ?? nameof(UpcomingGroupClasses));
+            }
+
+            // Obter o cliente autenticado
+            var customer = await _userRepository.GetCustomerByUserName(User.Identity.Name);
+
+            // Verificar se o cliente tem aulas restantes ou se a assinatura está ativa
+            if (customer.ClassesRemaining <= 0 || !customer.MembershipIsActive)
+            {
+                _flashMessage.Danger("You don't have any available classes remaining in your membership.");
+                return RedirectToAction(returnUrl ?? nameof(UpcomingGroupClasses));
+            }
+
+            // Verificar se há vagas disponíveis na classe
+            if (groupClass.AvailableSpots <= 0)
+            {
+                _flashMessage.Danger("There are no available spots for this class.");
+                return RedirectToAction(returnUrl ?? nameof(UpcomingGroupClasses));
+            }
+
+            // Verificar se o cliente já está inscrito na classe
+            if (groupClass.Customers.Any(c => c.User.UserName == customer.User.UserName))
+            {
+                _flashMessage.Danger("You are already signed up for this class.");
+                return RedirectToAction(returnUrl ?? nameof(UpcomingGroupClasses));
+            }
+
+            // Adicionar o cliente à classe e atualizar os dados
+            groupClass.Customers.Add(customer);
+            await _groupClassRepository.UpdateAsync(groupClass);
+
+            // Atualizar o cliente e reduzir o número de aulas restantes
+            customer.GroupClasses.Add(groupClass);
+            customer.ClassesRemaining--;
+            await _userRepository.UpdateCustomerAsync(customer);
+
+            // Adicionar mensagem de sucesso
+            _flashMessage.Confirmation("You have successfully signed up for the class.");
+
+            // Redirecionar para a página de retorno ou para a página padrão
+            return RedirectToAction(returnUrl ?? nameof(UpcomingGroupClasses));
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> SignUpCalendar(int id)
         {
             var groupClass = await _groupClassRepository.GetGroupClassWithAllRelatedDataAsync(id);
 
@@ -305,7 +359,8 @@ namespace FitSharp.Controllers
             return Json(new { success = true, message = "You have successfully signed up for the class." });
         }
 
-        public async Task<IActionResult> CancelSignUp(int id)
+
+        public async Task<IActionResult> CancelSignUp(int id, string returnUrl)
         {
             var groupClass = await _groupClassRepository.GetGroupClassWithAllRelatedDataAsync(id);
 
@@ -319,7 +374,7 @@ namespace FitSharp.Controllers
             if (!groupClass.Customers.Any(c => c.User.UserName == customer.User.UserName))
             {
                 _flashMessage.Danger("You are not signed up for this class.");
-                return RedirectToAction(nameof(CustomerGroupClasses));
+                return RedirectToAction(returnUrl ?? nameof(CustomerGroupClasses));
             }
 
             groupClass.Customers.Remove(customer);
@@ -329,7 +384,9 @@ namespace FitSharp.Controllers
             await _userRepository.UpdateCustomerAsync(customer);
 
             _flashMessage.Confirmation("You have successfully canceled your sign up for the class.");
-            return RedirectToAction(nameof(CustomerGroupClasses));
+
+            // Redireciona para o retorno especificado ou para a default view
+            return RedirectToAction(returnUrl ?? nameof(UpcomingGroupClasses));
         }
 
         [HttpGet]

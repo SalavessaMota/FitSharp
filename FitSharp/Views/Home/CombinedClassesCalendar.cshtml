@@ -3,7 +3,7 @@
 }
 
 @inject FitSharp.Data.IUserRepository _userRepository
-@inject FitSharp.Helpers.IUserHelper _userHelper
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Xsrf
 
 @{
     bool hasRemainingTime = false;
@@ -13,6 +13,9 @@
     hasRemainingClasses = customer?.ClassesRemaining > 0;
 }
 
+<form id="antiForgeryForm">
+    @Html.AntiForgeryToken()
+</form>
 
 <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.css" rel="stylesheet" />
 
@@ -87,7 +90,6 @@
     </div>
 </div>
 
-
 <!-- Modal for Group Class Details -->
 <div class="modal fade" id="groupClassModal" tabindex="-1" role="dialog" aria-labelledby="groupClassModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
@@ -135,10 +137,7 @@
     </div>
 </div>
 
-
 @section Scripts {
-    @* <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.4/dist/jquery.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script> *@
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
     <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
     <script>
@@ -169,7 +168,7 @@
                                     start: pc.start,
                                     end: pc.end,
                                     instructor: pc.instructor,
-                                    classtype: 'Personal', // Set explicitly
+                                    classtype: 'Personal',
                                     instructorscore: pc.instructorscore,
                                     classNames: ['personal-class']
                                 })),
@@ -180,7 +179,7 @@
                                     start: gc.start,
                                     end: gc.end,
                                     instructor: gc.instructor,
-                                    classtype: 'Group', // Set explicitly
+                                    classtype: 'Group',
                                     instructorscore: gc.instructorscore,
                                     classNames: ['group-class']
                                 }))
@@ -207,12 +206,10 @@
 
                         $('#personalClassModal').modal('show');
 
-                        // Configura o botão de inscrição
                         const enrollButton = document.getElementById('personalEnrollButton');
                         if (enrollButton) {
-                            enrollButton.dataset.eventId = info.event.id;
                             enrollButton.onclick = function () {
-                                enrollInClass('/PersonalClasses/SignUp', info.event.id);
+                                enrollInClass('/PersonalClasses/SignUpCalendar', info.event.id);
                             };
                         }
 
@@ -222,19 +219,15 @@
                         document.getElementById('groupInstructor').textContent = info.event.extendedProps.instructor;
                         document.getElementById('groupStartTime').textContent = start;
                         document.getElementById('groupEndTime').textContent = end;
-                        console.log('Extended Props:', info.event.extendedProps);
-                        console.log('Gym:', info.event.extendedProps.gym);
 
                         renderStars('groupInstructorScoreStars', 'groupInstructorScoreText', info.event.extendedProps.instructorscore);
 
                         $('#groupClassModal').modal('show');
 
-                        // Configura o botão de inscrição
                         const enrollButton = document.getElementById('groupEnrollButton');
                         if (enrollButton) {
-                            enrollButton.dataset.eventId = info.event.id;
                             enrollButton.onclick = function () {
-                                enrollInClass('/GroupClasses/SignUp', info.event.id);
+                                enrollInClass('/GroupClasses/SignUpCalendar', info.event.id);
                             };
                         }
                     }
@@ -243,25 +236,21 @@
 
             calendar.render();
 
-            // Função para renderizar as estrelas
             function renderStars(starsContainerId, scoreTextId, score) {
                 const fullStars = Math.floor(score);
                 const halfStar = score % 1 !== 0;
                 const starsContainer = document.getElementById(starsContainerId);
                 const scoreText = document.getElementById(scoreTextId);
 
-                // Limpar estrelas anteriores
                 starsContainer.innerHTML = '';
                 scoreText.textContent = ` (${score.toFixed(1)})`;
 
-                // Adicionar estrelas inteiras
                 for (let i = 0; i < fullStars; i++) {
                     const starIcon = document.createElement('i');
                     starIcon.classList.add('fas', 'fa-star', 'text-warning');
                     starsContainer.appendChild(starIcon);
                 }
 
-                // Adicionar meia estrela, se aplicável
                 if (halfStar) {
                     const halfStarIcon = document.createElement('i');
                     halfStarIcon.classList.add('fas', 'fa-star-half-alt', 'text-warning');
@@ -270,12 +259,16 @@
             }
 
             function enrollInClass(url, classId) {
-                fetch(`${url}/${classId}`, {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json',
-                    }
+                const tokenElement = document.querySelector('input[name="__RequestVerificationToken"]');
+                const token = tokenElement ? tokenElement.value : '';
+
+                const formData = new FormData();
+                formData.append('id', classId);
+                formData.append('__RequestVerificationToken', token);
+
+                fetch(url, {
+                    method: 'POST',
+                    body: formData
                 })
                     .then(response => {
                         if (!response.ok) {
@@ -285,17 +278,13 @@
                     })
                     .then(data => {
                         if (data.success) {
-                            // Mostra a flash message
                             showFlashMessage('success', data.message);
 
-                            // Fecha o modal
                             $('#personalClassModal').modal('hide');
                             $('#groupClassModal').modal('hide');
 
-                            // Atualiza o calendário
                             calendar.refetchEvents();
                         } else {
-                            // Mostra uma mensagem de erro
                             showFlashMessage('danger', data.message);
                         }
                     })
@@ -305,24 +294,18 @@
                     });
             }
 
-            // Função para exibir a flash message
             function showFlashMessage(type, message) {
                 const flashMessageContainer = document.getElementById('flashMessageContainer');
 
-                // Define a classe com base no tipo (success, danger, etc.)
                 flashMessageContainer.className = `alert alert-${type}`;
                 flashMessageContainer.textContent = message;
 
-                // Exibe a mensagem
                 flashMessageContainer.classList.remove('d-none');
 
-                // Remove a mensagem após 5 segundos
                 setTimeout(() => {
                     flashMessageContainer.classList.add('d-none');
                 }, 5000);
             }
-
-
         });
     </script>
 }

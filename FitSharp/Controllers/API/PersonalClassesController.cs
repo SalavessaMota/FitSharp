@@ -51,10 +51,10 @@ namespace FitSharp.Controllers.API
             return new JsonResult(personalClasses);
         }
 
-        [HttpPost]
-        [Route("Enroll")]
+        [HttpGet]
+        [Route("Enroll/{personalClassId}")]
         [Authorize(Roles = "Customer")]
-        public async Task<IActionResult> Enroll([FromBody] int personalClassId)
+        public async Task<IActionResult> Enroll(int personalClassId)
         {
             // Obter o ID do usuário autenticado
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -98,5 +98,6 @@ namespace FitSharp.Controllers.API
 
             return Ok(new { success = true, message = "Successfully enrolled in the class!" });
         }
+
     }
 }

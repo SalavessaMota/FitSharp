@@ -121,7 +121,5 @@ namespace FitSharp.Controllers.API
 
             return new JsonResult(new { success = true, message = "Successfully enrolled in the class!" });
         }
-
-
     }
 }

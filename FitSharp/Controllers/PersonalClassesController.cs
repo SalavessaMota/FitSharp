@@ -324,7 +324,43 @@ namespace FitSharp.Controllers
             return View(futureAvailableclasses);
         }
 
-        public async Task<IActionResult> SignUp(int id)
+        public async Task<IActionResult> SignUp(int id, string returnUrl)
+        {
+            var personalClass = await _personalClassesRepository.GetPersonalClassWithAllRelatedData(id);
+
+            if (personalClass == null)
+            {
+                _flashMessage.Danger("Personal class not found.");
+            }
+
+            if (personalClass.CustomerId != null)
+            {
+                _flashMessage.Danger("This personal class is already booked.");
+            }
+
+            var customer = await _userRepository.GetCustomerByUserName(this.User.Identity.Name);
+
+            if (customer.ClassesRemaining <= 0 || !customer.MembershipIsActive)
+            {
+                _flashMessage.Danger("You don't have any available classes remaining in your membership.");
+            }
+
+            personalClass.CustomerId = customer.Id;
+            personalClass.Customer = customer;
+            await _personalClassesRepository.UpdateAsync(personalClass);
+
+            customer.PersonalClasses.Add(personalClass);
+            customer.ClassesRemaining--;
+            await _userRepository.UpdateCustomerAsync(customer);
+
+            _flashMessage.Confirmation("You have successfully signed up for the personal class.");
+
+            return RedirectToAction(returnUrl ?? nameof(CustomerPersonalClasses), new { username = this.User.Identity.Name, filter = "all" });
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> SignUpCalendar(int id)
         {
             var personalClass = await _personalClassesRepository.GetPersonalClassWithAllRelatedData(id);
 
@@ -356,8 +392,7 @@ namespace FitSharp.Controllers
             return Json(new { success = true, message = "You have successfully signed up for the personal class." });
         }
 
-
-        public async Task<IActionResult> CancelSignUp(int id)
+        public async Task<IActionResult> CancelSignUp(int id, string returnUrl)
         {
             var personalClass = await _personalClassesRepository.GetPersonalClassWithAllRelatedData(id);
 
@@ -371,6 +406,7 @@ namespace FitSharp.Controllers
             if (personalClass.CustomerId != customer.Id)
             {
                 _flashMessage.Danger("You are not signed up for this personal class.");
+                return RedirectToAction(returnUrl ?? nameof(CustomerPersonalClasses), new { username = this.User.Identity.Name, filter = "all" });
             }
 
             personalClass.CustomerId = null;
@@ -382,8 +418,11 @@ namespace FitSharp.Controllers
             await _userRepository.UpdateCustomerAsync(customer);
 
             _flashMessage.Confirmation("You have successfully cancelled your sign up for the personal class.");
-            return RedirectToAction(nameof(CustomerPersonalClasses), new { username = this.User.Identity.Name, filter = "all" });
+
+            // Redireciona para o retorno especificado ou uma view padrão
+            return RedirectToAction(returnUrl ?? nameof(CustomerPersonalClasses), new { username = this.User.Identity.Name, filter = "all" });
         }
+
 
         [HttpGet]
         public IActionResult GetAvailablePersonalClasses()
