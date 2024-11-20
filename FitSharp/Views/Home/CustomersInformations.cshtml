@@ -26,6 +26,7 @@
                             <th>City</th>
                             <th>Country</th>
                             <th>Membership</th>
+                            <th></th>
                         </tr>
                         <tr>
                             <th><input type="text" placeholder="Search Name" class="form-control" /></th>
@@ -35,6 +36,7 @@
                             <th><input type="text" placeholder="Search City" class="form-control" /></th>
                             <th><input type="text" placeholder="Search Country" class="form-control" /></th>
                             <th><input type="text" placeholder="Search Membership" class="form-control" /></th>
+                            <th></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -53,6 +55,11 @@
                                 <td>@item.User.City.Name</td>
                                 <td>@item.User.City.Country.Name</td>
                                 <td>@(item.Membership != null ? item.Membership.Name : "No Membership")</td>
+                                <td>
+                                    <a href="@Url.Action("DownloadQRCodePdf", "Account", new { userName = item.User.UserName })" class="btn btn-secondary mt-3 roundedwithshadow" style="background-color: #808080">
+                                        <i class="fas fa-download"></i> Download QR Code PDF
+                                    </a>
+                                </td>
                             </tr>
                         }
                     </tbody>

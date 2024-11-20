@@ -1,9 +1,12 @@
 ﻿using FitSharp.Data;
+using FitSharp.Data.Entities;
 using FitSharp.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using Vereyon.Web;
 
 namespace FitSharp.Controllers
 {
@@ -14,19 +17,25 @@ namespace FitSharp.Controllers
         private readonly IUserRepository _userRepository;
         private readonly IPersonalClassRepository _personalClassRepository;
         private readonly IGroupClassRepository _groupClassRepository;
+        private readonly INotificationRepository _notificationRepository;
+        private readonly IFlashMessage _flashMessage;
 
         public HomeController(
             ILogger<HomeController> logger,
             IGymRepository gymsRepository,
             IUserRepository userRepository,
             IPersonalClassRepository personalClassRepository,
-            IGroupClassRepository groupClassRepository)
+            IGroupClassRepository groupClassRepository,
+            INotificationRepository notificationRepository,
+            IFlashMessage flashMessage)
         {
             _logger = logger;
             _gymsRepository = gymsRepository;
             _userRepository = userRepository;
             _personalClassRepository = personalClassRepository;
             _groupClassRepository = groupClassRepository;
+            _notificationRepository = notificationRepository;
+            _flashMessage = flashMessage;
         }
 
         public async Task<IActionResult> Index()
@@ -121,6 +130,59 @@ namespace FitSharp.Controllers
             }
 
             return View(instructor);
+        }
+
+
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> RequestDataDeletion()
+        {
+            // Obter o usuário atual
+            var user = await _userRepository.GetUserByEmailAsync(User.Identity.Name);
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            // Obter a entidade associada ao usuário
+            var entity = await _userRepository.GetEntityByUserIdAsync(user.Id);
+
+            // Verificar se a entidade é um cliente
+            Customer customer = entity as Customer;
+
+            if (customer == null)
+            {
+                return NotFound();
+            }
+
+            // Obter todos os administradores com dados relacionados
+            var admins = _userRepository.GetAllAdminsWithAllRelatedData();
+
+            // Gerar a URL de ação para o painel de administração
+            var actionUrl = Url.Action("Index", "Admin");
+
+            // Criar notificações para cada administrador
+            foreach (Admin admin in admins)
+            {
+                var notification = new Notification
+                {
+                    Title = $"User {customer.User.FullName} requested data deletion.",
+                    Message = $"Please delete all this user's data from our database.",
+                    Action = $"<a href=\"{actionUrl}\" class=\"btn btn-primary\">Go to admin panel</a>",
+                    User = admin.User,
+                    UserId = admin.User.Id,
+                };
+
+                await _notificationRepository.CreateAsync(notification);
+            }
+
+            // Adicionar mensagem de confirmação para o usuário
+            _flashMessage.Confirmation("Data deletion request sent. In a maximum of 48 hours, your data will be deleted.");
+
+            // Redirecionar para a página de privacidade
+            return RedirectToAction("Privacy");
         }
     }
 }
