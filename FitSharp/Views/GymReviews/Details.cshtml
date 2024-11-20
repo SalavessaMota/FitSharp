@@ -1,4 +1,4 @@
-﻿@model FitSharp.Data.Entities.Review
+﻿@model FitSharp.Data.Entities.GymReview
 @{
     ViewData["Title"] = "Details";
 }
@@ -18,10 +18,10 @@
             @Html.DisplayFor(model => model.Customer.User.FullName)
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.Instructor.User.FullName)
+            @Html.DisplayNameFor(model => model.Gym.Name)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.Instructor.User.FullName)
+            @Html.DisplayFor(model => model.Gym.Name)
         </dd>
         <dt>
             @Html.DisplayNameFor(model => model.Stars)
@@ -37,10 +37,10 @@
         </dd>
     </dl>
     <div>
-        <a asp-action="Index" style="background-color: #808080" class="btn btn-success">Back to List</a>
+        <a asp-action="Index" class="btn btn-success">Back to List</a>
     </div>
 
-    <br />    
+    <br />
 </div>
 
 @section Scripts {

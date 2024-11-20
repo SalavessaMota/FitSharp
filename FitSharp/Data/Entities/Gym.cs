@@ -28,6 +28,8 @@ namespace FitSharp.Data.Entities
 
         public ICollection<Employee> Employees { get; set; } = new List<Employee>();
 
+        public virtual ICollection<GymReview> Reviews { get; set; }
+
         [Display(Name = "Image")]
         public Guid ImageId { get; set; }
 

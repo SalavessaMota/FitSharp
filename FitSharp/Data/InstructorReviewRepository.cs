@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace FitSharp.Data
 {
-    public class ReviewRepository : GenericRepository<Review>, IReviewRepository
+    public class InstructorReviewRepository : GenericRepository<InstructorReview>, IInstructorReviewRepository
     {
         private readonly DataContext _context;
 
-        public ReviewRepository(DataContext context) : base(context)
+        public InstructorReviewRepository(DataContext context) : base(context)
         {
             _context = context;
         }
@@ -24,9 +24,9 @@ namespace FitSharp.Data
                 .FirstOrDefaultAsync();
         }
 
-        public async Task<IEnumerable<Review>> GetAllReviewsWithRelatedDataByInstructorId(int id)
+        public async Task<IEnumerable<InstructorReview>> GetAllReviewsWithRelatedDataByInstructorId(int id)
         {
-            return await _context.Reviews
+            return await _context.InstructorReviews
                  .Include(r => r.Customer)
                  .ThenInclude(c => c.User)
                  .Include(r => r.Instructor)
@@ -35,7 +35,7 @@ namespace FitSharp.Data
                  .ToListAsync();
         }
 
-        public async Task AddReviewAsync(Review review)
+        public async Task AddReviewAsync(InstructorReview review)
         {
             var instructor = await GetInstructorWithReviewsAsync(review.InstructorId);
             if (instructor == null)
@@ -52,26 +52,26 @@ namespace FitSharp.Data
             review.Instructor = instructor;
             review.Customer = customer;
 
-            await _context.Reviews.AddAsync(review);
+            await _context.InstructorReviews.AddAsync(review);
             await _context.SaveChangesAsync();
         }
 
-        public async Task<IEnumerable<Review>> GetReviewsByInstructorId(int instructorId)
+        public async Task<IEnumerable<InstructorReview>> GetReviewsByInstructorId(int instructorId)
         {
             var instructor = await GetInstructorWithReviewsAsync(instructorId);
 
-            return instructor?.Reviews ?? Enumerable.Empty<Review>();
+            return instructor?.Reviews ?? Enumerable.Empty<InstructorReview>();
         }
 
-        public async Task DeleteReview(Review review)
+        public async Task DeleteReview(InstructorReview review)
         {
-            _context.Reviews.Remove(review);
+            _context.InstructorReviews.Remove(review);
             await _context.SaveChangesAsync();
         }
 
-        public async Task<Review> GetReviewWithAllRelatedDataByIdAsync(int id)
+        public async Task<InstructorReview> GetReviewWithAllRelatedDataByIdAsync(int id)
         {
-            return await _context.Reviews
+            return await _context.InstructorReviews
                 .Include(r => r.Customer)
                 .ThenInclude(c => c.User)
                 .Include(r => r.Instructor)
@@ -80,9 +80,9 @@ namespace FitSharp.Data
                 .FirstOrDefaultAsync();
         }
 
-        public async Task<IEnumerable<Review>> GetReviewsWithAllRelatedDataAsync()
+        public async Task<IEnumerable<InstructorReview>> GetReviewsWithAllRelatedDataAsync()
         {
-            return await _context.Reviews
+            return await _context.InstructorReviews
                 .Include(r => r.Customer)
                 .ThenInclude(c => c.User)
                 .Include(r => r.Instructor)
@@ -92,7 +92,7 @@ namespace FitSharp.Data
 
         public bool CustomerAlreadyReviewed(int customerId, int instructorId)
         {
-            return _context.Reviews.Any(r => r.CustomerId == customerId && r.InstructorId == instructorId);
+            return _context.InstructorReviews.Any(r => r.CustomerId == customerId && r.InstructorId == instructorId);
         }
     }
 }

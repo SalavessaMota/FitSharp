@@ -29,7 +29,9 @@ namespace FitSharp.Data
 
         public DbSet<Notification> Notifications { get; set; }
 
-        public DbSet<Review> Reviews { get; set; }
+        public DbSet<InstructorReview> InstructorReviews { get; set; }
+
+        public DbSet<GymReview> GymReviews { get; set; }
 
         public DataContext(DbContextOptions<DataContext> options) : base(options)
         {

@@ -1,13 +1,16 @@
-﻿@model FitSharp.Data.Entities.Review
+﻿@model FitSharp.Data.Entities.InstructorReview
 @{
-    ViewData["Title"] = "Edit Review";
+    ViewData["Title"] = "Write Instructor Review";
 }
 
 <div class="row">
     <div class="col-md-6 offset-md-3 transparent-card">
-        <form asp-action="Edit">
+
+        <h4>Write Instructor Review</h4>
+        <hr />
+
+        <form asp-action="WriteReview">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Id" />
             <input type="hidden" asp-for="InstructorId" />
             <input type="hidden" asp-for="CustomerId" />
 
@@ -17,11 +20,10 @@
                 <div id="starRating" class="d-flex align-items-center">
                     @for (int i = 1; i <= 5; i++)
                     {
-                        <i class="fas fa-star text-shadow star-rating  @(i <= Model.Stars ? "text-warning" : "")"
-                           data-value="@i" style="cursor: pointer; font-size: 24px;"></i>
+                        <i class="fas fa-star text-shadow star-rating" data-value="@i" style="cursor: pointer; font-size: 24px;"></i>
                     }
                 </div>
-                <input type="hidden" asp-for="Stars" id="starInput" value="@Model.Stars" />
+                <input type="hidden" asp-for="Stars" id="starInput" />
                 <span asp-validation-for="Stars" class="text-danger"></span>
             </div>
 
@@ -34,8 +36,10 @@
 
             <!-- Botões -->
             <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary roundedwithshadow" />
-                <a asp-controller="PersonalClasses" asp-action="CustomerPersonalClasses" asp-route-username="@User.Identity.Name" class="btn roundedwithshadow" style="background-color: #808080">Back to List</a>
+                <input type="submit" value="Create" class="btn btn-primary roundedwithshadow" />
+            </div>
+            <div class="text-center">
+                <a href="~/Home/index" class="btn btn-primary btn-lg mt-3 roundedwithshadow"><i class="fas fa-home"></i> Return Home</a>
             </div>
         </form>
     </div>
