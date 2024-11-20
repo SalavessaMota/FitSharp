@@ -1,25 +1,34 @@
-﻿@model FitSharp.Data.Entities.Instructor
+﻿@model FitSharp.Data.Entities.Gym
 @{
-    ViewData["Title"] = "InstructorDetails";
+    ViewData["Title"] = "Gym Details";
 }
 
 <div class="container mt-5 transparent-card">
     <div class="card shadow-lg border-0 rounded-lg">
         <div class="card-header text-white" style="background-color: #B70D00;">
-            <h3 class="text-center mb-0">@Model.User.FullName</h3>
+            <h3 class="text-center mb-0">@Model.Name</h3>
         </div>
         <div class="card-body">
             <div class="row">
-                <!-- Profile Picture -->
+                <!-- Gym Image -->
                 <div class="col-md-4 text-center">
-                    <img src="@Model.User.ImageFullPath" alt="Instructor Image" class="img-fluid rounded-circle mb-3" style="max-width: 300px;">
-                    <h5>@Model.Speciality</h5>
+                    <img src="@Model.ImageFullPath" alt="Gym Image" class="img-fluid rounded mb-3" style="max-width: 300px;">
                 </div>
 
-                <!-- Instructor Details -->
+                <!-- Gym Details -->
                 <div class="col-md-8">
-                    <h4>About @Model.User.FirstName</h4>
-                    <p>@Model.Description</p>
+                    <h4>About @Model.Name</h4>
+                    <p>
+                        <strong>Address:</strong> @Model.Address<br />
+                        <strong>City:</strong> @Model.City?.Name, @Model.City?.Country?.Name
+                    </p>
+
+                    <!-- Number of Rooms and Equipment -->
+                    <h5>Facilities:</h5>
+                    <ul>
+                        <li><strong>Rooms:</strong> @Model.NumberOfRooms</li>
+                        <li><strong>Equipment:</strong> @Model.NumberOfEquipments</li>
+                    </ul>
 
                     <!-- Rating -->
                     <h5>
@@ -29,54 +38,42 @@
                             {
                                 if (i <= Model.Rating)
                                 {
-                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star text-shadow"></i>
                                 }
                                 else if (i - Model.Rating < 1)
                                 {
-                                    <i class="fas fa-star-half-alt"></i>
+                                    <i class="fas fa-star-half-alt text-shadow"></i>
                                 }
                                 else
                                 {
-                                    <i class="far fa-star"></i>
+                                    <i class="far fa-star text-shadow"></i>
                                 }
                             }
                         </span>
-                        <small>(Rating: @Model.Rating.ToString("0.0"))</small>
+                        <small>(@Model.Rating.ToString("0.0") out of 5)</small>
                     </h5>
-
-                    <!-- Gym Details -->
-                    @if (Model.Gym != null)
-                    {
-                        <h5>Gym:</h5>
-                        <p>
-                            <strong>@Model.Gym.Name</strong><br />
-                            @Model.Gym.Address<br />
-                        </p>
-                    }
                 </div>
             </div>
 
-            <!-- Classes -->
+            <!-- Rooms Section -->
             <div class="mt-4">
-                <h4>Classes by @Model.User.FirstName</h4>
-                <div class="row">
-                    @if (Model.GroupClasses != null && Model.GroupClasses.Any())
-                    {
-                        <div class="col-md-6">
-                            <h5>Group Classes</h5>
-                            <ul class="list-group">
-                                @foreach (var groupClass in Model.GroupClasses)
-                                {
-                                    <li class="list-group-item">
-                                        <strong>@groupClass.Name</strong><br />
-                                        <small>@groupClass.StartTime.ToString("f") - @groupClass.EndTime.ToString("f")</small>
-                                    </li>
-                                }
-                            </ul>
-                        </div>
-                    }
-
-                </div>
+                <h4>Rooms</h4>
+                @if (Model.Rooms != null && Model.Rooms.Any())
+                {
+                    <ul class="list-group">
+                        @foreach (var room in Model.Rooms)
+                        {
+                            <li class="list-group-item">
+                                <strong>@room.Name</strong>
+                                <small class="text-muted"> (@room.Capacity seats)</small>
+                            </li>
+                        }
+                    </ul>
+                }
+                else
+                {
+                    <p class="text-muted">No rooms available in this gym.</p>
+                }
             </div>
         </div>
 
@@ -92,7 +89,7 @@
                             <div class="card">
                                 <div class="card-body">
                                     <h6 class="card-title">
-                                        <i class="fas fa-user"></i> @review.Customer.User.FullName
+                                        <i class="fas fa-user"></i> @review.Customer?.User?.FullName
                                     </h6>
                                     <p class="card-text">@review.Description</p>
                                     <div class="text-warning">
@@ -115,7 +112,7 @@
                 }
                 else
                 {
-                    <p class="text-muted text-center">No reviews available for this instructor.</p>
+                    <p class="text-muted text-center">No reviews available for this gym.</p>
                 }
             </div>
         </div>
@@ -123,9 +120,8 @@
 
     <!-- Back Button -->
     <div class="text-center mt-4">
-        <a href="~/Home/ourinstructors" class="btn btn-primary btn-lg rounded-pill">
-            <i class="fas fa-arrow-left"></i> Return to Instructors
+        <a href="~/Home/ourgyms" class="btn btn-primary btn-lg rounded-pill">
+            <i class="fas fa-arrow-left"></i> Return to Gyms
         </a>
     </div>
 </div>
-

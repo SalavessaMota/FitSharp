@@ -147,6 +147,9 @@ namespace FitSharp.Data
                 .Include(g => g.Rooms)
                 .Include(g => g.Equipments)
                 .Include(g => g.Employees)
+                .Include(g => g.Reviews)
+                    .ThenInclude(r => r.Customer)
+                        .ThenInclude(c => c.User)
                 .Where(g => g.Id == id)
                 .FirstOrDefaultAsync();
         }
@@ -239,6 +242,7 @@ namespace FitSharp.Data
                 .Include(g => g.Rooms)
                 .Include(g => g.Equipments)
                 .Include(g => g.Employees)
+                .Include(g => g.Reviews)
                 .ToListAsync();
         }
 

@@ -22,7 +22,6 @@ namespace FitSharp.Data.Entities
         public Gym Gym { get; set; }
 
         [Required(ErrorMessage = "The field {0} is mandatory.")]
-
         public int CustomerId { get; set; }
 
         public Customer Customer { get; set; }

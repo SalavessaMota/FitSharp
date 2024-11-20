@@ -181,7 +181,7 @@ namespace FitSharp.Data
             return null;
         }
 
-        public async Task<Instructor> GetInstructorWithAllRelatedDataByInstructorId(int instructorId)
+        public async Task<Instructor> GetInstructorWithAllRelatedDataByInstructorIdAsync(int instructorId)
         {
             return await _context.Instructors
                 .Include(i => i.User)
@@ -189,7 +189,7 @@ namespace FitSharp.Data
                 .Include(i => i.Reviews)
                 .ThenInclude(r => r.Customer)
                 .ThenInclude(c => c.User)
-                .FirstOrDefault(i => i.Id == instructorId);
+                .FirstOrDefaultAsync(i => i.Id == instructorId);
         }
 
         public async Task<Instructor> GetInstructorByUserName(string instructorName)

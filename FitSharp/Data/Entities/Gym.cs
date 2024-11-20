@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 
 namespace FitSharp.Data.Entities
 {
@@ -29,6 +30,8 @@ namespace FitSharp.Data.Entities
         public ICollection<Employee> Employees { get; set; } = new List<Employee>();
 
         public virtual ICollection<GymReview> Reviews { get; set; }
+
+        public double Rating => (Reviews?.Count ?? 0) > 0 ? Reviews.Average(r => r.Stars) : 0;
 
         [Display(Name = "Image")]
         public Guid ImageId { get; set; }

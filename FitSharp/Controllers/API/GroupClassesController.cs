@@ -52,9 +52,6 @@ namespace FitSharp.Controllers.API
             return new JsonResult(groupClasses);
         }
 
-
-
-
         [HttpPost]
         [Route("Enroll")]
         [Authorize(Roles = "Customer")]

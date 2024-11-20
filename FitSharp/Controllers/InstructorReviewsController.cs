@@ -36,7 +36,7 @@ namespace FitSharp.Controllers
                 return NotFound();
             }
 
-            var instructor = await _userRepository.GetInstructorWithAllRelatedDataByInstructorId(instructorId);
+            var instructor = await _userRepository.GetInstructorWithAllRelatedDataByInstructorIdAsync(instructorId);
             if (instructor == null)
             {
                 return NotFound();

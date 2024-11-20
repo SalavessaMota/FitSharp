@@ -46,6 +46,7 @@ namespace FitSharp.Data
             return _context.PersonalClasses
                 .Include(p => p.Room)
                     .ThenInclude(r => r.Gym)
+                        .ThenInclude(g => g.Reviews)
                 .Include(p => p.ClassType)
                 .Include(p => p.Instructor)
                     .ThenInclude(i => i.User)

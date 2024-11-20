@@ -26,7 +26,7 @@ namespace FitSharp.Data
 
         IEnumerable<Admin> GetAllAdminsWithAllRelatedData();
 
-        Task<Instructor> GetInstructorWithAllRelatedDataByInstructorId(int instructorId);
+        Task<Instructor> GetInstructorWithAllRelatedDataByInstructorIdAsync(int instructorId);
 
         Task AddCustomerAsync(Customer customer);
 

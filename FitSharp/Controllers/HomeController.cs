@@ -122,7 +122,7 @@ namespace FitSharp.Controllers
         public async Task<IActionResult> InstructorDetails(int id)
         {
             // Busca o instrutor com todos os dados relacionados
-            var instructor = _userRepository.GetInstructorWithAllRelatedDataByInstructorId(id);
+            var instructor = await _userRepository.GetInstructorWithAllRelatedDataByInstructorIdAsync(id);
 
             if (instructor == null)
             {
@@ -132,7 +132,17 @@ namespace FitSharp.Controllers
             return View(instructor);
         }
 
+        public async Task<IActionResult> GymDetails(int id)
+        {
+            var gym = await _gymsRepository.GetGymWithAllRelatedDataAsync(id);
 
+            if (gym == null)
+            {
+                return View("GymNotFound");
+            }
+
+            return View(gym);
+        }
 
         [HttpPost]
         [ValidateAntiForgeryToken]

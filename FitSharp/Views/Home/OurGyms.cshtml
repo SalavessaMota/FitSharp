@@ -11,11 +11,28 @@
             <div class="col-md-4 mb-4">
                 <div class="card transparent-card h-100">
                     <div class="card-body text-center">
-                        <img src="@gym.ImageFullPath" alt="@gym.Name" class="rounded mb-3" style="width: 150px; height: 150px; object-fit: cover;">
+                        <img src="@gym.ImageFullPath" alt="@gym.Name" class="rounded mb-3" style="width: 250px; height: 250px; object-fit: cover;">
 
                         <h4 class="card-title">@gym.Name</h4>
 
-                        <p class="text-muted">@gym.Address</p>                        
+                        <p class="text-muted">@gym.Address</p>
+
+                        <p class="text-warning">
+                            @for (var i = 0; i < (int)gym.Rating; i++)
+                            {
+                                <i class="fas fa-star text-shadow"></i>
+                            }
+                            @if (gym.Rating % 1 > 0)
+                            {
+                                <i class="fas fa-star-half-alt text-shadow"></i>
+                            }
+                            <br />
+                            <span class="text-muted"> (Rating: @gym.Rating.ToString("0.0"))</span>
+                        </p>
+
+                        <a asp-controller="Home" asp-action="GymDetails" asp-route-id="@gym.Id" class="btn text-logo-primary">
+                            View Details
+                        </a>
                     </div>
                 </div>
             </div>
