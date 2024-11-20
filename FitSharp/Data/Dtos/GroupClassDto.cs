@@ -10,5 +10,7 @@
         public string End { get; set; }
         public string Instructor { get; set; }
         public double InstructorScore { get; set; }
+
+
     }
 }

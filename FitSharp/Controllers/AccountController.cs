@@ -338,7 +338,7 @@ namespace FitSharp.Controllers
                     if (result.Succeeded)
                     {
                         _flashMessage.Confirmation("Password changed successfully.");
-                        return this.RedirectToAction("ChangeUser");
+                        return View(model);
                     }
                     else
                     {

@@ -90,7 +90,9 @@ namespace fitsharpMVC.Controllers.API
                             Token = new JwtSecurityTokenHandler().WriteToken(token),
                             Expiration = token.ValidTo,
                             UserId = user.Id,
-                            UserName = user.UserName
+                            UserName = user.UserName,
+                            Role = roleAsString
+
                         };
 
                         return this.Created(string.Empty, results);
