@@ -132,7 +132,7 @@ namespace FitSharp.Data
                     IsActive = true
                 };
 
-                var result = await _userRepository.AddUserAsync(adminUser, "123123");
+                var result = await _userRepository.AddUserAsync(adminUser, "Fitsharp1!");
                 if (result != IdentityResult.Success)
                 {
                     throw new InvalidOperationException("Could not create the admin user in seeder");
@@ -171,7 +171,7 @@ namespace FitSharp.Data
                     IsActive = true
                 };
 
-                var result = await _userRepository.AddUserAsync(ptUser, "123123");
+                var result = await _userRepository.AddUserAsync(ptUser, "Fitsharp1!");
                 if (result != IdentityResult.Success)
                 {
                     throw new InvalidOperationException("Could not create the Instructor user in seeder");
@@ -216,7 +216,7 @@ namespace FitSharp.Data
                     IsActive = true
                 };
 
-                var result = await _userRepository.AddUserAsync(employeeUser, "123123");
+                var result = await _userRepository.AddUserAsync(employeeUser, "Fitsharp1!");
                 if (result != IdentityResult.Success)
                 {
                     throw new InvalidOperationException("Could not create the Employee user in seeder");
@@ -259,7 +259,7 @@ namespace FitSharp.Data
                     IsActive = true
                 };
 
-                var result = await _userRepository.AddUserAsync(customerUser, "123123");
+                var result = await _userRepository.AddUserAsync(customerUser, "Fitsharp1!");    
                 if (result != IdentityResult.Success)
                 {
                     throw new InvalidOperationException("Could not create the Customer user in seeder");
