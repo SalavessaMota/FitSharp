@@ -216,7 +216,7 @@ namespace FitSharp.Controllers
                 return View(model);
             }
 
-            var personalClass = await _personalClassRepository.GetByIdAsync(model.Id);
+            var personalClass = await _personalClassRepository.GetPersonalClassWithAllRelatedData(model.Id);
             if (personalClass == null)
             {
                 return new NotFoundViewResult("PersonalClassNotFound");
@@ -237,7 +237,7 @@ namespace FitSharp.Controllers
             var notification = new Notification
             {
                 Title = "An instructor has altered a personal class.",
-                Message = $"The instructor {personalClass.Instructor.User.FullName} has altered a personal class at the gym {personalClass.Instructor.Gym.Name}.",
+                Message = $"The instructor {personalClass.Instructor.User.FullName} has altered a personal class at the gym {personalClass.Room.Gym.Name}.",
                 Action = $"<a href=\"{actionUrl}\" class=\"btn btn-primary\">Go to personal class.</a>",
                 User = personalClass.Customer.User,
                 UserId = personalClass.Customer.User.Id,
@@ -254,7 +254,7 @@ namespace FitSharp.Controllers
                 return new NotFoundViewResult("PersonalClassNotFound");
             }
 
-            var personalClass = await _personalClassRepository.GetByIdAsync(id.Value);
+            var personalClass = await _personalClassRepository.GetPersonalClassWithAllRelatedData(id.Value);
             if (personalClass == null)
             {
                 return new NotFoundViewResult("PersonalClassNotFound");

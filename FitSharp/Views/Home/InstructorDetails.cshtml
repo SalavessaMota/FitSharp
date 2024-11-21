@@ -82,7 +82,6 @@
 
         <!-- Reviews Section -->
         <div class="card-footer bg-light">
-            <h4>What Clients Say</h4>
             <div class="text-center mt-4">
                 @if (ViewBag.HasAttendedClasses)
                 {
@@ -90,13 +89,13 @@
                     {
                         var review = Model.Reviews.FirstOrDefault(r => r.Customer.User.UserName == User.Identity.Name);
 
-                        <a href="@Url.Action("Edit", "InstructorReviews", new { Id = review.Id })" class="btn roundedwithshadow">
+                        <a href="@Url.Action("Edit", "InstructorReviews", new { Id = review.Id })" class="btn roundedwithshadow mb-3">
                             <i class="fas fa-edit"></i> Edit Your Review
                         </a>
                     }
                     else
                     {
-                        <a href="@Url.Action("WriteReview", "InstructorReviews", new { instructorId = Model.Id })" class="btn btn-primary roundedwithshadow">
+                        <a href="@Url.Action("WriteReview", "InstructorReviews", new { instructorId = Model.Id })" class="btn btn-primary roundedwithshadow mb-3">
                             <i class="fas fa-pen"></i> Write a Review
                         </a>
                     }
@@ -106,6 +105,7 @@
                     <p class="text-muted">You must attend a class with this instructor to leave a review.</p>
                 }
             </div>
+            <h4>What Clients Say</h4>
 
             <div class="row">
                 @if (Model.Reviews != null && Model.Reviews.Any())

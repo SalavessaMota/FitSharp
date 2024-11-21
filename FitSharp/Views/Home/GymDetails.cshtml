@@ -89,13 +89,13 @@
                     {
                         var review = Model.Reviews.FirstOrDefault(r => r.Customer.User.UserName == User.Identity.Name);
 
-                        <a href="@Url.Action("Edit", "GymReviews", new { Id = review.Id })" class="btn roundedwithshadow">
+                        <a href="@Url.Action("Edit", "GymReviews", new { Id = review.Id })" class="btn roundedwithshadow mb-3">
                             <i class="fas fa-edit"></i> Edit Your Review
                         </a>
                     }
                     else
                     {
-                        <a href="@Url.Action("WriteReview", "GymReviews", new { gymId = Model.Id })" class="btn btn-primary roundedwithshadow">
+                        <a href="@Url.Action("WriteReview", "GymReviews", new { gymId = Model.Id })" class="btn btn-primary roundedwithshadow mb-3">
                             <i class="fas fa-pen"></i> Write a Review
                         </a>
                     }
