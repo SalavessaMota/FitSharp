@@ -1,4 +1,5 @@
-﻿using FitSharp.Data;
+﻿using Braintree;
+using FitSharp.Data;
 using FitSharp.Data.Entities;
 using FitSharp.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -129,6 +130,16 @@ namespace FitSharp.Controllers
                 return View("InstructorNotFound");
             }
 
+            var customer = await _userRepository.GetCustomerByUserName(User.Identity.Name);
+
+            // Verificar se o cliente já teve aulas com o instrutor
+            ViewBag.HasAttendedClasses = await _personalClassRepository.HasAttendedInstructorAsync(customer.Id, id) ||
+                                          await _groupClassRepository.HasAttendedInstructorAsync(customer.Id, id);
+
+            // Verificar se o cliente já fez uma review ao instrutor
+            ViewBag.HasReviewed = await _userRepository.HasCustomerReviewedInstructorAsync(customer.Id, id);
+
+
             return View(instructor);
         }
 
@@ -140,6 +151,17 @@ namespace FitSharp.Controllers
             {
                 return View("GymNotFound");
             }
+
+            var customer = await _userRepository.GetCustomerByUserName(User.Identity.Name);
+
+            // Verificar se o cliente já frequentou aulas no ginásio
+            ViewBag.HasAttendedClasses = await _personalClassRepository.HasAttendedGymAsync(customer.Id, id) ||
+                                          await _groupClassRepository.HasAttendedGymAsync(customer.Id, id);
+
+            // Verificar se o cliente já fez uma review ao ginásio
+            ViewBag.HasReviewed = await _gymsRepository.HasCustomerReviewedGymAsync(customer.Id, id);
+
+
 
             return View(gym);
         }
@@ -160,7 +182,7 @@ namespace FitSharp.Controllers
             var entity = await _userRepository.GetEntityByUserIdAsync(user.Id);
 
             // Verificar se a entidade é um cliente
-            Customer customer = entity as Customer;
+            Data.Entities.Customer customer = entity as Data.Entities.Customer;
 
             if (customer == null)
             {

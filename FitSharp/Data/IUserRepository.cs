@@ -57,5 +57,8 @@ namespace FitSharp.Data
         string DetermineUserType(User user);
 
         Task UpdateCustomerAsync(Customer customer);
+
+        Task<bool> HasCustomerReviewedInstructorAsync(int customerId, int instructorId);
+
     }
 }

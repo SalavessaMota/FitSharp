@@ -53,5 +53,16 @@ namespace FitSharp.Data
                     .ThenInclude(c => c.User)
                 .Where(g => g.Customers.Any(c => c.User.UserName == userName));
         }
+
+        public async Task<bool> HasAttendedGymAsync(int customerId, int gymId)
+        {
+            return await _context.GroupClasses.AnyAsync(gc => gc.Customers.Any(c => c.Id == customerId) && gc.Room.GymId == gymId);
+        }
+
+        public async Task<bool> HasAttendedInstructorAsync(int customerId, int instructorId)
+        {
+            return await _context.GroupClasses.AnyAsync(gc => gc.Customers.Any(c => c.Id == customerId) && gc.InstructorId == instructorId);
+        }
+
     }
 }

@@ -260,5 +260,11 @@ namespace FitSharp.Data
                 .Where(e => e.Gym.Id == gymId)
                 .ToListAsync();
         }
+
+        public async Task<bool> HasCustomerReviewedGymAsync(int customerId, int gymId)
+        {
+            return await _context.GymReviews.AnyAsync(r => r.CustomerId == customerId && r.GymId == gymId);
+        }
+
     }
 }

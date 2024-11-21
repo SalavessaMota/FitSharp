@@ -201,16 +201,11 @@ namespace FitSharp.Controllers
                 await _userRepository.AddCustomerAsync(customer);
 
                 string myToken = await _userHelper.GenerateEmailConfirmationTokenAsync(user);
-
-                string tokenLink = Url.Action(
-                    "ConfirmEmail", 
-                    "Account", 
-                    new
-                    {
-                        userid = user.Id,
-                        token = myToken
-                    }, protocol: HttpContext.Request.Scheme
-                );
+                string tokenLink = Url.Action("ConfirmEmail", "Account", new
+                {
+                    userid = user.Id,
+                    token = myToken
+                }, protocol: HttpContext.Request.Scheme);
 
                 Response response = _mailHelper.SendEmail(model.Username, "FitSharp - Welcome to Your Fitness Journey",
                                         $"<h1 style=\"color:#1E90FF;\">Welcome to FitSharp!</h1>" +

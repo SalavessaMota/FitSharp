@@ -77,8 +77,35 @@
             </div>
         </div>
 
+
+
         <!-- Reviews Section -->
         <div class="card-footer bg-light">
+
+            <div class="text-center mt-4">
+                @if (ViewBag.HasAttendedClasses)
+                {
+                    if (ViewBag.HasReviewed)
+                    {
+                        var review = Model.Reviews.FirstOrDefault(r => r.Customer.User.UserName == User.Identity.Name);
+
+                        <a href="@Url.Action("Edit", "GymReviews", new { Id = review.Id })" class="btn roundedwithshadow">
+                            <i class="fas fa-edit"></i> Edit Your Review
+                        </a>
+                    }
+                    else
+                    {
+                        <a href="@Url.Action("WriteReview", "GymReviews", new { gymId = Model.Id })" class="btn btn-primary roundedwithshadow">
+                            <i class="fas fa-pen"></i> Write a Review
+                        </a>
+                    }
+                }
+                else
+                {
+                    <p class="text-muted">You must attend a class in this gym to leave a review.</p>
+                }
+            </div>
+
             <h4>What Clients Say</h4>
             <div class="row">
                 @if (Model.Reviews != null && Model.Reviews.Any())

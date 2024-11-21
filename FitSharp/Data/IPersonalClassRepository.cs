@@ -11,5 +11,11 @@ namespace FitSharp.Data
         IQueryable<PersonalClass> GetAllPersonalClassesWithRelatedData();
 
         IQueryable<PersonalClass> GetAllPersonalClassesWithRelatedDataByUserName(string instructorName);
+
+        Task<bool> HasAttendedGymAsync(int customerId, int gymId);
+
+        Task<bool> HasAttendedInstructorAsync(int customerId, int instructorId);
+
+
     }
 }

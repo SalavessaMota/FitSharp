@@ -70,46 +70,16 @@
                                     <td>@Html.DisplayFor(modelItem => item.Name)</td>
                                     <td>
                                         @Html.DisplayFor(modelItem => item.Room.Gym.Name)
-                                        <br />
-                                        @{
-                                            // Procura uma review do usuário logado para o ginásio
-                                            var gymReview = item.Room.Gym.Reviews?.FirstOrDefault(r => r.Customer.User.UserName == User.Identity.Name);
-                                        }
-
-                                        @if (gymReview != null)
-                                        {
-                                            <a asp-controller="GymReviews" asp-action="Edit" asp-route-id="@gymReview.Id" class="btn btn-link">
-                                                <i class="far fa-edit ml-0"></i> Edit Review
-                                            </a>
-                                        }
-                                        else if (item.StartTime < DateTime.Now)
-                                        {
-                                            <a asp-controller="GymReviews" asp-action="WriteReview" asp-route-gymId="@item.Room.Gym.Id" class="btn btn-link">
-                                                <i class="far fa-edit ml-0"></i> Write Review
-                                            </a>
-                                        }
+                                        <a asp-controller="Home" asp-action="GymDetails" asp-route-id="@item.Room.Gym.Id" class="btn text-logo-primary">
+                                            (View Details)
+                                        </a>
                                     </td>
                                     <td>@Html.DisplayFor(modelItem => item.Room.Name)</td>
                                     <td>
                                         @Html.DisplayFor(modelItem => item.Instructor.User.FullName)
-                                        <br />
-                                        @{
-                                            // Procura uma review do usuário logado para o instrutor
-                                            var instructorReview = item.Instructor.Reviews?.FirstOrDefault(r => r.Customer.User.UserName == User.Identity.Name);
-                                        }
-
-                                        @if (instructorReview != null)
-                                        {
-                                            <a asp-controller="InstructorReviews" asp-action="Edit" asp-route-id="@instructorReview.Id" class="btn btn-link">
-                                                <i class="far fa-edit ml-0"></i> Edit Review
-                                            </a>
-                                        }
-                                        else if (item.StartTime < DateTime.Now)
-                                        {
-                                            <a asp-controller="InstructorReviews" asp-action="WriteReview" asp-route-instructorId="@item.Instructor.Id" class="btn btn-link">
-                                                <i class="far fa-edit ml-0"></i> Write Review
-                                            </a>
-                                        }
+                                        <a asp-controller="Home" asp-action="InstructorDetails" asp-route-id="@item.Instructor.Id" class="btn text-logo-primary">
+                                            (View Details)
+                                        </a>
                                     </td>
                                     <td>@Html.DisplayFor(modelItem => item.StartTime)</td>
                                     <td>@Html.DisplayFor(modelItem => item.EndTime)</td>

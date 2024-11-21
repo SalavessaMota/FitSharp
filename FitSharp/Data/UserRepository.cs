@@ -287,5 +287,11 @@ namespace FitSharp.Data
             _context.Customers.Update(customer);
             await _context.SaveChangesAsync();
         }
+
+        public async Task<bool> HasCustomerReviewedInstructorAsync(int customerId, int instructorId)
+        {
+            return await _context.InstructorReviews.AnyAsync(r => r.CustomerId == customerId && r.InstructorId == instructorId);
+        }
+
     }
 }

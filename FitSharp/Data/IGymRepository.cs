@@ -44,5 +44,8 @@ namespace FitSharp.Data
         Task<IEnumerable<Equipment>> GetEquipments();
 
         Task<IEnumerable<Equipment>> GetGymEquipments(int? gymId);
+
+        Task<bool> HasCustomerReviewedGymAsync(int customerId, int gymId);
+
     }
 }

@@ -29,15 +29,15 @@
                             {
                                 if (i <= Model.Rating)
                                 {
-                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star text-shadow"></i>
                                 }
                                 else if (i - Model.Rating < 1)
                                 {
-                                    <i class="fas fa-star-half-alt"></i>
+                                    <i class="fas fa-star-half-alt text-shadow"></i>
                                 }
                                 else
                                 {
-                                    <i class="far fa-star"></i>
+                                    <i class="far fa-star text-shadow"></i>
                                 }
                             }
                         </span>
@@ -83,6 +83,30 @@
         <!-- Reviews Section -->
         <div class="card-footer bg-light">
             <h4>What Clients Say</h4>
+            <div class="text-center mt-4">
+                @if (ViewBag.HasAttendedClasses)
+                {
+                    if (ViewBag.HasReviewed)
+                    {
+                        var review = Model.Reviews.FirstOrDefault(r => r.Customer.User.UserName == User.Identity.Name);
+
+                        <a href="@Url.Action("Edit", "InstructorReviews", new { Id = review.Id })" class="btn roundedwithshadow">
+                            <i class="fas fa-edit"></i> Edit Your Review
+                        </a>
+                    }
+                    else
+                    {
+                        <a href="@Url.Action("WriteReview", "InstructorReviews", new { instructorId = Model.Id })" class="btn btn-primary roundedwithshadow">
+                            <i class="fas fa-pen"></i> Write a Review
+                        </a>
+                    }
+                }
+                else
+                {
+                    <p class="text-muted">You must attend a class with this instructor to leave a review.</p>
+                }
+            </div>
+
             <div class="row">
                 @if (Model.Reviews != null && Model.Reviews.Any())
                 {
