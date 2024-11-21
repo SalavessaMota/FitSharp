@@ -3,6 +3,7 @@
 }
 
 @inject FitSharp.Data.IUserRepository _userRepository
+@inject FitSharp.Data.IGymRepository _gymRepository
 @inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Xsrf
 
 @{
@@ -35,6 +36,17 @@
     </div>
 
     <div id="flashMessageContainer" class="alert d-none" role="alert"></div>
+
+    <div class="d-flex justify-content-center mb-4">
+    <label for="gymFilter" class="mr-2">Filter by Gym:</label>
+    <select id="gymFilter" class="form-control" style="width: 200px;">
+        <option value="">All Gyms</option>
+        @foreach (var gym in await _gymRepository.GetGymsWithAllRelatedDataAsync())
+        {
+            <option value="@gym.Name">@gym.Name</option>
+        }
+    </select>
+</div>
 
     <!-- Calendar -->
     <div id="calendar" class="mb-3" style="overflow: auto; background-color: white;"></div>
@@ -143,6 +155,7 @@
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             var calendarEl = document.getElementById('calendar');
+            var gymFilter = document.getElementById('gymFilter');
             var calendar = new FullCalendar.Calendar(calendarEl, {
                 initialView: 'timeGridWeek',
                 slotMinTime: '06:00:00',
@@ -236,6 +249,21 @@
 
             calendar.render();
 
+            // Adiciona evento ao filtro
+            gymFilter.addEventListener('change', function () {
+                const selectedGym = gymFilter.value.toLowerCase();
+
+                const allEvents = calendar.getEvents();
+
+                allEvents.forEach(event => {
+                    if (selectedGym === "" || event.extendedProps.gym.toLowerCase() === selectedGym) {
+                        event.setProp('display', ''); // Exibe o evento
+                    } else {
+                        event.setProp('display', 'none'); // Esconde o evento
+                    }
+                });
+            });
+
             function renderStars(starsContainerId, scoreTextId, score) {
                 const fullStars = Math.floor(score);
                 const halfStar = score % 1 !== 0;
@@ -309,3 +337,4 @@
         });
     </script>
 }
+
