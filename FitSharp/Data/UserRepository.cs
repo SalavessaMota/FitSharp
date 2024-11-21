@@ -196,6 +196,8 @@ namespace FitSharp.Data
         {
             return await _context.Instructors
                 .Include(i => i.User)
+                .Include(i => i.Gym)
+                .Include(i => i.Reviews)
                 .FirstAsync(i => i.User.UserName == instructorName);
         }
 

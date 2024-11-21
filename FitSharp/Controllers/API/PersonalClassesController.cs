@@ -3,6 +3,7 @@ using FitSharp.Data.Dtos;
 using FitSharp.Data.Entities;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Linq;
@@ -27,14 +28,13 @@ namespace FitSharp.Controllers.API
             _userRepository = userRepository;
         }
 
-        [HttpGet]
+        [HttpGet("Available")]
         [AllowAnonymous]
-        [Route("Available")]
-        public JsonResult GetAvailablePersonalClassesAPI()
+        public async Task<JsonResult> GetAvailablePersonalClasses()
         {
             var personalClasses = _personalClassRepository
                 .GetAllPersonalClassesWithRelatedData()
-                .Where(pc => pc.EndTime > DateTime.Now && pc.CustomerId == null)
+                .Where(pc => pc.EndTime > DateTime.Now)
                 .Select(pc => new PersonalClassDto
                 {
                     Id = pc.Id,
@@ -51,53 +51,244 @@ namespace FitSharp.Controllers.API
             return new JsonResult(personalClasses);
         }
 
-        [HttpGet]
-        [Route("Enroll/{personalClassId}")]
+        [HttpGet("Upcoming")]
         [Authorize(Roles = "Customer")]
-        public async Task<IActionResult> Enroll(int personalClassId)
+        public async Task<JsonResult> GetNextAvailablePersonalClassesForCustomer()
         {
-            // Obter o ID do usuário autenticado
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (userId == null)
+            var userName = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (userName == null)
             {
-                return Unauthorized(new { success = false, message = "User not authenticated." });
+                return new JsonResult(new { success = false, message = "User not found." })
+                {
+                    StatusCode = StatusCodes.Status401Unauthorized
+                };
             }
 
-            // Buscar o Customer associado ao User autenticado
-            var entity = await _userRepository.GetEntityByUserIdAsync(userId);
-            Customer customer = entity as Customer; // Faz a conversão explícita para Customer
+            var user = await _userRepository.GetUserByEmailAsync(userName);
+            if (user == null)
+            {
+                return new JsonResult(new { success = false, message = "User not found." })
+                {
+                    StatusCode = StatusCodes.Status404NotFound
+                };
+            }
+
+            var entity = await _userRepository.GetEntityByUserIdAsync(user.Id);
+            Customer customer = entity as Customer;
             if (customer == null)
             {
-                return NotFound(new { success = false, message = "Customer not found." });
+                return new JsonResult(new { success = false, message = "Customer not found." })
+                {
+                    StatusCode = StatusCodes.Status404NotFound
+                };
             }
 
-            // Buscar a PersonalClass pelo ID
+            var availablePersonalClasses = _personalClassRepository
+                .GetAllPersonalClassesWithRelatedData()
+                .Where(pc => pc.EndTime > DateTime.Now && pc.CustomerId != customer.Id && pc.CustomerId == null)
+                .Select(pc => new PersonalClassDto
+                {
+                    Id = pc.Id,
+                    Title = pc.Instructor.Speciality,
+                    Gym = pc.Room.Gym.Name,
+                    ClassType = pc.Instructor.Speciality,
+                    Start = pc.StartTime.ToString("yyyy-MM-ddTHH:mm"),
+                    End = pc.EndTime.ToString("yyyy-MM-ddTHH:mm"),
+                    Instructor = pc.Instructor.User.FullName,
+                    InstructorScore = pc.Instructor.Rating
+                })
+                .ToList();
+
+            return new JsonResult(availablePersonalClasses);
+        }
+
+        [HttpGet("Enrolled")]
+        [Authorize(Roles = "Customer")]
+        public async Task<JsonResult> GetEnrolledPersonalClassesForCustomer()
+        {
+            var userName = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (userName == null)
+            {
+                return new JsonResult(new { success = false, message = "User not found." })
+                {
+                    StatusCode = StatusCodes.Status401Unauthorized
+                };
+            }
+
+            var user = await _userRepository.GetUserByEmailAsync(userName);
+            if (user == null)
+            {
+                return new JsonResult(new { success = false, message = "User not found." })
+                {
+                    StatusCode = StatusCodes.Status404NotFound
+                };
+            }
+
+            var entity = await _userRepository.GetEntityByUserIdAsync(user.Id);
+            Customer customer = entity as Customer;
+            if (customer == null)
+            {
+                return new JsonResult(new { success = false, message = "Customer not found." })
+                {
+                    StatusCode = StatusCodes.Status404NotFound
+                };
+            }
+
+            var enrolledPersonalClasses = _personalClassRepository
+                .GetAllPersonalClassesWithRelatedData()
+                .Where(pc => pc.CustomerId == customer.Id)
+                .Select(pc => new PersonalClassDto
+                {
+                    Id = pc.Id,
+                    Title = pc.Instructor.Speciality,
+                    Gym = pc.Room.Gym.Name,
+                    ClassType = pc.Instructor.Speciality,
+                    Start = pc.StartTime.ToString("yyyy-MM-ddTHH:mm"),
+                    End = pc.EndTime.ToString("yyyy-MM-ddTHH:mm"),
+                    Instructor = pc.Instructor.User.FullName,
+                    InstructorScore = pc.Instructor.Rating
+                })
+                .ToList();
+
+            return new JsonResult(enrolledPersonalClasses);
+        }
+
+        [HttpPost]
+        [Route("Enroll")]
+        [Authorize(Roles = "Customer")]
+        public async Task<JsonResult> Enroll([FromBody] int personalClassId)
+        {
+            var userName = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (userName == null)
+            {
+                return new JsonResult(new { success = false, message = "User not found." })
+                {
+                    StatusCode = StatusCodes.Status401Unauthorized
+                };
+            }
+
+            var user = await _userRepository.GetUserByEmailAsync(userName);
+            if (user == null)
+            {
+                return new JsonResult(new { success = false, message = "User not found." })
+                {
+                    StatusCode = StatusCodes.Status404NotFound
+                };
+            }
+
+            var entity = await _userRepository.GetEntityByUserIdAsync(user.Id);
+            Customer customer = entity as Customer;
+            if (customer == null)
+            {
+                return new JsonResult(new { success = false, message = "Customer not found." })
+                {
+                    StatusCode = StatusCodes.Status404NotFound
+                };
+            }
+
+            if (customer.ClassesRemaining <= 0)
+            {
+                return new JsonResult(new { success = false, message = "You have no classes remaining." })
+                {
+                    StatusCode = StatusCodes.Status400BadRequest
+                };
+            }
+
             var personalClass = await _personalClassRepository.GetByIdAsync(personalClassId);
             if (personalClass == null)
             {
-                return NotFound(new { success = false, message = "Personal class not found." });
+                return new JsonResult(new { success = false, message = "Personal class not found." })
+                {
+                    StatusCode = StatusCodes.Status404NotFound
+                };
             }
 
-            // Verificar se a PersonalClass já está atribuída a um Customer
             if (personalClass.CustomerId != null)
             {
-                return BadRequest(new { success = false, message = "This class is already booked." });
+                return new JsonResult(new { success = false, message = "Personal class is already full." })
+                {
+                    StatusCode = StatusCodes.Status400BadRequest
+                };
             }
 
-            // Verificar se o Customer tem classes restantes
-            if (customer.ClassesRemaining <= 0)
+            if (personalClass.CustomerId == customer.Id)
             {
-                return BadRequest(new { success = false, message = "You have no classes remaining." });
+                return new JsonResult(new { success = false, message = "You are already enrolled in this personal class." })
+                {
+                    StatusCode = StatusCodes.Status400BadRequest
+                };
             }
 
             customer.ClassesRemaining--;
+            await _userRepository.UpdateCustomerAsync(customer);
 
-            // Associar o Customer à PersonalClass e atualizar na base de dados
             personalClass.CustomerId = customer.Id;
+            personalClass.Customer = customer;
             await _personalClassRepository.UpdateAsync(personalClass);
 
-            return Ok(new { success = true, message = "Successfully enrolled in the class!" });
+            return new JsonResult(new { success = true, message = "Successfully enrolled in the personal class!" });
         }
 
+
+
+
+        [HttpPost("Unenroll")]
+        [Authorize(Roles = "Customer")]
+        public async Task<JsonResult> UnenrollFromPersonalClass([FromBody] int personalClassId)
+        {
+            var userName = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (userName == null)
+            {
+                return new JsonResult(new { success = false, message = "User not found." })
+                {
+                    StatusCode = StatusCodes.Status401Unauthorized
+                };
+            }
+
+            var user = await _userRepository.GetUserByEmailAsync(userName);
+            if (user == null)
+            {
+                return new JsonResult(new { success = false, message = "User not found." })
+                {
+                    StatusCode = StatusCodes.Status404NotFound
+                };
+            }
+
+            var entity = await _userRepository.GetEntityByUserIdAsync(user.Id);
+            Customer customer = entity as Customer;
+            if (customer == null)
+            {
+                return new JsonResult(new { success = false, message = "Customer not found." })
+                {
+                    StatusCode = StatusCodes.Status404NotFound
+                };
+            }
+
+            var personalClass = await _personalClassRepository.GetByIdAsync(personalClassId);
+            if (personalClass == null)
+            {
+                return new JsonResult(new { success = false, message = "Personal class not found." })
+                {
+                    StatusCode = StatusCodes.Status404NotFound
+                };
+            }
+
+            if (personalClass.CustomerId != customer.Id)
+            {
+                return new JsonResult(new { success = false, message = "You are not enrolled in this personal class." })
+                {
+                    StatusCode = StatusCodes.Status400BadRequest
+                };
+            }
+
+            customer.ClassesRemaining++;
+            await _userRepository.UpdateCustomerAsync(customer);
+
+            personalClass.CustomerId = null;
+            personalClass.Customer = null;
+            await _personalClassRepository.UpdateAsync(personalClass);
+
+            return new JsonResult(new { success = true, message = "Successfully unenrolled from the personal class!" });
+        }
     }
 }

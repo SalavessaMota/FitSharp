@@ -11,8 +11,11 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using QRCoder;
 using System;
+using System.Drawing.Imaging;
 using System.IdentityModel.Tokens.Jwt;
+using System.IO;
 using System.Linq;
 using System.Security.Claims;
 using System.Text;
@@ -234,16 +237,28 @@ namespace fitsharpMVC.Controllers.API
             }
             await _userHelper.AddUserToRoleAsync(user, "Customer");
 
-            var customer = new Customer { User = user };
+            var customer = new Customer 
+            { 
+                User = user,
+                MembershipIsActive = true,
+                MembershipBeginDate = DateTime.Now,
+                MembershipEndDate = DateTime.Now.AddMonths(1),
+                ClassesRemaining = 2,
+                MembershipId = 1
+            };
+
             await _userRepository.AddCustomerAsync(customer);
 
             string myToken = await _userHelper.GenerateEmailConfirmationTokenAsync(user);
 
-            string tokenLink = Url.Action("ConfirmEmail", "Account", new
-            {
-                userid = user.Id,
-                token = myToken
-            }, protocol: HttpContext.Request.Scheme);
+            string tokenLink = Url.Action(
+                "ConfirmEmail", 
+                "Account", 
+                new
+                {
+                    userid = user.Id,
+                    token = myToken
+                }, protocol: HttpContext.Request.Scheme);
 
             Response response = _mailHelper.SendEmail(model.Username, "FitSharp - Welcome to Your Fitness Journey",
                                         $"<h1 style=\"color:#1E90FF;\">Welcome to FitSharp!</h1>" +
@@ -284,6 +299,45 @@ namespace fitsharpMVC.Controllers.API
             }
         }
 
+        [HttpGet("GenerateQRCode")]
+        [Authorize(Roles = "Customer")]
+        public async Task<IActionResult> GenerateQRCodeApi()
+        {
+            // Obtém o userName do token
+            var userName = User.FindFirstValue(ClaimTypes.Name);
+            if (string.IsNullOrEmpty(userName))
+            {
+                return Unauthorized(new { message = "Invalid token or user not authenticated." });
+            }
 
+            // Busca o cliente com base no userName
+            var customer = await _userRepository.GetCustomerByUserName(userName);
+            if (customer == null)
+            {
+                return NotFound(new { message = "User not found." });
+            }
+
+            var qrData = $"Name: {customer.User.FullName}\n" +
+                         $"Membership ID: {customer.MembershipId}\n" +
+                         $"Classes Remaining: {customer.ClassesRemaining}\n" +
+                         $"Membership Start: {customer.MembershipBeginDate.ToShortDateString()}\n" +
+                         $"Membership End: {customer.MembershipEndDate.ToShortDateString()}\n" +
+                         $"Membership Active: {(customer.MembershipIsActive ? "Yes" : "No")}";
+
+            using (var qrGenerator = new QRCodeGenerator())
+            {
+                var qrCodeData = qrGenerator.CreateQrCode(qrData, QRCodeGenerator.ECCLevel.Q);
+                var qrCode = new QRCode(qrCodeData);
+
+                using (var qrCodeImage = qrCode.GetGraphic(20))
+                {
+                    using (var memoryStream = new MemoryStream())
+                    {
+                        qrCodeImage.Save(memoryStream, ImageFormat.Png);
+                        return File(memoryStream.ToArray(), "image/png");
+                    }
+                }
+            }
+        }
     }
 }
