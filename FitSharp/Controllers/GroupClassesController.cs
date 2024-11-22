@@ -37,7 +37,7 @@ namespace FitSharp.Controllers
             _flashMessage = flashMessage;
         }
 
-        [Authorize(Roles = "Instructor")]
+        [Authorize(Roles = "Instructor, Employee")]
         public IActionResult Index(string filter)
         {
             var classes = _groupClassRepository.GetAllGroupClassesWithRelatedData();
@@ -114,7 +114,7 @@ namespace FitSharp.Controllers
             return View(model);
         }
 
-        [Authorize(Roles = "Instructor, Customer")]
+        [Authorize(Roles = "Instructor, Customer, Employee")]
         public IActionResult Details(int id)
         {
             var groupClass = _groupClassRepository.GetGroupClassWithAllRelatedDataAsync(id).Result;

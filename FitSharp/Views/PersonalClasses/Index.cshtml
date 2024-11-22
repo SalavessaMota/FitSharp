@@ -20,11 +20,13 @@
 <div class="row">
     <div class="col-12">
         <div class="card transparent-card">
-            <div class="text-center">
-                <a asp-action="Create" class="btn btn-primary roundedwithshadow"><i class="fa fa-save shadow-lg"></i> Create Class for Customer</a>
-                <a asp-action="CreatePersonalClass" class="btn btn-primary roundedwithshadow"><i class="fa fa-save shadow-lg"></i> Create Open Class</a>
-            </div>
-
+            @if (this.User.Identity.IsAuthenticated && this.User.IsInRole("Instructor"))
+            {
+                <div class="text-center">
+                    <a asp-action="Create" class="btn btn-primary roundedwithshadow"><i class="fa fa-save shadow-lg"></i> Create Class for Customer</a>
+                    <a asp-action="CreatePersonalClass" class="btn btn-primary roundedwithshadow"><i class="fa fa-save shadow-lg"></i> Create Open Class</a>
+                </div>
+            }
             <br />
             <br />
             <div class="row">
@@ -82,7 +84,7 @@
                                     <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info"><i class="fas fa-list"></i></a>
 
 
-                                    @if (item.StartTime > DateTime.Now)
+                                    @if (item.StartTime > DateTime.Now && this.User.Identity.IsAuthenticated && this.User.IsInRole("Instructor"))
                                     {
                                         <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning"><i class="far fa-edit"></i></a>
 

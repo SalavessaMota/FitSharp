@@ -78,13 +78,6 @@
                         {
                             var employee = await _userRepository.GetEmployeeByUserName(User.Identity.Name);
 
-                            @* <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-cogs fa-lg"></i> Management</a>
-                                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                    <li><a class="dropdown-item" asp-area="" asp-controller="Gyms" asp-action="Details" asp-route-id="@employee.GymId"><i class="fas fa-building"></i> My Gym</a></li>
-                                </ul>
-                            </li> *@
-
                             <li class="nav-item">
                                 <a class="nav-link d-flex align-items-center" asp-controller="Gyms" asp-action="Details" asp-route-id="@employee.GymId">
                                     <i class="fas fa-building"></i> <span class="nav-itemText">My Gym</span>
@@ -98,7 +91,7 @@
                             </li>
                         }
 
-                        @if (this.User.Identity.IsAuthenticated && this.User.IsInRole("Instructor")) // If user is instructor
+                        @if (this.User.Identity.IsAuthenticated && (this.User.IsInRole("Instructor") || this.User.IsInRole("Employee"))) // If user is instructor
                         {
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-cogs fa-lg"></i> Classes</a>

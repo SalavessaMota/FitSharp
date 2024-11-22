@@ -39,7 +39,7 @@ namespace FitSharp.Controllers
             _flashMessage = flashMessage;
         }
 
-        [Authorize(Roles = "Instructor")]
+        [Authorize(Roles = "Instructor, Employee")]
         public IActionResult Index(string filter)
         {
             var name = User.Identity.Name;
@@ -167,7 +167,7 @@ namespace FitSharp.Controllers
             return View(model);
         }
 
-        [Authorize(Roles = "Instructor, Customer")]
+        [Authorize(Roles = "Instructor, Customer, Employee")]
         public IActionResult Details(int id)
         {
             var personalClass = _personalClassRepository.GetAllPersonalClassesWithRelatedData()

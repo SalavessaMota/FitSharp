@@ -77,7 +77,7 @@
 
 
     <div>
-        @if(this.User.Identity.IsAuthenticated && this.User.IsInRole("Instructor"))
+        @if (this.User.Identity.IsAuthenticated && (this.User.IsInRole("Instructor") || this.User.IsInRole("Employee")) )
         {
             <a asp-action="Index" style="background-color: #808080" class="btn btn-success roundedwithshadow">Back to List</a>
         }
