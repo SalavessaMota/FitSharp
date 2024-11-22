@@ -83,18 +83,12 @@
                                     <i class="fas fa-building"></i> <span class="nav-itemText">My Gym</span>
                                 </a>
                             </li>
-
-                            <li class="nav-item">
-                                <a class="nav-link d-flex align-items-center" asp-controller="" asp-action="CustomersInformations">
-                                    <i class="fas fa-users"></i> <span class="nav-itemText">Our Customers</span>
-                                </a>
-                            </li>
                         }
 
                         @if (this.User.Identity.IsAuthenticated && (this.User.IsInRole("Instructor") || this.User.IsInRole("Employee"))) // If user is instructor
                         {
                             <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-cogs fa-lg"></i> Classes</a>
+                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-cogs fa-lg mr-1"></i> Classes</a>
                                 <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                                     <li><a class="dropdown-item" asp-area="" asp-controller="PersonalClasses" asp-action=""><i class="fas fa-chalkboard-teacher"></i> Personal Classes</a></li>
                                     <li><a class="dropdown-item" asp-area="" asp-controller="GroupClasses" asp-action=""><i class="fas fa-users"></i> Group Classes</a></li>
@@ -222,7 +216,7 @@
                             <!-- Login Link for unauthenticated users -->
                             <li class="nav-item">
                                 <a class="nav-link d-flex align-items-center" asp-area="" asp-controller="Account" asp-action="Login">
-                                    <i class="fas fa-sign-in-alt mr-2 fa-lg"></i> Sign in
+                                    <i class="fas fa-sign-in-alt mr-2 fa-lg"></i> <span class="nav-itemText">Sign in</span>
                                 </a>
                             </li>
                         }
@@ -245,8 +239,16 @@
     </div>
 
     <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2024 - FitSharp - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+        <div class="container text-center">
+            <span>&copy; 2024 - <strong>FitSharp</strong></span>
+            <span style="margin-left: 15px;">
+                <a asp-area="" asp-controller="Home" asp-action="Privacy" style="color: #6c757d; text-decoration: none; margin-right: 15px;">
+                    <span class="text-logo-primary">Privacy</span>
+                </a>
+                <a asp-area="" asp-controller="Home" asp-action="OurTeam" style="color: #6c757d; text-decoration: none;">
+                    <span class="text-logo-primary">Our Team</span>
+                </a>
+            </span>
         </div>
     </footer>
     <!-- Scripts -->

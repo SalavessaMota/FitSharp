@@ -220,5 +220,10 @@ namespace FitSharp.Controllers
             // Redirecionar para a página de privacidade
             return RedirectToAction("Privacy");
         }
+
+        public IActionResult OurTeam()
+        {
+            return View();
+        }
     }
 }

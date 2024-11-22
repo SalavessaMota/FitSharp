@@ -4,6 +4,7 @@ using FitSharp.Helpers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace FitSharp.Controllers
@@ -59,6 +60,11 @@ namespace FitSharp.Controllers
         [Authorize(Roles = "Customer")]
         public async Task<IActionResult> WriteReview(InstructorReview review)
         {
+            if (ContainsOffensiveWords(review.Description))
+            {
+                ModelState.AddModelError("Description", "Your review contains inappropriate language.");
+            }
+
             if (!ModelState.IsValid)
             {
                 return View(review);
@@ -89,6 +95,11 @@ namespace FitSharp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(InstructorReview review)
         {
+            if (ContainsOffensiveWords(review.Description))
+            {
+                ModelState.AddModelError("Description", "Your review contains inappropriate language.");
+            }
+
             if (ModelState.IsValid)
             {
                 await _instructorReviewRepository.UpdateAsync(review);
@@ -127,6 +138,28 @@ namespace FitSharp.Controllers
 
             var reviews = await _instructorReviewRepository.GetAllReviewsWithRelatedDataByInstructorId(id.Value);
             return View(reviews);
+        }
+
+        private bool ContainsOffensiveWords(string text)
+        {
+            if (string.IsNullOrWhiteSpace(text))
+                return false;
+
+            var offensiveWords = new List<string>
+            {
+                "Dumb",
+                "Stupid"
+            };
+
+            foreach (var word in offensiveWords)
+            {
+                if (text.IndexOf(word, StringComparison.OrdinalIgnoreCase) >= 0)
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
     }
 }
