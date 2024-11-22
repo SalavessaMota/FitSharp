@@ -59,6 +59,5 @@ namespace FitSharp.Data
         Task UpdateCustomerAsync(Customer customer);
 
         Task<bool> HasCustomerReviewedInstructorAsync(int customerId, int instructorId);
-
     }
 }

@@ -31,11 +31,13 @@ namespace FitSharp.Controllers
             _paymentHelper = paymentHelper;
         }
 
+        [Authorize(Roles = "Admin")]
         public IActionResult Index()
         {
             return View(_membershipRepository.GetAll().OrderBy(m => m.Price));
         }
 
+        [Authorize(Roles = "Admin")]
         public IActionResult Create()
         {
             return View();
@@ -43,6 +45,7 @@ namespace FitSharp.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Create(Membership membership)
         {
             if (ModelState.IsValid)
@@ -63,6 +66,7 @@ namespace FitSharp.Controllers
             return View(membership);
         }
 
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -80,6 +84,7 @@ namespace FitSharp.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(Membership membership)
         {
             if (ModelState.IsValid)
@@ -91,6 +96,7 @@ namespace FitSharp.Controllers
             return View(membership);
         }
 
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -144,11 +150,12 @@ namespace FitSharp.Controllers
             var gateway = _paymentHelper.GetGateway();
             var clientToken = gateway.ClientToken.Generate();
             ViewBag.ClientToken = clientToken;
-            return View(membership); 
+            return View(membership);
         }
 
         [HttpPost]
-        public async Task<IActionResult> PurchaseMembership(Membership model) 
+        [Authorize(Roles = "Customer")]
+        public async Task<IActionResult> PurchaseMembership(Membership model)
         {
             var membership = await _membershipRepository.GetByIdAsync(model.Id);
             var gateway = _paymentHelper.GetGateway();

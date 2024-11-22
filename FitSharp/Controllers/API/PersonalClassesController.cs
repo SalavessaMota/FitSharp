@@ -38,11 +38,11 @@ namespace FitSharp.Controllers.API
                 .Select(pc => new PersonalClassDto
                 {
                     Id = pc.Id,
-                    Title = pc.Instructor.Speciality,
+                    Title = pc.Name,
                     Gym = pc.Room.Gym.Name,
                     ClassType = pc.Instructor.Speciality,
-                    Start = pc.StartTime.ToString("yyyy-MM-ddTHH:mm"),
-                    End = pc.EndTime.ToString("yyyy-MM-ddTHH:mm"),
+                    Start = pc.StartTime.ToString("yyyy-MM-dd HH:mm"),
+                    End = pc.EndTime.ToString("yyyy-MM-dd HH:mm"),
                     Instructor = pc.Instructor.User.FullName,
                     InstructorScore = pc.Instructor.Rating
                 })
@@ -89,11 +89,11 @@ namespace FitSharp.Controllers.API
                 .Select(pc => new PersonalClassDto
                 {
                     Id = pc.Id,
-                    Title = pc.Instructor.Speciality,
+                    Title = pc.Name,
                     Gym = pc.Room.Gym.Name,
                     ClassType = pc.Instructor.Speciality,
-                    Start = pc.StartTime.ToString("yyyy-MM-ddTHH:mm"),
-                    End = pc.EndTime.ToString("yyyy-MM-ddTHH:mm"),
+                    Start = pc.StartTime.ToString("yyyy-MM-dd HH:mm"),
+                    End = pc.EndTime.ToString("yyyy-MM-dd HH:mm"),
                     Instructor = pc.Instructor.User.FullName,
                     InstructorScore = pc.Instructor.Rating
                 })
@@ -140,11 +140,11 @@ namespace FitSharp.Controllers.API
                 .Select(pc => new PersonalClassDto
                 {
                     Id = pc.Id,
-                    Title = pc.Instructor.Speciality,
+                    Title = pc.Name,
                     Gym = pc.Room.Gym.Name,
                     ClassType = pc.Instructor.Speciality,
-                    Start = pc.StartTime.ToString("yyyy-MM-ddTHH:mm"),
-                    End = pc.EndTime.ToString("yyyy-MM-ddTHH:mm"),
+                    Start = pc.StartTime.ToString("yyyy-MM-dd HH:mm"),
+                    End = pc.EndTime.ToString("yyyy-MM-dd HH:mm"),
                     Instructor = pc.Instructor.User.FullName,
                     InstructorScore = pc.Instructor.Rating
                 })
@@ -228,9 +228,6 @@ namespace FitSharp.Controllers.API
 
             return new JsonResult(new { success = true, message = "Successfully enrolled in the personal class!" });
         }
-
-
-
 
         [HttpPost("Unenroll")]
         [Authorize(Roles = "Customer")]

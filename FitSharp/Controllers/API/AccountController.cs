@@ -95,7 +95,6 @@ namespace fitsharpMVC.Controllers.API
                             UserId = user.Id,
                             UserName = user.UserName,
                             Role = roleAsString
-
                         };
 
                         return this.Created(string.Empty, results);
@@ -237,8 +236,8 @@ namespace fitsharpMVC.Controllers.API
             }
             await _userHelper.AddUserToRoleAsync(user, "Customer");
 
-            var customer = new Customer 
-            { 
+            var customer = new Customer
+            {
                 User = user,
                 MembershipIsActive = true,
                 MembershipBeginDate = DateTime.Now,
@@ -252,8 +251,8 @@ namespace fitsharpMVC.Controllers.API
             string myToken = await _userHelper.GenerateEmailConfirmationTokenAsync(user);
 
             string tokenLink = Url.Action(
-                "ConfirmEmail", 
-                "Account", 
+                "ConfirmEmail",
+                "Account",
                 new
                 {
                     userid = user.Id,

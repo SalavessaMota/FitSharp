@@ -108,7 +108,6 @@ namespace FitSharp.Data
                     Price = 0.00m,
                     NumberOfClasses = 2,
                     Description = "Trial Membership: Access to 2 classes over a 1-month period."
-
                 });
 
                 await _context.SaveChangesAsync();
@@ -259,7 +258,7 @@ namespace FitSharp.Data
                     IsActive = true
                 };
 
-                var result = await _userRepository.AddUserAsync(customerUser, "Fitsharp1!");    
+                var result = await _userRepository.AddUserAsync(customerUser, "Fitsharp1!");
                 if (result != IdentityResult.Success)
                 {
                     throw new InvalidOperationException("Could not create the Customer user in seeder");
@@ -299,8 +298,6 @@ namespace FitSharp.Data
                 });
                 await _context.SaveChangesAsync();
             }
-
-            
         }
     }
 }

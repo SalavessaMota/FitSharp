@@ -28,6 +28,7 @@ namespace FitSharp.Controllers
             return View(reviews);
         }
 
+        [Authorize(Roles = "Customer")]
         public async Task<IActionResult> WriteReview(int instructorId)
         {
             var customer = await _userRepository.GetCustomerByUserName(this.User.Identity.Name);
@@ -55,6 +56,7 @@ namespace FitSharp.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Customer")]
         public async Task<IActionResult> WriteReview(InstructorReview review)
         {
             if (!ModelState.IsValid)
@@ -63,9 +65,10 @@ namespace FitSharp.Controllers
             }
 
             await _instructorReviewRepository.AddReviewAsync(review);
-            return RedirectToAction("CustomerPersonalClasses", "PersonalClasses", new { username = User.Identity.Name });
+            return RedirectToAction("InstructorDetails", "Home", new { Id = review.InstructorId });
         }
 
+        [Authorize(Roles = "Customer")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -93,7 +96,7 @@ namespace FitSharp.Controllers
                 // Obtém o username do utilizador relacionado com a review, caso não esteja no objeto `review`
                 var username = review.Customer?.User.UserName ?? User.Identity.Name;
 
-                return RedirectToAction("CustomerPersonalClasses", "PersonalClasses", new { username = username });
+                return RedirectToAction("InstructorDetails", "Home", new { Id = review.InstructorId });
             }
 
             return View(review);

@@ -23,12 +23,10 @@ namespace FitSharp.Controllers.API
             _gymRepository = gymRepository;
         }
 
-
         [HttpGet("All")]
         [AllowAnonymous]
         public async Task<JsonResult> GetAllGyms()
         {
-
             try
             {
                 var gyms = await _gymRepository.GetGymsWithAllRelatedDataAsync();
@@ -45,7 +43,6 @@ namespace FitSharp.Controllers.API
                     Rating = g.Rating,
                     ImageUrl = g.ImageFullPath
                 }).ToList();
-
 
                 return new JsonResult(gymDtos);
             }

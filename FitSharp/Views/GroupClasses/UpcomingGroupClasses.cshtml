@@ -62,6 +62,7 @@
                                 <td>@Html.DisplayFor(modelItem => item.EndTime)</td>
                                 <td>@Html.DisplayFor(modelItem => item.AvailableSpots)</td>
                                 <td>
+
                                     @if (item.EndTime > DateTime.Now && !item.Customers.Any(c => c.User.UserName == User.Identity.Name))
                                     {
                                         <a asp-action="SignUp" asp-route-id="@item.Id" asp-route-returnUrl="UpcomingGroupClasses" class="btn btn-warning"><i class="fas fa-user-plus"></i></a>

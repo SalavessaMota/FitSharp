@@ -37,6 +37,7 @@ namespace FitSharp.Controllers
             _flashMessage = flashMessage;
         }
 
+        [Authorize(Roles = "Instructor")]
         public IActionResult Index(string filter)
         {
             var classes = _groupClassRepository.GetAllGroupClassesWithRelatedData();
@@ -66,6 +67,7 @@ namespace FitSharp.Controllers
             return View(classes);
         }
 
+        [Authorize(Roles = "Instructor")]
         public IActionResult Create()
         {
             var model = new CreateGroupClassViewModel
@@ -81,6 +83,7 @@ namespace FitSharp.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Instructor")]
         public async Task<IActionResult> Create(CreateGroupClassViewModel model)
         {
             if (ModelState.IsValid)
@@ -111,6 +114,7 @@ namespace FitSharp.Controllers
             return View(model);
         }
 
+        [Authorize(Roles = "Instructor, Customer")]
         public IActionResult Details(int id)
         {
             var groupClass = _groupClassRepository.GetGroupClassWithAllRelatedDataAsync(id).Result;
@@ -123,6 +127,7 @@ namespace FitSharp.Controllers
             return View(groupClass);
         }
 
+        [Authorize(Roles = "Instructor")]
         public async Task<IActionResult> Edit(int id)
         {
             var groupClass = await _groupClassRepository.GetGroupClassWithAllRelatedDataAsync(id);
@@ -151,6 +156,7 @@ namespace FitSharp.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Instructor")]
         public async Task<IActionResult> Edit(EditGroupClassViewModel model)
         {
             if (ModelState.IsValid)
@@ -193,6 +199,7 @@ namespace FitSharp.Controllers
             return View(model);
         }
 
+        [Authorize(Roles = "Instructor")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -230,6 +237,7 @@ namespace FitSharp.Controllers
             return View("Error");
         }
 
+        [Authorize(Roles = "Customer")]
         public IActionResult CustomerGroupClasses(string filter, string username)
         {
             var classes = _groupClassRepository.GetAllGroupClassesWithRelatedDataByUserName(User.Identity.Name);
@@ -259,6 +267,7 @@ namespace FitSharp.Controllers
             return View(classes.ToList());
         }
 
+        [Authorize]
         public IActionResult UpcomingGroupClasses()
         {
             var classes = _groupClassRepository.GetAllGroupClassesWithRelatedData();
@@ -268,7 +277,7 @@ namespace FitSharp.Controllers
             return View(upcomingGroupClasses);
         }
 
-
+        [Authorize(Roles = "Customer")]
         public async Task<IActionResult> SignUp(int id, string returnUrl)
         {
             // Obter a classe em grupo com todos os dados relacionados
@@ -323,6 +332,7 @@ namespace FitSharp.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Customer")]
         public async Task<IActionResult> SignUpCalendar(int id)
         {
             var groupClass = await _groupClassRepository.GetGroupClassWithAllRelatedDataAsync(id);
@@ -359,7 +369,7 @@ namespace FitSharp.Controllers
             return Json(new { success = true, message = "You have successfully signed up for the class." });
         }
 
-
+        [Authorize(Roles = "Customer")]
         public async Task<IActionResult> CancelSignUp(int id, string returnUrl)
         {
             var groupClass = await _groupClassRepository.GetGroupClassWithAllRelatedDataAsync(id);
@@ -390,6 +400,7 @@ namespace FitSharp.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Customer")]
         public async Task<IActionResult> GetAvailableGroupClasses()
         {
             // Obter o ID do usuário autenticado
@@ -463,7 +474,6 @@ namespace FitSharp.Controllers
             {
                 return BadRequest("User already enrolled in this group class");
             }
-
 
             customer.ClassesRemaining--;
             await _userRepository.UpdateCustomerAsync(customer);

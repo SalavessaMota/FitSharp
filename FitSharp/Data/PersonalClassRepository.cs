@@ -1,5 +1,6 @@
 ﻿using FitSharp.Data.Entities;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -46,7 +47,7 @@ namespace FitSharp.Data
             return _context.PersonalClasses
                 .Include(p => p.Room)
                     .ThenInclude(r => r.Gym)
-                        //.ThenInclude(g => g.Reviews)
+                //.ThenInclude(g => g.Reviews)
                 .Include(p => p.ClassType)
                 .Include(p => p.Instructor)
                     .ThenInclude(i => i.User)
@@ -60,12 +61,18 @@ namespace FitSharp.Data
 
         public async Task<bool> HasAttendedGymAsync(int customerId, int gymId)
         {
-            return await _context.PersonalClasses.AnyAsync(pc => pc.CustomerId == customerId && pc.Room.GymId == gymId);
+            return await _context.PersonalClasses.AnyAsync(
+                pc => pc.CustomerId == customerId &&
+                pc.Room.GymId == gymId &&
+                pc.EndTime <= DateTime.UtcNow);
         }
 
         public async Task<bool> HasAttendedInstructorAsync(int customerId, int instructorId)
         {
-            return await _context.PersonalClasses.AnyAsync(pc => pc.CustomerId == customerId && pc.InstructorId == instructorId);
+            return await _context.PersonalClasses.AnyAsync(
+                pc => pc.CustomerId == customerId &&
+                pc.InstructorId == instructorId &&
+                pc.EndTime <= DateTime.UtcNow);
         }
     }
 }

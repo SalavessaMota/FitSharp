@@ -1,7 +1,5 @@
-﻿using Braintree;
-using FitSharp.Data;
+﻿using FitSharp.Data;
 using FitSharp.Data.Entities;
-using FitSharp.Entities;
 using FitSharp.Helpers;
 using FitSharp.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -41,6 +39,7 @@ namespace FitSharp.Controllers
             _flashMessage = flashMessage;
         }
 
+        [Authorize(Roles = "Instructor")]
         public IActionResult Index(string filter)
         {
             var name = User.Identity.Name;
@@ -72,11 +71,13 @@ namespace FitSharp.Controllers
             return View(classes);
         }
 
+        [Authorize(Roles = "Instructor")]
         public IActionResult CreateOpenPersonalClass()
         {
             return View();
         }
 
+        [Authorize(Roles = "Instructor")]
         public IActionResult Create()
         {
             var clients = _userRepository.GetAllCustomersWithAllRelatedData();
@@ -85,6 +86,7 @@ namespace FitSharp.Controllers
             return View(clientsWithMembershipActive);
         }
 
+        [Authorize(Roles = "Instructor")]
         public IActionResult CreatePersonalClass(int customerId)
         {
             var model = new CreatePersonalClassViewModel
@@ -101,6 +103,7 @@ namespace FitSharp.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Instructor")]
         public async Task<IActionResult> CreatePersonalClass(CreatePersonalClassViewModel model)
         {
             if (ModelState.IsValid)
@@ -164,6 +167,7 @@ namespace FitSharp.Controllers
             return View(model);
         }
 
+        [Authorize(Roles = "Instructor, Customer")]
         public IActionResult Details(int id)
         {
             var personalClass = _personalClassRepository.GetAllPersonalClassesWithRelatedData()
@@ -177,6 +181,7 @@ namespace FitSharp.Controllers
             return View(personalClass);
         }
 
+        [Authorize(Roles = "Instructor")]
         public async Task<IActionResult> Edit(int id)
         {
             var personalClass = await _personalClassRepository.GetPersonalClassWithAllRelatedData(id);
@@ -207,6 +212,7 @@ namespace FitSharp.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Instructor")]
         public async Task<IActionResult> Edit(EditPersonalClassViewModel model)
         {
             if (!ModelState.IsValid)
@@ -232,7 +238,7 @@ namespace FitSharp.Controllers
             personalClass.Informations = model.Informations;
 
             await _personalClassRepository.UpdateAsync(personalClass);
-            
+
             var actionUrl = Url.Action("Details", "PersonalClasses", new { id = personalClass.Id }, protocol: HttpContext.Request.Scheme);
             var notification = new Notification
             {
@@ -247,6 +253,7 @@ namespace FitSharp.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        [Authorize(Roles = "Instructor")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -298,6 +305,7 @@ namespace FitSharp.Controllers
             }
         }
 
+        [Authorize(Roles = "Customer")]
         public IActionResult CustomerPersonalClasses(string username, string filter)
         {
             var classes = _personalClassRepository.GetAllPersonalClassesWithRelatedDataByUserName(username);
@@ -327,6 +335,7 @@ namespace FitSharp.Controllers
             return View(classes);
         }
 
+        [Authorize]
         public IActionResult UpcomingPersonalClasses()
         {
             var classes = _personalClassRepository.GetAllPersonalClassesWithRelatedData();
@@ -371,6 +380,7 @@ namespace FitSharp.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Customer")]
         public async Task<IActionResult> SignUpCalendar(int id)
         {
             var personalClass = await _personalClassRepository.GetPersonalClassWithAllRelatedData(id);
@@ -414,6 +424,7 @@ namespace FitSharp.Controllers
             return Json(new { success = true, message = "You have successfully signed up for the personal class." });
         }
 
+        [Authorize(Roles = "Customer")]
         public async Task<IActionResult> CancelSignUp(int id, string returnUrl)
         {
             var personalClass = await _personalClassRepository.GetPersonalClassWithAllRelatedData(id);
@@ -454,7 +465,6 @@ namespace FitSharp.Controllers
             // Redireciona para o retorno especificado ou uma view padrão
             return RedirectToAction(returnUrl ?? nameof(CustomerPersonalClasses), new { username = this.User.Identity.Name, filter = "all" });
         }
-
 
         [HttpGet]
         public IActionResult GetAvailablePersonalClasses()

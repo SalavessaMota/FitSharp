@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -806,7 +805,7 @@ public class AdminController : Controller
         string tokenLink = Url.Action(
             "ConfirmEmail",
             "Account",
-            new 
+            new
             {
                 userId = user.Id,
                 token = myToken

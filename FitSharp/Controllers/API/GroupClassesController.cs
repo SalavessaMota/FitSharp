@@ -28,7 +28,6 @@ namespace FitSharp.Controllers.API
             _userRepository = userRepository;
         }
 
-
         [HttpGet("Available")]
         [AllowAnonymous]
         public async Task<JsonResult> GetAvailableGroupClasses()
@@ -39,11 +38,11 @@ namespace FitSharp.Controllers.API
                 .Select(gc => new GroupClassDto
                 {
                     Id = gc.Id,
-                    Title = gc.Instructor.Speciality,
+                    Title = gc.Name,
                     Gym = gc.Room.Gym.Name,
                     ClassType = gc.Instructor.Speciality,
-                    Start = gc.StartTime.ToString("yyyy-MM-ddTHH:mm"),
-                    End = gc.EndTime.ToString("yyyy-MM-ddTHH:mm"),
+                    Start = gc.StartTime.ToString("yyyy-MM-dd HH:mm"),
+                    End = gc.EndTime.ToString("yyyy-MM-dd HH:mm"),
                     Instructor = gc.Instructor.User.FullName,
                     InstructorScore = gc.Instructor.Rating
                 })
@@ -90,11 +89,11 @@ namespace FitSharp.Controllers.API
                 .Select(gc => new GroupClassDto
                 {
                     Id = gc.Id,
-                    Title = gc.Instructor.Speciality,
+                    Title = gc.Name,
                     Gym = gc.Room.Gym.Name,
                     ClassType = gc.Instructor.Speciality,
-                    Start = gc.StartTime.ToString("yyyy-MM-ddTHH:mm"),
-                    End = gc.EndTime.ToString("yyyy-MM-ddTHH:mm"),
+                    Start = gc.StartTime.ToString("yyyy-MM-dd HH:mm"),
+                    End = gc.EndTime.ToString("yyyy-MM-dd HH:mm"),
                     Instructor = gc.Instructor.User.FullName,
                     InstructorScore = gc.Instructor.Rating
                 })
@@ -141,11 +140,11 @@ namespace FitSharp.Controllers.API
                 .Select(gc => new GroupClassDto
                 {
                     Id = gc.Id,
-                    Title = gc.Instructor.Speciality,
+                    Title = gc.Name,
                     Gym = gc.Room.Gym.Name,
                     ClassType = gc.Instructor.Speciality,
-                    Start = gc.StartTime.ToString("yyyy-MM-ddTHH:mm"),
-                    End = gc.EndTime.ToString("yyyy-MM-ddTHH:mm"),
+                    Start = gc.StartTime.ToString("yyyy-MM-dd HH:mm"),
+                    End = gc.EndTime.ToString("yyyy-MM-dd HH:mm"),
                     Instructor = gc.Instructor.User.FullName,
                     InstructorScore = gc.Instructor.Rating
                 })
@@ -153,8 +152,6 @@ namespace FitSharp.Controllers.API
 
             return new JsonResult(enrolledGroupClasses);
         }
-
-
 
         [HttpPost]
         [Route("Enroll")]
@@ -285,6 +282,5 @@ namespace FitSharp.Controllers.API
 
             return new JsonResult(new { success = true, message = "Successfully unenrolled from the class!" });
         }
-
     }
 }

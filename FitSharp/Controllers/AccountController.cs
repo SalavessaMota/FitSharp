@@ -3,6 +3,7 @@ using FitSharp.Data.Entities;
 using FitSharp.Entities;
 using FitSharp.Helpers;
 using FitSharp.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -125,7 +126,6 @@ namespace FitSharp.Controllers
             return View(model);
         }
 
-
         public async Task<IActionResult> Logout()
         {
             await _userHelper.LogoutAsync();
@@ -231,6 +231,7 @@ namespace FitSharp.Controllers
         }
 
         // GET
+        [Authorize]
         public async Task<IActionResult> ChangeUser()
         {
             if (!this.User.Identity.IsAuthenticated)
@@ -268,6 +269,7 @@ namespace FitSharp.Controllers
 
         // POST
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> ChangeUser(UserViewModel model)
         {
             if (ModelState.IsValid)
@@ -311,6 +313,7 @@ namespace FitSharp.Controllers
             return View(model);
         }
 
+        [Authorize]
         public IActionResult ChangePassword()
         {
             if (!this.User.Identity.IsAuthenticated)
@@ -322,6 +325,7 @@ namespace FitSharp.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> ChangePassword(ChangePasswordViewModel model)
         {
             if (ModelState.IsValid)
@@ -518,6 +522,7 @@ namespace FitSharp.Controllers
             return View(model);
         }
 
+        [Authorize]
         public async Task<IActionResult> GenerateQRCode(string userName)
         {
             //var customer = await _userRepository.GetCustomerByUserName(User.Identity.Name);
@@ -551,6 +556,7 @@ namespace FitSharp.Controllers
             }
         }
 
+        [Authorize]
         public async Task<IActionResult> DisplayQRCode(string userName)
         {
             var customer = await _userRepository.GetCustomerByUserName(userName);
@@ -563,8 +569,8 @@ namespace FitSharp.Controllers
             return View(customer);
         }
 
-
         [HttpGet]
+        [Authorize]
         public async Task<IActionResult> DownloadQRCodePdf(string userName)
         {
             var customer = await _userRepository.GetCustomerByUserName(userName);
@@ -631,8 +637,6 @@ namespace FitSharp.Controllers
                 }
             }
         }
-
-
 
         public IActionResult NotAuthorized()
         {

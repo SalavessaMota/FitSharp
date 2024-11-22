@@ -82,6 +82,8 @@
                                 <td>@Html.DisplayFor(modelItem => item.StartTime)</td>
                                 <td>@Html.DisplayFor(modelItem => item.EndTime)</td>
                                 <td>
+                                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info"><i class="fas fa-list"></i></a>
+
                                     @if(item.EndTime > DateTime.Now)
                                     {
                                         @if (item.CustomerId == null)

@@ -190,6 +190,7 @@ namespace FitSharp.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> EditRoom(Room room)
         {
             if (room == null)
@@ -240,6 +241,7 @@ namespace FitSharp.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin, Employee")]
         public async Task<IActionResult> EditEquipment(Equipment equipment)
         {
             if (this.ModelState.IsValid)
@@ -286,6 +288,7 @@ namespace FitSharp.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> AddRoom(RoomViewModel model)
         {
             if (this.ModelState.IsValid)
@@ -324,6 +327,7 @@ namespace FitSharp.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin, Employee")]
         public async Task<IActionResult> AddEquipment(EquipmentViewModel model)
         {
             if (this.ModelState.IsValid)
@@ -384,6 +388,7 @@ namespace FitSharp.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Create(GymViewModel model)
         {
             if (!ModelState.IsValid)
@@ -442,6 +447,7 @@ namespace FitSharp.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(GymViewModel model)
         {
             if (ModelState.IsValid)

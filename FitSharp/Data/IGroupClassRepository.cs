@@ -15,6 +15,5 @@ namespace FitSharp.Data
         Task<bool> HasAttendedGymAsync(int customerId, int gymId);
 
         Task<bool> HasAttendedInstructorAsync(int customerId, int instructorId);
-
     }
 }

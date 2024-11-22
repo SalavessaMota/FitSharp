@@ -78,8 +78,15 @@
 
 
     <div>
-        @* <a asp-action="EditUser" asp-route-id="@Model.Id" class="btn btn-warning roundedwithshadow">Edit</a> *@
-        <a asp-action="Index"  style="background-color: #808080" class="btn btn-success roundedwithshadow">Back to List</a>
+        @if (this.User.Identity.IsAuthenticated && this.User.IsInRole("Instructor"))
+        {
+            <a asp-action="Index" style="background-color: #808080" class="btn btn-success roundedwithshadow">Back to List</a>
+        }
+        else if (this.User.Identity.IsAuthenticated && this.User.IsInRole("Customer"))
+        {
+            <a asp-action="CustomerGroupClasses" asp-route-username="@User.Identity.Name" style="background-color: #808080" class="btn btn-success roundedwithshadow">Back to List</a>
+
+        }
     </div>
 
 </div>

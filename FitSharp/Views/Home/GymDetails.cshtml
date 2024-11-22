@@ -83,7 +83,7 @@
         <div class="card-footer bg-light">
 
             <div class="text-center mt-4">
-                @if (ViewBag.HasAttendedClasses)
+                @if (ViewBag.HasAttendedClasses != null && this.User.Identity.IsAuthenticated)
                 {
                     if (ViewBag.HasReviewed)
                     {

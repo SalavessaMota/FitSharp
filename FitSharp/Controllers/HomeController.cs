@@ -1,10 +1,9 @@
-﻿using Braintree;
-using FitSharp.Data;
+﻿using FitSharp.Data;
 using FitSharp.Data.Entities;
 using FitSharp.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using Vereyon.Web;
@@ -113,6 +112,7 @@ namespace FitSharp.Controllers
             return View();
         }
 
+        [Authorize(Roles = "Customer")]
         public IActionResult CombinedClassesCalendar()
         {
             ViewBag.PersonalClasses = _personalClassRepository.GetAllPersonalClassesWithRelatedData();
@@ -132,13 +132,15 @@ namespace FitSharp.Controllers
 
             var customer = await _userRepository.GetCustomerByUserName(User.Identity.Name);
 
-            // Verificar se o cliente já teve aulas com o instrutor
-            ViewBag.HasAttendedClasses = await _personalClassRepository.HasAttendedInstructorAsync(customer.Id, id) ||
+            if (this.User.Identity.IsAuthenticated)
+            {
+                // Verificar se o cliente já teve aulas com o instrutor
+                ViewBag.HasAttendedClasses = await _personalClassRepository.HasAttendedInstructorAsync(customer.Id, id) ||
                                           await _groupClassRepository.HasAttendedInstructorAsync(customer.Id, id);
 
-            // Verificar se o cliente já fez uma review ao instrutor
-            ViewBag.HasReviewed = await _userRepository.HasCustomerReviewedInstructorAsync(customer.Id, id);
-
+                // Verificar se o cliente já fez uma review ao instrutor
+                ViewBag.HasReviewed = await _userRepository.HasCustomerReviewedInstructorAsync(customer.Id, id);
+            }
 
             return View(instructor);
         }
@@ -154,20 +156,22 @@ namespace FitSharp.Controllers
 
             var customer = await _userRepository.GetCustomerByUserName(User.Identity.Name);
 
-            // Verificar se o cliente já frequentou aulas no ginásio
-            ViewBag.HasAttendedClasses = await _personalClassRepository.HasAttendedGymAsync(customer.Id, id) ||
-                                          await _groupClassRepository.HasAttendedGymAsync(customer.Id, id);
+            if (this.User.Identity.IsAuthenticated)
+            {
+                // Verificar se o cliente já frequentou aulas no ginásio
+                ViewBag.HasAttendedClasses = await _personalClassRepository.HasAttendedGymAsync(customer.Id, id) ||
+                                              await _groupClassRepository.HasAttendedGymAsync(customer.Id, id);
 
-            // Verificar se o cliente já fez uma review ao ginásio
-            ViewBag.HasReviewed = await _gymsRepository.HasCustomerReviewedGymAsync(customer.Id, id);
-
-
+                // Verificar se o cliente já fez uma review ao ginásio
+                ViewBag.HasReviewed = await _gymsRepository.HasCustomerReviewedGymAsync(customer.Id, id);
+            }
 
             return View(gym);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public async Task<IActionResult> RequestDataDeletion()
         {
             // Obter o usuário atual

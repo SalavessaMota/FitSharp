@@ -292,6 +292,5 @@ namespace FitSharp.Data
         {
             return await _context.InstructorReviews.AnyAsync(r => r.CustomerId == customerId && r.InstructorId == instructorId);
         }
-
     }
 }

@@ -1,5 +1,6 @@
 ﻿using FitSharp.Data.Entities;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -56,13 +57,18 @@ namespace FitSharp.Data
 
         public async Task<bool> HasAttendedGymAsync(int customerId, int gymId)
         {
-            return await _context.GroupClasses.AnyAsync(gc => gc.Customers.Any(c => c.Id == customerId) && gc.Room.GymId == gymId);
+            return await _context.GroupClasses.AnyAsync(
+                gc => gc.Customers.Any(c => c.Id == customerId) &&
+                gc.Room.GymId == gymId &&
+                gc.EndTime <= DateTime.UtcNow);
         }
 
         public async Task<bool> HasAttendedInstructorAsync(int customerId, int instructorId)
         {
-            return await _context.GroupClasses.AnyAsync(gc => gc.Customers.Any(c => c.Id == customerId) && gc.InstructorId == instructorId);
+            return await _context.GroupClasses.AnyAsync(
+                gc => gc.Customers.Any(c => c.Id == customerId) &&
+                gc.InstructorId == instructorId &&
+                gc.EndTime <= DateTime.UtcNow);
         }
-
     }
 }
