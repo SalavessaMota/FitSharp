@@ -7,14 +7,21 @@ namespace FitSharp.Entities
 {
     public class User : IdentityUser
     {
+        [Required]
         [MaxLength(50, ErrorMessage = "The field {0} only can contain {1} characters length.")]
         public string FirstName { get; set; }
 
+        [Required]
         [MaxLength(50, ErrorMessage = "The field {0} only can contain {1} characters length.")]
         public string LastName { get; set; }
 
+        [Required]
         [MaxLength(100, ErrorMessage = "The field {0} only can contain {1} characters length.")]
         public string Address { get; set; }
+
+        [Required]
+        [MaxLength(15, ErrorMessage = "The field {0} only can contain {1} characters length.")]
+        public string TaxNumber { get; set; }
 
         public int CityId { get; set; }
 

@@ -1,8 +1,10 @@
 ﻿using FitSharp.Data;
 using FitSharp.Data.Entities;
+using FitSharp.Helpers;
 using FitSharp.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Razor.Language.Intermediate;
 using Microsoft.Extensions.Logging;
 using System.Diagnostics;
 using System.Threading.Tasks;
@@ -19,6 +21,7 @@ namespace FitSharp.Controllers
         private readonly IGroupClassRepository _groupClassRepository;
         private readonly INotificationRepository _notificationRepository;
         private readonly IFlashMessage _flashMessage;
+        private readonly IMailHelper _mailHelper;
 
         public HomeController(
             ILogger<HomeController> logger,
@@ -27,7 +30,8 @@ namespace FitSharp.Controllers
             IPersonalClassRepository personalClassRepository,
             IGroupClassRepository groupClassRepository,
             INotificationRepository notificationRepository,
-            IFlashMessage flashMessage)
+            IFlashMessage flashMessage,
+            IMailHelper mailHelper)
         {
             _logger = logger;
             _gymsRepository = gymsRepository;
@@ -36,6 +40,7 @@ namespace FitSharp.Controllers
             _groupClassRepository = groupClassRepository;
             _notificationRepository = notificationRepository;
             _flashMessage = flashMessage;
+            _mailHelper = mailHelper;
         }
 
         public async Task<IActionResult> Index()
@@ -223,6 +228,42 @@ namespace FitSharp.Controllers
 
         public IActionResult OurTeam()
         {
+            return View();
+        }
+
+        [HttpGet]
+        public IActionResult ContactUs()
+        {
+            return View(new ContactUsViewModel());
+        }
+
+        [HttpPost]
+        public IActionResult ContactUs(ContactUsViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                _flashMessage.Danger("Message could not be sent. Please try again later.");
+                return View(model);
+            }
+
+            Response response = _mailHelper.SendEmail("fitsharp.support@yopmail.com", model.Subject,
+                                    $"<h3 style=\"color:#B70D00;\">Client:</h3>" +
+                                    $"<p>{model.Name}</p><br />" +
+                                    $"<h3 style=\"color:#B70D00;\">Email:</h3>" +
+                                    $"<p>{model.Email}</p><br />" +
+                                    $"<h3 style=\"color:#B70D00;\">Subject:</h3>" +
+                                    $"<p>{model.Subject}</p><br />" +
+                                    $"<h3 style=\"color:#B70D00;\">Message:</h3>" +
+                                    $"<p>{model.Message}</p><br />");
+
+            if (!response.IsSuccess)
+            {
+                _flashMessage.Danger("Message could not be sent. Please try again later.");
+                return View(model);
+            }
+
+            _flashMessage.Confirmation("Your message has been successfully sent and we will get in touch in the next 48 hours.");
+            ModelState.Clear();
             return View();
         }
     }

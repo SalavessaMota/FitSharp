@@ -150,7 +150,7 @@ namespace fitsharpMVC.Controllers.API
                 }, protocol: HttpContext.Request.Scheme);
 
             Response response = _mailHelper.SendEmail(model.Email, "FitSharp - Password Reset",
-                                        $"<h1 style=\"color:#1E90FF;\">FitSharp Password Reset</h1>" +
+                                        $"<h1 style=\"color:#B70D00;\">FitSharp Password Reset</h1>" +
                                         $"<p>We received a request to reset your password. If you made this request, please click the link below to reset your password:</p>" +
                                         $"<p><a href = \"{link}\" style=\"color:#FFA500; font-weight:bold;\">Reset Password</a></p>" +
                                         $"<p>If you did not request a password reset, please ignore this email. Your account is still secure.</p>" +
@@ -260,7 +260,7 @@ namespace fitsharpMVC.Controllers.API
                 }, protocol: HttpContext.Request.Scheme);
 
             Response response = _mailHelper.SendEmail(model.Username, "FitSharp - Welcome to Your Fitness Journey",
-                                        $"<h1 style=\"color:#1E90FF;\">Welcome to FitSharp!</h1>" +
+                                        $"<h1 style=\"color:#B70D00;\">Welcome to FitSharp!</h1>" +
                                         $"<p>Thank you for choosing FitSharp, your gateway to a healthier and empowered lifestyle.</p>" +
                                         $"<p>We’re thrilled to have you as part of our global community. To complete your registration, please confirm your email address by clicking the link below:</p>" +
                                         $"<p><a href = \"{tokenLink}\" style=\"color:#FFA500; font-weight:bold;\">Confirm Email</a></p>" +

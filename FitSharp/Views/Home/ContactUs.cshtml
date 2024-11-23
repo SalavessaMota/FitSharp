@@ -1,0 +1,71 @@
+﻿@model FitSharp.Models.ContactUsViewModel
+@{
+    ViewData["Title"] = "Contact Us";
+}
+
+<div class="container mt-5 transparent-card">
+    <div class="flash-message">
+        <flash dismissable="true" />
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="text-center">
+                <h2 class="text-logo-primary">Contact Us</h2>
+                <p>
+                    We value your feedback and we are here to help you!
+                    If you have any questions, need assistance, or would like to share suggestions, please don’t hesitate to get in touch with us.
+                </p>
+            </div>
+            <form asp-action="ContactUs" method="post">
+                <div class="form-group">
+                    <label asp-for="Name"></label>
+                    <input asp-for="Name" class="form-control" />
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Email"></label>
+                    <input asp-for="Email" class="form-control" />
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Subject"></label>
+                    <input asp-for="Subject" class="form-control" />
+                    <span asp-validation-for="Subject" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Message"></label>
+                    <textarea asp-for="Message" class="form-control"></textarea>
+                    <span asp-validation-for="Message" class="text-danger"></span>
+                </div>
+                <div class="text-center">
+                    <button type="submit" class="btn btn-primary">Send</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                // Seleciona o elemento flash message
+                const flashMessage = document.querySelector('.flash-message');
+
+                // Verifica se o elemento existe e aplica o temporizador
+                if (flashMessage) {
+                    setTimeout(() => {
+                        flashMessage.style.transition = "opacity 0.5s ease";
+                        flashMessage.style.opacity = "0";
+                        setTimeout(() => flashMessage.remove(), 500); // Remove o elemento após a transição
+                    }, 4000);
+                }
+            });
+        </script>
+    }
+}
