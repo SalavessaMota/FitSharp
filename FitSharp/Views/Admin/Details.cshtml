@@ -47,6 +47,15 @@
             @Html.DisplayFor(model => model.Address)
         </dd>
 
+        <dt class="col-sm-6"> Phone Number </dt>
+        <dd class="col-sm-6">
+            @Html.DisplayFor(model => model.PhoneNumber)
+        </dd>
+
+        <dt class="col-sm-6"> Tax Number </dt>
+        <dd class="col-sm-6">
+            @Html.DisplayFor(model => model.TaxNumber)
+        </dd>
 
         @* Exibição Condicional com Base no Tipo de Usuário *@
         @if (Model.UserType == "Customer" && Model.Membership != null)

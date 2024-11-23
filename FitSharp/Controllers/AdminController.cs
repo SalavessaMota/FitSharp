@@ -101,6 +101,7 @@ public class AdminController : Controller
                     Email = model.Username,
                     UserName = model.Username,
                     Address = model.Address,
+                    TaxNumber = model.TaxNumber,
                     PhoneNumber = model.PhoneNumber,
                     CityId = model.CityId,
                     IsActive = true
@@ -124,7 +125,7 @@ public class AdminController : Controller
                 }, protocol: HttpContext.Request.Scheme);
 
                 Response response = _mailHelper.SendEmail(model.Username, "FitSharp - Set Your Password",
-                        $"<h1 style=\"color:#1E90FF;\">Welcome to FitSharp!</h1>" +
+                        $"<h1 style=\"color:#B70D00;\">Welcome to FitSharp!</h1>" +
                         $"<p>Your account has been created by an administrator on behalf of FitSharp, your trusted platform for fitness and wellness.</p>" +
                         $"<p>To complete your registration, please set your password by clicking the link below:</p>" +
                         $"<p><a href = \"{tokenLink}\" style=\"color:#FFA500; font-weight:bold;\">Set Password</a></p>" +
@@ -193,6 +194,7 @@ public class AdminController : Controller
                     UserName = model.Username,
                     Address = model.Address,
                     PhoneNumber = model.PhoneNumber,
+                    TaxNumber = model.TaxNumber,
                     CityId = model.CityId,
                     IsActive = true
                 };
@@ -221,7 +223,7 @@ public class AdminController : Controller
                 }, protocol: HttpContext.Request.Scheme);
 
                 Response response = _mailHelper.SendEmail(model.Username, "FitSharp - Set Your Password",
-                        $"<h1 style=\"color:#1E90FF;\">Welcome to FitSharp!</h1>" +
+                        $"<h1 style=\"color:#B70D00;\">Welcome to FitSharp!</h1>" +
                         $"<p>Your account has been created by an administrator on behalf of FitSharp, your trusted platform for fitness and wellness.</p>" +
                         $"<p>To complete your registration, please set your password by clicking the link below:</p>" +
                         $"<p><a href = \"{tokenLink}\" style=\"color:#FFA500; font-weight:bold;\">Set Password</a></p>" +
@@ -289,6 +291,7 @@ public class AdminController : Controller
                     UserName = model.Username,
                     Address = model.Address,
                     PhoneNumber = model.PhoneNumber,
+                    TaxNumber = model.TaxNumber,
                     CityId = model.CityId,
                     IsActive = true
                 };
@@ -318,7 +321,7 @@ public class AdminController : Controller
                 }, protocol: HttpContext.Request.Scheme);
 
                 Response response = _mailHelper.SendEmail(model.Username, "FitSharp - Set your Password",
-                                        $"<h1 style=\"color:#1E90FF;\">Welcome to FitSharp!</h1>" +
+                                        $"<h1 style=\"color:#B70D00;\">Welcome to FitSharp!</h1>" +
                                         $"<p>Your account has been created by an authorized personnel.</p>" +
                                         $"<p>To complete your registration, please set your password by clicking the link below:</p>" +
                                         $"<p><a href = \"{tokenLink}\" style=\"color:#FFA500; font-weight:bold;\">Set Password</a></p>" +
@@ -393,6 +396,7 @@ public class AdminController : Controller
                     UserName = model.Username,
                     Address = model.Address,
                     PhoneNumber = model.PhoneNumber,
+                    TaxNumber = model.TaxNumber,
                     CityId = model.CityId,
                     IsActive = true
                 };
@@ -414,7 +418,7 @@ public class AdminController : Controller
                 }, protocol: HttpContext.Request.Scheme);
 
                 Response response = _mailHelper.SendEmail(model.Username, "FitSharp - Set your Password",
-                                        $"<h1 style=\"color:#1E90FF;\">Welcome to FitSharp!</h1>" +
+                                        $"<h1 style=\"color:#B70D00;\">Welcome to FitSharp!</h1>" +
                                         $"<p>Your account has been created by an authorized personnel.</p>" +
                                         $"<p>To complete your registration, please set your password by clicking the link below:</p>" +
                                         $"<p><a href = \"{tokenLink}\" style=\"color:#FFA500; font-weight:bold;\">Set Password</a></p>" +
@@ -464,6 +468,7 @@ public class AdminController : Controller
             LastName = user.LastName,
             Address = user.Address,
             PhoneNumber = user.PhoneNumber,
+            TaxNumber = user.TaxNumber,
             UserType = _userRepository.DetermineUserType(user),
             CityId = user.CityId,
             CountryId = user.City.Country.Id
@@ -544,6 +549,7 @@ public class AdminController : Controller
         user.FirstName = model.FirstName;
         user.LastName = model.LastName;
         user.Address = model.Address;
+        user.TaxNumber = model.TaxNumber;
         user.CityId = model.CityId;
         user.PhoneNumber = model.PhoneNumber;
 
@@ -640,6 +646,7 @@ public class AdminController : Controller
             LastName = user.LastName,
             Address = user.Address,
             PhoneNumber = user.PhoneNumber,
+            TaxNumber = user.TaxNumber,
             CityId = user.CityId,
             City = city,
             Country = city.Country,
@@ -815,7 +822,7 @@ public class AdminController : Controller
 
         // Send the email
         Response response = _mailHelper.SendEmail(user.Email, "FitSharp - Welcome to Your Fitness Journey",
-                                        $"<h1 style=\"color:#1E90FF;\">Welcome to FitSharp!</h1>" +
+                                        $"<h1 style=\"color:#B70D00;\">Welcome to FitSharp!</h1>" +
                                         $"<p>Thank you for choosing FitSharp, your gateway to a healthier and empowered lifestyle.</p>" +
                                         $"<p>We’re thrilled to have you as part of our global community. To complete your registration, please confirm your email address by clicking the link below:</p>" +
                                         $"<p><a href = \"{tokenLink}\" style=\"color:#FFA500; font-weight:bold;\">Confirm Email</a></p>" +

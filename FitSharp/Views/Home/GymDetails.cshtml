@@ -83,7 +83,7 @@
         <div class="card-footer bg-light">
 
             <div class="text-center mt-4">
-                @if (ViewBag.HasAttendedClasses != null && this.User.Identity.IsAuthenticated)
+                @if (ViewBag.HasAttendedClasses && this.User.Identity.IsAuthenticated)
                 {
                     if (ViewBag.HasReviewed)
                     {
@@ -106,7 +106,7 @@
                 }
             </div>
 
-            <h4>What Clients Say</h4>
+            <h4>What Our Members Say</h4>
             <div class="row">
                 @if (Model.Reviews != null && Model.Reviews.Any())
                 {

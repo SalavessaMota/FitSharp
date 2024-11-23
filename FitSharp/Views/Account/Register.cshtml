@@ -8,7 +8,7 @@
         <div class="text-center">
             <h2>Register</h2>
         </div>
-        </br>
+        <br />
         <form method="post" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly"></div>
 
@@ -51,6 +51,11 @@
                 <label asp-for="PhoneNumber">Phone Number</label>
                 <input asp-for="PhoneNumber" class="form-control" />
                 <span asp-validation-for="PhoneNumber" class="text-warning"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="TaxNumber">Tax Number</label>
+                <input asp-for="TaxNumber" class="form-control" />
+                <span asp-validation-for="TaxNumber" class="text-warning"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Password">Password</label>

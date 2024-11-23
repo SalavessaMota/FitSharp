@@ -4,6 +4,7 @@ using FitSharp.Data.Entities;
 using FitSharp.Helpers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Razor.Language.Intermediate;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
@@ -18,17 +19,20 @@ namespace FitSharp.Controllers
         private readonly IUserRepository _userRepository;
         private readonly IFlashMessage _flashMessage;
         private readonly IPaymentHelper _paymentHelper;
+        private readonly IMailHelper _mailHelper;
 
         public MembershipsController(
             IMembershipRepository membershipRepository,
             IUserRepository userRepository,
             IFlashMessage flashMessage,
-            IPaymentHelper paymentHelper)
+            IPaymentHelper paymentHelper,
+            IMailHelper mailHelper)
         {
             _membershipRepository = membershipRepository;
             _userRepository = userRepository;
             _flashMessage = flashMessage;
             _paymentHelper = paymentHelper;
+            _mailHelper = mailHelper;
         }
 
         [Authorize(Roles = "Admin")]
@@ -189,7 +193,38 @@ namespace FitSharp.Controllers
             customer.MembershipIsActive = true;
             await _userRepository.UpdateCustomerAsync(customer);
 
-            _flashMessage.Confirmation("Payment accepted successfully!");
+            Response response = _mailHelper.SendEmail(customer.User.Email, "FitSharp - Membership Receipt",
+                                    $"<h1 style=\"color:#B70D00;\">Thank you for your purchase!</h1>" +
+                                    $"<p>Here are the details of your newly acquired membership.</p><hr />" +
+                                    $"<h2 style=\"color:#B70D00;\">Membership:</h2>" +
+                                    $"<h3 style=\"color:#B70D00;\">Name:</h3>" +
+                                    $"<p>{membership.Name}</p>" +
+                                    $"<h3 style=\"color:#B70D00;\">Number of available classes:</h3>" +
+                                    $"<p>{(membership.NumberOfClasses > 9999 ? "Unlimited" : membership.NumberOfClasses.ToString())}</p>" +
+                                    $"<h3 style=\"color:#B70D00;\">Description:</h3>" +
+                                    $"<p>{membership.Description}</p>" +
+                                    $"<h3 style=\"color:#B70D00;\">Price:</h3>" +
+                                    $"<p>{model.Price}€</p><br />" +
+                                    $"<h2 style=\"color:#B70D00;\">Client:</h2>" +
+                                    $"<h3 style=\"color:#B70D00;\">Name:</h3>" +
+                                    $"<p>{customer.User.FullName}</p>" +
+                                    $"<h3 style=\"color:#B70D00;\">Address:</h3>" +
+                                    $"<p>{customer.User.Address}</p>" +
+                                    $"<h3 style=\"color:#B70D00;\">Tax Number:</h3>" +
+                                    $"<p>{customer.User.TaxNumber}</p><br />" +
+                                    $"<p>If you didn’t request this purchase, please contact us at our website.</p>" +
+                                    $"<br>" +
+                                    $"<p>Your fitness journey awaits,</p>" +
+                                    $"<p>The FitSharp Team</p>" +
+                                    $"<p><small>This is an automated message. Please do not reply to this email.</small></p>");
+
+            if (!response.IsSuccess)
+            {
+                _flashMessage.Danger("Message could not be sent. Please try again later.");
+                return View(model);
+            }
+
+            _flashMessage.Confirmation("Payment accepted successfully! You will receive an email with the receipt shortly.");
             return RedirectToAction("AvailableMemberships");
         }
     }
