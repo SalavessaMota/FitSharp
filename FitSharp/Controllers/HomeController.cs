@@ -125,10 +125,10 @@ namespace FitSharp.Controllers
             return View();
         }
 
-        public async Task<IActionResult> InstructorDetails(int id)
+        public async Task<IActionResult> InstructorDetails(int? id)
         {
             // Busca o instrutor com todos os dados relacionados
-            var instructor = await _userRepository.GetInstructorWithAllRelatedDataByInstructorIdAsync(id);
+            var instructor = await _userRepository.GetInstructorWithAllRelatedDataByInstructorIdAsync(id.Value);
 
             if (instructor == null)
             {
@@ -140,19 +140,19 @@ namespace FitSharp.Controllers
             if (this.User.Identity.IsAuthenticated)
             {
                 // Verificar se o cliente já teve aulas com o instrutor
-                ViewBag.HasAttendedClasses = await _personalClassRepository.HasAttendedInstructorAsync(customer.Id, id) ||
-                                          await _groupClassRepository.HasAttendedInstructorAsync(customer.Id, id);
+                ViewBag.HasAttendedClasses = await _personalClassRepository.HasAttendedInstructorAsync(customer.Id, id.Value) ||
+                                          await _groupClassRepository.HasAttendedInstructorAsync(customer.Id, id.Value);
 
                 // Verificar se o cliente já fez uma review ao instrutor
-                ViewBag.HasReviewed = await _userRepository.HasCustomerReviewedInstructorAsync(customer.Id, id);
+                ViewBag.HasReviewed = await _userRepository.HasCustomerReviewedInstructorAsync(customer.Id, id.Value);
             }
 
             return View(instructor);
         }
 
-        public async Task<IActionResult> GymDetails(int id)
+        public async Task<IActionResult> GymDetails(int? id)
         {
-            var gym = await _gymsRepository.GetGymWithAllRelatedDataAsync(id);
+            var gym = await _gymsRepository.GetGymWithAllRelatedDataAsync(id.Value);
 
             if (gym == null)
             {
@@ -164,11 +164,11 @@ namespace FitSharp.Controllers
             if (this.User.Identity.IsAuthenticated)
             {
                 // Verificar se o cliente já frequentou aulas no ginásio
-                ViewBag.HasAttendedClasses = await _personalClassRepository.HasAttendedGymAsync(customer.Id, id) ||
-                                              await _groupClassRepository.HasAttendedGymAsync(customer.Id, id);
+                ViewBag.HasAttendedClasses = await _personalClassRepository.HasAttendedGymAsync(customer.Id, id.Value) ||
+                                              await _groupClassRepository.HasAttendedGymAsync(customer.Id, id.Value);
 
                 // Verificar se o cliente já fez uma review ao ginásio
-                ViewBag.HasReviewed = await _gymsRepository.HasCustomerReviewedGymAsync(customer.Id, id);
+                ViewBag.HasReviewed = await _gymsRepository.HasCustomerReviewedGymAsync(customer.Id, id.Value);
             }
 
             return View(gym);
