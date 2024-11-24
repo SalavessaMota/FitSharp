@@ -15,7 +15,7 @@
         {
             <h3>QR Code for @Model.User.FullName</h3>
             <p class="lead text-muted">Scan this QR code to access any FitSharp gym worldwide. Enjoy your workout wherever you are!</p>
-            <img src="@Url.Action("GenerateQRCode", "Account", new { userName = Model.User.UserName })" alt="QR Code for Customer" width="300px" height="auto" />
+            <img src="@Url.Action("GenerateQRCode", "Account", new { userName = Model.User.UserName })" alt="QR Code for Customer" width="300px" height="auto" class="roundedwithshadow" />
         }
         <div>
             <a href="@Url.Action("DownloadQRCodePdf", "Account", new { userName = Model.User.UserName })" class="btn btn-secondary btn-lg mt-3 roundedwithshadow" style="background-color: #808080">

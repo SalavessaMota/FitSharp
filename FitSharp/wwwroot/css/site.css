@@ -166,7 +166,7 @@ a {
 
 /* Sombra */
 .box-shadow {
-    box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
+    box-shadow: 0 .25rem .75rem rgba(0, 0, 0, 0.5);
 }
 
 button.accept-policy {
@@ -215,14 +215,14 @@ body {
 
 /*Text shadow*/
 .text-shadow {
-    text-shadow: 2px 2px 4px #000000;
+    text-shadow: 2px 2px 2px #000000;
 }
 
 /* Cards e Containers */
 .transparent-card {
     background-color: rgba(235, 235, 235, 0.8); /* Tom cinza claro com transparência */
     border-radius: 15px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 1);
     padding: 20px;
     backdrop-filter: blur(10px);
     overflow: auto;
@@ -231,7 +231,7 @@ body {
 
 .roundedwithshadow {
     border-radius: 15px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 1);
 }
 
 /* Vídeo de Fundo */
@@ -278,7 +278,7 @@ video#bgVideo {
     background-color: #960C00 !important;
     transform: scale(1.05); /* Aumenta o tamanho em 5% */
     transition: transform 0.2s ease, box-shadow 0.2s ease;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2); /* Adiciona uma sombra */
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 1); /* Adiciona uma sombra */
     cursor: pointer;
 }
 
@@ -286,7 +286,7 @@ video#bgVideo {
     background-color: #5A5A5A !important; /* Tom mais escuro do cinza */
     transform: scale(1.05); /* Aumenta o tamanho em 5% */
     transition: transform 0.2s ease, box-shadow 0.2s ease;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2); /* Adiciona uma sombra */
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.5); /* Adiciona uma sombra */
     cursor: pointer;
 }
 
