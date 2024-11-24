@@ -135,10 +135,15 @@ namespace FitSharp.Controllers
                 return View("InstructorNotFound");
             }
 
-            var customer = await _userRepository.GetCustomerByUserName(User.Identity.Name);
 
-            if (this.User.Identity.IsAuthenticated)
+            if (this.User.IsInRole("Customer"))
             {
+                var customer = await _userRepository.GetCustomerByUserName(User.Identity.Name);
+                if (customer == null)
+                {
+                    return NotFound();
+                }
+
                 // Verificar se o cliente já teve aulas com o instrutor
                 ViewBag.HasAttendedClasses = await _personalClassRepository.HasAttendedInstructorAsync(customer.Id, id.Value) ||
                                           await _groupClassRepository.HasAttendedInstructorAsync(customer.Id, id.Value);
@@ -158,11 +163,16 @@ namespace FitSharp.Controllers
             {
                 return View("GymNotFound");
             }
+                       
 
-            var customer = await _userRepository.GetCustomerByUserName(User.Identity.Name);
-
-            if (this.User.Identity.IsAuthenticated)
+            if (this.User.IsInRole("Customer"))
             {
+                var customer = await _userRepository.GetCustomerByUserName(User.Identity.Name);
+                if (customer == null)
+                {
+                    return NotFound();
+                }
+
                 // Verificar se o cliente já frequentou aulas no ginásio
                 ViewBag.HasAttendedClasses = await _personalClassRepository.HasAttendedGymAsync(customer.Id, id.Value) ||
                                               await _groupClassRepository.HasAttendedGymAsync(customer.Id, id.Value);

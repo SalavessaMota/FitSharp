@@ -82,7 +82,7 @@
         <!-- Reviews Section -->
         <div class="card-footer bg-light">
             <div class="text-center mt-4">
-                @if (this.User.Identity.IsAuthenticated)
+                @if (this.User.Identity.IsAuthenticated && this.User.IsInRole("Customer"))
                 {
                     if (ViewBag.HasAttendedClasses)
                     {
