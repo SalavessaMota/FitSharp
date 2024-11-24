@@ -1,4 +1,6 @@
-﻿namespace FitSharp.Data.Entities
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace FitSharp.Data.Entities
 {
     public class Equipment : IEntity
     {
@@ -12,6 +14,7 @@
 
         public virtual Gym Gym { get; set; }
 
+        [Display(Name = "Requires Repair")]
         public bool RequiresRepair { get; set; }
     }
 }

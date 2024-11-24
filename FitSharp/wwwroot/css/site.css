@@ -317,3 +317,14 @@ video#bgVideo {
     background-color: #808080 !important;
     color: white;
 }
+
+.field-validation-error {
+    color: #B70D00 !important; /* Vermelho */
+    font-weight: bold;
+    padding: 5px; /* Espaçamento */
+    border-radius: 4px; /* Cantos arredondados */
+}
+
+.field-validation-valid {
+    display: none; /* Oculta mensagens válidas */
+}

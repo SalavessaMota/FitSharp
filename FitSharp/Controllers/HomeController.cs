@@ -257,7 +257,7 @@ namespace FitSharp.Controllers
             }
 
             Response response = _mailHelper.SendEmail("fitsharp.support@yopmail.com", model.Subject,
-                                    $"<h3 style=\"color:#B70D00;\">Client:</h3>" +
+                                    $"<h3 style=\"color:#B70D00;\">Sender:</h3>" +
                                     $"<p>{model.Name}</p><br />" +
                                     $"<h3 style=\"color:#B70D00;\">Email:</h3>" +
                                     $"<p>{model.Email}</p><br />" +

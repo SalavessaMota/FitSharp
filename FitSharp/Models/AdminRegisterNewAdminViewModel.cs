@@ -2,11 +2,9 @@
 
 namespace FitSharp.Models
 {
-    public class AdminRegisterNewAdminViewModel : UserViewModel
+    public class AdminRegisterNewAdminViewModel : AdminRegisterNewUserViewModel
     {
-        [Required]
-        [DataType(DataType.EmailAddress)]
-        public string Username { get; set; }
+        
 
         [Required]
         [DataType(DataType.Password)]
