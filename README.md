@@ -1,7 +1,6 @@
 # FitSharp
-<!-- Replace with your project logo -->
-![alt text]((https://aircinelmvc.blob.core.windows.net/resources/FitSharpFinalLogoNoBrackgroundpng2.png)?raw=true)
 
+![FitSharp Logo](https://aircinelmvc.blob.core.windows.net/resources/FitSharpFinalLogoNoBrackgroundpng2.png)
 
 **FitSharp** is an all-in-one gym management solution designed to streamline operations for administrators, staff, instructors, and customers. Built with **ASP.NET MVC (.NET 5)**, FitSharp delivers a modern, scalable, and user-friendly platform tailored to the needs of gym networks.
 
